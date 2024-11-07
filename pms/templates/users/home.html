@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block root %}
+
+<div class="h-screen relative overflow-hidden">
+  <nav class="flex justify-end my-3">
+    {% if user.is_authenticated %}
+    <a
+      href="{% url 'account_logout' %}"
+      class="py-3 px-6 mx-1 rounded-md text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
+      >Logout</a
+    >
+    {% else %}
+    <a
+      href="{% url 'account_login' %}"
+      class="py-3 px-6 mx-1 text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
+      >Login</a
+    >
+    <a
+      href="{% url 'account_signup' %}"
+      class="py-3 px-6 mx-1 text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
+      >Sign up</a
+    >
+    {% endif %}
+  </nav>
+
+  <img
+    src="https://media.licdn.com/dms/image/D4D12AQHAzpZZDBIkfA/article-cover_image-shrink_720_1280/0/1710486640359?e=2147483647&v=beta&t=_kP7RyfolRjZCXpwZO3GJqC4Trnozc_G8gP1uCmzilc"
+    alt="project management image"
+    class="w-lvw h-3/6"
+  />
+
+  <article class="mx-2 transform translate-y-1/2 text-4xl font-bold">
+    <p>All in one project management software</p>
+    <p>Customizable, easy to use project management system.</p>
+  </article>
+
+  {% block auth %} {% endblock auth%}
+</div>
+
+{% endblock root %}
