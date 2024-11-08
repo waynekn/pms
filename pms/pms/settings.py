@@ -153,6 +153,7 @@ AUTHENTICATION_BACKENDS = [
 AUTH_USER_MODEL = 'users.User'
 ACCOUNT_EMAIL_REQUIRED = True
 
+ACCOUNT_FORMS = {'login': 'apps.users.forms.AllauthLoginForm'}
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
