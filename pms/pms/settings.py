@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.organizations.apps.OrganizationsConfig',
 
     # 3rd party
+    'rest_framework',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
