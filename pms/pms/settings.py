@@ -158,6 +158,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 ACCOUNT_FORMS = {'login': 'apps.users.forms.AllauthLoginForm'}
 
+ACCOUNT_ADAPTER = 'apps.users.adapters.CustomLoginRedirectAdapter'
+
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
