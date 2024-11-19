@@ -158,8 +158,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 ACCOUNT_FORMS = {'login': 'apps.users.forms.AllauthLoginForm'}
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
 
 # Internationalization
