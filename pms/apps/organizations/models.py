@@ -37,3 +37,20 @@ class Organization(models.Model):
 
     def __str__(self) -> str:
         return self.organization_name
+
+
+class OrganizationMembers(models.Model):
+    """
+    Users who successfully authenticate themselves via the organization's password are added as its members.
+    """
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
+                                     related_name='members', verbose_name='Organization')
+    user = models.ForeignKey(
+        # Ensure a user can only be a member of an organization once
+        User, on_delete=models.CASCADE, verbose_name='Member user')
+
+    class Meta:
+        unique_together = ('organization', 'user')
+
+    def __str__(self) -> str:
+        return f'{self.organization.organization_id} | {self.user.username}'
