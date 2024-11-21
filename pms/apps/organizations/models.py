@@ -13,6 +13,9 @@ class Organization(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False, verbose_name='Organization ID')
     organization_name = models.CharField(
         max_length=50, unique=True, verbose_name='Organization name')
+
+    # Make 'organization_name_slug' nullable to avoid migration errors. Howerver,
+    # the field is added as every organization is created so it will never be null.
     organization_name_slug = models.SlugField(
         max_length=100, verbose_name="Organization Slug", null=True)
     admin = models.ForeignKey(
