@@ -50,9 +50,9 @@
         <div>
           <template x-if="data.length > 0">
             <ul class="space-y-2">
-              <template x-for="org in data" :key="org.id">
+              <template x-for="org in data" :key="org.organization_id">
                 <li
-                  x-text="org.name"
+                  x-text="org.organization_name"
                   class="bg-white p-2 rounded-md shadow"
                 ></li>
               </template>
