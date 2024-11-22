@@ -1,7 +1,13 @@
+from django.urls import reverse
+from django.utils.text import slugify
+from django.views.generic import CreateView
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Organization, OrganizationMembers
 from .serializers import OrganizationSerializer
+from .forms import OrganizationCreateForm
 
 # Create your views here.
 
@@ -25,3 +31,36 @@ class UserOrganizationListView(APIView):
 
         serializer = OrganizationSerializer(organizations, many=True)
         return Response(serializer.data)
+
+
+class OrganizationCreateView(LoginRequiredMixin, CreateView):
+    """
+    Creates an organization, saves it to the database and adds the
+    user who creates the organization to its members.
+    """
+    template_name = 'organizations/organization_create.html'
+    form_class = OrganizationCreateForm
+
+    def form_valid(self, form):
+        # If form is valid, create the organization
+        organization_name = form.cleaned_data['organization_name']
+        password = form.cleaned_data['organization_password']
+        admin = self.request.user
+        organization_name_slug = slugify(organization_name)
+        hashed_password = make_password(password)
+
+        # Create an instance without saving to the database yet
+        organization = form.save(commit=False)
+        organization.admin = admin
+        organization.organization_name_slug = organization_name_slug
+        organization.organization_password = hashed_password
+        organization.save()
+
+        # Add the admin as an organization member.
+        OrganizationMembers.objects.create(
+            organization=organization, user=admin)
+
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse('profile_page', kwargs={'username': self.request.user.username})
