@@ -1,0 +1,84 @@
+{% extends "./base_organizations.html" %} {% block root %}
+<section
+  class="absolute h-auto w-80 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 bg-white rounded shadow-lg"
+>
+  {# 'X' symbol #}
+  <a
+    href="{% url 'profile_page' user.username %}"
+    class="flex justify-end font-bold"
+    >&#x2715;</a
+  >
+  <form method="post" action="{% url 'create_organization' %}">
+    {% csrf_token %}
+    <div class="space-y-4">
+      {# Organization Name Field #}
+      <div class="form-group">
+        <label
+          for="{{ form.organization_name.id_for_label }}"
+          class="block text-sm font-medium text-gray-700"
+        >
+          Organization Name
+        </label>
+        {{ form.organization_name }} {% if form.organization_name.errors %}
+        <ul class="text-red-600 text-sm">
+          {% for error in form.organization_name.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      {# Organization Password Field #}
+      <div class="form-group">
+        <label
+          for="{{ form.organization_password.id_for_label }}"
+          class="block text-sm font-medium text-gray-700"
+        >
+          Password
+        </label>
+        {{ form.organization_password }}
+        <!-- prettier-ignore -->
+        {% if form.organization_password.errors %}
+        <ul class="text-red-600 text-sm">
+          {% for error in form.organization_password.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      {# Confirm Password Field #}
+      <div class="form-group">
+        <label
+          for="{{ form.password_confirm.id_for_label }}"
+          class="block text-sm font-medium text-gray-700"
+        >
+          Confirm Password
+        </label>
+        {{ form.password_confirm }} {% if form.password_confirm.errors %}
+        <ul class="text-red-600 text-sm">
+          {% for error in form.password_confirm.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      {# Submit Button #}
+      <input
+        type="submit"
+        value="Create"
+        class="w-full cursor-pointer bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    {# Form Errors #} {% if form.non_field_errors %}
+    <ul class="text-red-600 text-sm">
+      {% for error in form.non_field_errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </form>
+</section>
+{% endblock root %}
