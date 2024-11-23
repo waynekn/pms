@@ -48,7 +48,66 @@
       {# only display if the user is on the 'organizations' tab #}
       <template x-if="activeTab === 'organizations'">
         <div>
-          <div class="flex justify-end">
+          <div
+            class="flex"
+            x-data="{
+            organizations: [],
+            searchForm: false,
+            updateOrganizations(event) {
+              if(event.detail.successful) {
+                const response = JSON.parse(event.detail.xhr.responseText);
+                this.organizations = response; 
+              } else {
+                this.organizations = [];
+              }
+            }
+          }"
+            x-init="$watch('searchForm', () => {
+            htmx.process(htmx.find('#search-form'));
+          })"
+          >
+            {# search-form #}
+            <div class="flex flex-col relative grow mr-5">
+              <form
+                id="search-form"
+                class="relative"
+                x-init="searchForm = true"
+                hx-post="{% url 'organization_search' %}"
+                hx-target="this"
+                hx-swap="none"
+                hx-trigger="input changed delay:300ms"
+                @htmx:after-request="updateOrganizations(event)"
+              >
+                {% csrf_token %} {# search form input tag #}
+                <input
+                  class="w-full bg-white border border-gray-300 text-gray-700 px-4 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  id="search-bar"
+                  type="search"
+                  name="organization_name_query"
+                  placeholder="Search for an organization"
+                />
+              </form>
+
+              {# Search Results List #}
+              <div class="w-full absolute top-12 z-50 mt-2">
+                <template x-if="organizations.length > 0">
+                  <ul
+                    class="w-full bg-white border border-black shadow-lg rounded-md mt-1"
+                  >
+                    <template
+                      x-for="organization in organizations"
+                      :key="organization.organization_id"
+                    >
+                      <li
+                        x-text="organization.organization_name"
+                        class="p-2 hover:bg-gray-200 cursor-pointer"
+                      ></li>
+                    </template>
+                  </ul>
+                </template>
+              </div>
+            </div>
+
             {# link to create an organization #}
             <a
               href="{% url 'create_organization' %}"
