@@ -4,6 +4,7 @@ from django.views.generic import CreateView
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from .models import Organization, OrganizationMembers
 from .serializers import OrganizationSerializer
@@ -64,3 +65,26 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self) -> str:
         return reverse('profile_page', kwargs={'username': self.request.user.username})
+
+
+class OrganizationSearchView(LoginRequiredMixin, APIView):
+    """
+    Search for organizations by name.
+
+    This view receives a POST request containing a partial or full organization name.
+    It returns a list of organizations whose name contains the provided search term.
+    If no organizations are found, a message indicating no results is returned.
+    """
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        organization_name_query = request.data.get(
+            'organization_name_query', '')
+
+        if not organization_name_query:
+            return Response({"error": "No organization name provided"}, status=400)
+
+        organizations = Organization.objects.filter(
+            organization_name__icontains=organization_name_query)
+
+        serializer = OrganizationSerializer(organizations, many=True)
+        return Response(serializer.data)
