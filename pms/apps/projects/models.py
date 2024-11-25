@@ -63,3 +63,24 @@ class Template(models.Model):
 
     def __str__(self) -> str:
         return self.template_name
+
+
+class TemplatePhase(models.Model):
+    """
+    Represents a phase within a template. A phase could be a step or stage 
+    within a template, such as 'Design', 'Testing', etc.
+
+    Attributes:
+        template (ForeignKey): A reference to the `Template` that the phase belongs to.
+        phase_id (UUIDField): A unique identifier for the phase, automatically generated using UUID.
+        phase_name (CharField): The name of the phase, such as 'Design', 'Development', etc.
+    """
+    template = models.ForeignKey(
+        Template, on_delete=models.RESTRICT, related_name="phases"
+    )
+    phase_id = models.UUIDField(
+        default=uuid.uuid4, editable=False, primary_key=True)
+    phase_name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.phase_name
