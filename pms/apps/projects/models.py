@@ -56,7 +56,7 @@ class Template(models.Model):
                                    within the database.
     """
     industry_id = models.ForeignKey(Industry, on_delete=models.SET_DEFAULT,
-                                    default=get_default_industry)
+                                    default=get_default_industry, related_name="templates")
     template_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4)
     template_name = models.CharField(max_length=50, unique=True)
