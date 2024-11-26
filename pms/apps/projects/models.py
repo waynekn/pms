@@ -19,8 +19,9 @@ class Industry(models.Model):
     """
 
     industry_id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
-    industry_name = models.CharField(max_length=50, unique=True)
+        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Industry ID")
+    industry_name = models.CharField(
+        max_length=50, unique=True, verbose_name="Industry name")
 
     def __str__(self) -> str:
         return self.industry_name
