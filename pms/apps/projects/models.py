@@ -78,11 +78,11 @@ class TemplatePhase(models.Model):
         phase_name (CharField): The name of the phase, such as 'Design', 'Development', etc.
     """
     template = models.ForeignKey(
-        Template, on_delete=models.RESTRICT, related_name="phases"
+        Template, on_delete=models.RESTRICT, related_name="phases", verbose_name="Template"
     )
     phase_id = models.UUIDField(
-        default=uuid.uuid4, editable=False, primary_key=True)
-    phase_name = models.CharField(max_length=50)
+        default=uuid.uuid4, editable=False, primary_key=True, verbose_name="Phase ID")
+    phase_name = models.CharField(max_length=50, verbose_name="Phase name")
 
     def __str__(self) -> str:
         return self.phase_name
