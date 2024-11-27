@@ -56,8 +56,8 @@ class Template(models.Model):
         template_name (CharField): The name of the template, which should be unique 
                                    within the database.
     """
-    industry_id = models.ForeignKey(Industry, on_delete=models.SET_DEFAULT,
-                                    default=get_default_industry, related_name="templates", verbose_name="Industry ID")
+    industry = models.ForeignKey(Industry, on_delete=models.SET_DEFAULT,
+                                 default=get_default_industry, related_name="templates", verbose_name="Industry ID")
     template_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, verbose_name="Template ID")
     template_name = models.CharField(
