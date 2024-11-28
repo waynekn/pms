@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
-from .models import Organization, OrganizationMembers
+from .models import Organization, OrganizationMember
 from .serializers import OrganizationSerializer
 from .forms import OrganizationCreateForm
 
@@ -21,8 +21,8 @@ class UserOrganizationListView(APIView):
     model = Organization
 
     def get(self, request) -> Response:
-        # Get all OrganizationMembers entries where the user is a member
-        user_organizations = OrganizationMembers.objects.filter(
+        # Get all OrganizationMember entries where the user is a member
+        user_organizations = OrganizationMember.objects.filter(
             user=self.request.user)
 
         # Get the related Organization objects for those memberships
@@ -58,7 +58,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         organization.save()
 
         # Add the admin as an organization member.
-        OrganizationMembers.objects.create(
+        OrganizationMember.objects.create(
             organization=organization, user=admin)
 
         return super().form_valid(form)
