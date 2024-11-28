@@ -1,11 +1,46 @@
 {% extends "./base_users.html" %} {% block root %}
 <div class="h-dvh mx-2 my-2">
-  <header class="flex justify-end text-black font-medium">
-    {{ user.username }}
+  <header
+    class="fixed w-full right-2 space-x-4 text-black font-medium p-4 flex justify-between"
+    x-data="{ dropdown: false }"
+  >
+    {# Dropdown toggle button #}
+    <button
+      type="button"
+      @click="dropdown = !dropdown"
+      @click.outside="dropdown = false"
+      class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition duration-200 ml-auto relative"
+    >
+      {{ user.username }} {# Dropdown menu #}
+      <div
+        x-show="dropdown"
+        x-transition
+        class="absolute right-0 mt-2 bg-white border rounded-lg shadow-md w-max z-50"
+      >
+        <ul class="space-y-2 py-2 px-4">
+          <li>
+            <a
+              href="{% url 'create_template' %}"
+              class="text-gray-700 hover:text-blue-500"
+            >
+              Create a template
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'account_logout' %}"
+              class="text-gray-700 hover:text-blue-500"
+            >
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </button>
   </header>
 
   <div
-    class="flex flex-col w-3/4 mx-auto bg-white shadow-lg rounded-lg p-6"
+    class="flex flex-col w-3/4 mx-auto bg-white shadow-lg rounded-lg p-6 relative top-10"
     x-data="{
         activeTab: '', // Tracks the current tab.
         data: [], // Stores the fetched data.
