@@ -4,6 +4,7 @@
   class="flex w-full h-dvh items-center justify-center space-even"
   x-data="{
     phases: [],
+    askForVerification: false,
     addPhase(text){
       if(text.trim()){
           this.phases.push(text);
@@ -15,13 +16,13 @@
       const phasesString = this.phases.join(',');
       document.getElementById('id_template_phases').value = phasesString;
     },
-}"
+  }"
 >
   <main class="flex mr-5 w-80 p-4 bg-white rounded shadow-lg">
     <form
       method="post"
       action="{% url 'create_template' %}"
-      @submit.prevent="confirmSubmission(event)"
+      @submit.prevent="askForVerification = true"
     >
       {% csrf_token %}
 
@@ -122,6 +123,28 @@
       </template>
     </ol>
   </aside>
+
+  {# Ask for verification before submitting form. #}
+  <div
+    x-show="askForVerification"
+    class="fixed top-2 bg-white p-8 rounded-lg shadow-lg w-100"
+  >
+    <p class="font-bold">Are you sure you want to proceed with this action?</p>
+    <div class="w-full flex justify-evenly">
+      <button
+        class="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+        @click="document.getElementById('template-form').submit()"
+      >
+        Yes, Proceed
+      </button>
+      <button
+        class="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+        @click="askForVerification = false"
+      >
+        No, Cancel
+      </button>
+    </div>
+  </div>
 </div>
 
 {% endblock root %}
