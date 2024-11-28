@@ -44,7 +44,7 @@ class Organization(models.Model):
         return self.organization_name
 
 
-class OrganizationMembers(models.Model):
+class OrganizationMember(models.Model):
     """
     Users who successfully authenticate themselves via the organization's password are added as its members.
     """
