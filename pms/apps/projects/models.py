@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-from django.utils import timezone
 from apps.organizations.models import Organization
 
 # Create your models here.
