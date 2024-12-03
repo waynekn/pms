@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from apps.organizations.models import Organization
+from apps.users.models import User
 
 # Create your models here.
 
@@ -141,3 +142,14 @@ class Project(models.Model):
 
     def __str__(self) -> str:
         return self.project_name
+
+
+class ProjectMember(models.Model):
+    """
+    Represents users who are members of a `Project` 
+    """
+
+    member = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Project Member")
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, related_name="members", verbose_name="Project")
