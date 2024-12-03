@@ -153,3 +153,19 @@ class ProjectMember(models.Model):
         User, on_delete=models.CASCADE, verbose_name="Project Member")
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="members", verbose_name="Project")
+
+
+class CustomPhase(models.Model):
+    """
+    Represents a custom project phase.
+
+    This model allows a project to define custom phases when the predefined phases 
+    in a template do not fully meet the project's requirements.
+    """
+
+    phase_id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Phase ID")
+    project = models.ForeignKey(Project, on_delete=models.CASCADE,
+                                help_text="The project which created this phase", related_name="custom_phases", verbose_name="Project")
+    phase_name = models.CharField(
+        max_length=50, help_text="The name of the project phase.", verbose_name="Phase name")
