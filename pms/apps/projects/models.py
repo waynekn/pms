@@ -1,5 +1,7 @@
 import uuid
 from django.db import models
+from django.utils import timezone
+from apps.organizations.models import Organization
 
 # Create your models here.
 
@@ -89,3 +91,54 @@ class TemplatePhase(models.Model):
 
     def __str__(self) -> str:
         return self.phase_name
+
+
+class Project(models.Model):
+    """
+    Represents a project within an organization.
+
+    This model tracks essential project information such as its template,
+    deadlines, and current status, and associates it with an organization.
+    """
+    IN_PROGRESS = "IN_PROGRESS"
+    ON_HOLD = "ON_HOLD"
+    DONE = "DONE"
+
+    PROJECT_STATUS_CHOICES = [
+        (IN_PROGRESS, "In progress"),
+        (ON_HOLD, "ON_HOLD"),
+        (DONE, "Done"),
+    ]
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
+                                     related_name="projects", help_text="The organization that owns or manages this project.",
+                                     verbose_name="Project organization")
+    template = models.ForeignKey(
+        Template, on_delete=models.RESTRICT,
+        help_text="The template from which this project is based.",
+        verbose_name="Project base template")
+    project_id = models.UUIDField(
+        default=uuid.uuid4, editable=False, primary_key=True,
+        help_text="A unique identifier for the project, generated automatically.",
+        verbose_name="Project ID")
+    project_name = models.CharField(
+        max_length=120, help_text="The name of the project, unique within the organization.", verbose_name="Project name")
+    project_name_slug = models.SlugField(
+        max_length=255, help_text="A URL-safe slug version of the project name.", verbose_name="Project Name Slug")
+    description = models.TextField(
+        blank=True, verbose_name="Project description")
+    created_at = models.DateTimeField(
+        auto_now_add=True, help_text="The date and time when the project was created.",
+        verbose_name="Project creation date")
+    deadline = models.DateTimeField(
+        help_text="The date and time by which the project should be completed.",
+        verbose_name="Deadline date")
+    status = models.CharField(
+        max_length=15,
+        choices=PROJECT_STATUS_CHOICES,
+        default=IN_PROGRESS,
+        help_text="The current status of the project.",
+        verbose_name="Project status"
+    )
+
+    def __str__(self) -> str:
+        return self.project_name
