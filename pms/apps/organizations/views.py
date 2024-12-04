@@ -50,6 +50,12 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         organization_name_slug = slugify(organization_name)
         hashed_password = make_password(password)
 
+        # Ensure the slug is unique by appending a number if necessary
+        counter = 1
+        while Organization.objects.filter(organization_name_slug=organization_name_slug).exists():
+            organization_name_slug = f"{organization_name_slug}-{counter}"
+            counter += 1
+
         # Create an instance without saving to the database yet
         organization = form.save(commit=False)
         organization.admin = admin
