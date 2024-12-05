@@ -169,3 +169,22 @@ class CustomPhase(models.Model):
                                 help_text="The project which created this phase", related_name="custom_phases", verbose_name="Project")
     phase_name = models.CharField(
         max_length=50, help_text="The name of the project phase.", verbose_name="Phase name")
+
+
+class ProjectPhase(models.Model):
+    """
+    Represents a phase within a project. This model links the project to its various phases, which can either be inherited from a template
+    or be custom-specific phases created for the project.
+    """
+    phase_id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Phase id")
+    project = models.ForeignKey(Project, on_delete=models.CASCADE,
+                                related_name="phases", help_text="Project which this phase belongs to", verbose_name="Project")
+    # The `on_delete=models.RESTRICT` ensures that a template phase cannot be deleted if it is being used in a project.
+    template_phase = models.ForeignKey(
+        TemplatePhase, on_delete=models.RESTRICT, help_text="Project phase inheritied from a template", verbose_name="Template phase")
+    custom_phase = models.ForeignKey(CustomPhase, on_delete=models.CASCADE,
+                                     help_text="Custom phase specific to this project", verbose_name='Custom phase')
+
+    def __str__(self) -> str:
+        return f'{self.project.project_name}| {self.template_phase.phase_name or self.custom_phase.phase_name}'
