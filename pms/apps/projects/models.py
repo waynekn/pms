@@ -129,7 +129,7 @@ class Project(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True, help_text="The date and time when the project was created.",
         verbose_name="Project creation date")
-    deadline = models.DateTimeField(
+    deadline = models.DateField(
         help_text="The date and time by which the project should be completed.",
         verbose_name="Deadline date")
     status = models.CharField(
