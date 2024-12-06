@@ -1,6 +1,7 @@
+from typing import Any
 from django.urls import reverse
 from django.utils.text import slugify
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.response import Response
@@ -94,3 +95,17 @@ class OrganizationSearchView(LoginRequiredMixin, APIView):
 
         serializer = OrganizationSerializer(organizations, many=True)
         return Response(serializer.data)
+
+
+class OrganizationDetailView(DetailView):
+    model = Organization
+    context_object_name = 'organization'
+    slug_field = 'organization_name_slug'
+    slug_url_kwarg = 'organization_name_slug'
+    template_name = "organizations/organization_detail.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        organization = self.get_object()
+        context["projects"] = organization.projects.all()
+        return context
