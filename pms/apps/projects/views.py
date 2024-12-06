@@ -1,9 +1,12 @@
+from typing import Any
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic.edit import FormView
+from django.utils.text import slugify
+from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import TemplateCreateForm
-from .models import Template, TemplatePhase
+from .forms import TemplateCreateForm, ProjectCreateForm
+from .models import Template, TemplatePhase, ProjectPhase, ProjectMember
 
 
 class TemplateCreateView(LoginRequiredMixin, FormView):
@@ -49,3 +52,49 @@ class TemplateCreateView(LoginRequiredMixin, FormView):
 
     def get_success_url(self) -> str:
         return reverse('profile_page', kwargs={'username': self.request.user.username})
+
+
+class ProjectCreateView(LoginRequiredMixin, CreateView):
+    form_class = ProjectCreateForm
+    template_name = "projects/project_create.html"
+    success_url = reverse_lazy('organization_detail', kwargs={
+                               'organization_name_slug': ''})
+
+    def get_form_kwargs(self):
+        """Add custom keyword arguments for the form."""
+        kwargs = super().get_form_kwargs()
+        # Pass the 'organization_name_slug' from URL kwargs to the form
+        kwargs['organization_name_slug'] = self.kwargs['organization_name_slug']
+        return kwargs
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['slug'] = self.kwargs.get('organization_name_slug')
+        print(context)
+        print(f'slug {self.kwargs.get('organization_name_slug')}')
+        return context
+
+    @transaction.atomic
+    def form_valid(self, form):
+        template_id = form.cleaned_data.get('template')
+        project_name = form.cleaned_data.get('project_name')
+        project_name_slug = slugify(project_name)
+        project = form.save(commit=False)
+        project.project_name_slug = project_name_slug
+        project.save()
+
+        # add the creator as a member of the project.
+        ProjectMember.objects.create(member=self.request.user, project=project)
+
+        template = get_object_or_404(Template, pk=template_id)
+
+        template_phases = template.phases.all()
+
+        for template_phase in template_phases:
+            ProjectPhase.objects.create(
+                project=project, template_phase=template_phase)
+
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse_lazy('organization_detail', kwargs={'organization_name_slug': self.kwargs.get('organization_name_slug')})
