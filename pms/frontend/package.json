@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build-tailwind": "npx tailwindcss -i ./src/input.css -o ./src/output.css --watch",
     "lint": "eslint .",
     "preview": "vite preview"
   },
