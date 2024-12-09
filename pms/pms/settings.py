@@ -153,6 +153,8 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
+
 
 AUTH_USER_MODEL = 'users.User'
 ACCOUNT_EMAIL_REQUIRED = True
