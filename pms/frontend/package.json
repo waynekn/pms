@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "watch-build": "tsc -b && vite build --watch",
     "build": "tsc -b && vite build",
     "watch-tailwind": "npx tailwindcss -i ./src/input.css -o ./src/output.css --watch",
     "build-tailwind": "npx tailwindcss -i ./src/input.css -o ./src/output.css",
