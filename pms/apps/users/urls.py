@@ -1,9 +1,10 @@
 from django.urls import path, include
 from .views import (HomeView, ProfilePageView,
-                    CSRFtokenView,)
+                    CSRFtokenView, FrontendView)
 
 
 urlpatterns = [
+    path('', FrontendView.as_view(), name='frontend'),
     path('', HomeView.as_view(), name='home'),
     path('accounts/', include('allauth.urls')),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
