@@ -183,7 +183,7 @@ SIMPLE_JWT = {
 REST_AUTH = {
     'USE_JWT': True,
     'JWT_AUTH_COOKIE': 'access_token',
-    'JWT_AUTH_REFRESH_COOKIE': 'refresh_token'
+    'JWT_AUTH_REFRESH_COOKIE': 'refresh_token',
 }
 
 CORS_ALLOWED_ORIGINS = [
