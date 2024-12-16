@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter } from "react-router";
+import Router from "./router";
 
-import HomePage from "./pages/home-page";
 import { fetchCSRFtoken } from "./utils/CSRFtoken";
 
 function App() {
@@ -35,9 +35,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-      </Routes>
+      <Router />
     </BrowserRouter>
   );
 }
