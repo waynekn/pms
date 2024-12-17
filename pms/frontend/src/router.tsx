@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router";
 
 import HomePage from "./pages/home-page";
-import GoogleCallback from "./components/google-callback";
+import GoogleCallback from "./components/google-callback.component";
 
 const Router = () => {
   return (
