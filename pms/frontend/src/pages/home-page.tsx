@@ -27,7 +27,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="h-screen relative overflow-hidden">
+    <div className="h-screen overflow-hidden">
       <nav className="flex justify-end my-3">
         <button
           onClick={() => handleFormDisplay("login")}
