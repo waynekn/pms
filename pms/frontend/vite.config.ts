@@ -9,6 +9,7 @@ export default defineConfig({
     postcss: "./postcss.config.js",
   },
   build: {
+    emptyOutDir: true,
     rollupOptions: {
       input: {
         main: resolve("./src/main.tsx"),
