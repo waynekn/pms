@@ -1,11 +1,10 @@
 from django.urls import path, include
-from .views import (HomeView, ProfilePageView,
+from .views import (ProfilePageView,
                     CSRFtokenView, FrontendView, GoogleLogin,)
 
 
 urlpatterns = [
     path('', FrontendView.as_view(), name='frontend'),
-    path('', HomeView.as_view(), name='home'),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('dj-rest-auth/google/',
