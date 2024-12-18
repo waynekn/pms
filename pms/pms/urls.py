@@ -15,11 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+
+from .views import FrontendView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.users.urls')),
     path('organizations/', include('apps.organizations.urls')),
     path('', include('apps.projects.urls')),
+    # The `react_frontend` should be the last url.
+    re_path(r'^.*$', FrontendView.as_view(), name='react_frontend'),
 ]

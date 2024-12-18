@@ -21,17 +21,6 @@ load_dotenv()
 # Create your views here.
 
 
-class FrontendView(TemplateView):
-    """
-    Renders the `index.html` template for the frontend application.
-
-    This view serves the `index.html` file, which references static assets
-    built by Vite during the build process. The template includes the necessary
-    CSS and JavaScript files to initialize the React-based frontend.
-    """
-    template_name = 'index.html'
-
-
 class HomeView(TemplateView):
     template_name = 'users/home.html'
 
