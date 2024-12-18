@@ -11,11 +11,11 @@ const Router = () => {
       <Route path="/" element={<HomePage />}>
         <Route path="login/" element={<LogInForm />} />
         <Route path="signup/" element={<SignUpForm />} />
+        <Route
+          path="accounts/google/login/callback/"
+          element={<GoogleCallback />}
+        />
       </Route>
-      <Route
-        path="/accounts/google/login/callback/"
-        element={<GoogleCallback />}
-      />
     </Routes>
   );
 };
