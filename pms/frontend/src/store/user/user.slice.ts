@@ -5,6 +5,10 @@ import {
   LogInCredentials,
   LogInFormErrors,
 } from "../../components/login.component";
+import {
+  SignUpCredentials,
+  SignUpFormErrors,
+} from "../../components/signup.component";
 
 export type User = {
   pk: string;
@@ -35,6 +39,14 @@ const initialState: CurrentUser = {
 
 export type UnsuccessfulLogIn = {
   password?: string[];
+  non_field_errors?: string[];
+};
+
+type UnsuccessfulRegistration = {
+  username?: string[];
+  email?: string[];
+  password1?: string[];
+  password2?: string[];
   non_field_errors?: string[];
 };
 
@@ -80,6 +92,57 @@ export const logInUser = createAsyncThunk<
   }
 });
 
+export const registerUser = createAsyncThunk<
+  User,
+  SignUpCredentials,
+  {
+    rejectValue: SignUpFormErrors;
+  }
+>("user/registerUser", async (credentials, { rejectWithValue }) => {
+  try {
+    const response = await api.post<SuccessfulAuth>(
+      "dj-rest-auth/registration/",
+      credentials
+    );
+    return response.data.user;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      const axiosError = error as AxiosError<UnsuccessfulRegistration>;
+
+      const statusCode = axiosError.status;
+
+      // If there is no status code the server is not available.
+      if (!statusCode) {
+        return rejectWithValue({
+          nonFieldErrors: [
+            "Service is temprarily unavailable. Please try again later.",
+          ],
+        });
+      }
+
+      // Handle unexpected errors (e.g., server issues)
+      if (statusCode >= 500) {
+        return rejectWithValue({
+          nonFieldErrors: [
+            "An unexpected server error occurred. Please try again later.",
+          ],
+        });
+      }
+
+      const rejectValue: SignUpFormErrors = {
+        username: axiosError.response?.data.username || [],
+        email: axiosError.response?.data.email || [],
+        password1: axiosError.response?.data.password1 || [],
+        nonFieldErrors: axiosError.response?.data.non_field_errors || [],
+      };
+      return rejectWithValue(rejectValue);
+    }
+    return rejectWithValue({
+      nonFieldErrors: ["An unexpected error occurred."],
+    });
+  }
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -117,6 +180,29 @@ const userSlice = createSlice({
         } else {
           console.warn(action.payload);
         }
+      })
+      /**
+       * registerUser thunk
+       */
+      .addCase(registerUser.pending, (state: CurrentUser) => {
+        state.isLoading = true;
+        state.notificationMessage = null;
+      })
+      .addCase(
+        registerUser.fulfilled,
+        (state: CurrentUser, action: PayloadAction<User>) => {
+          const user: CurrentUser = {
+            ...state,
+            ...action.payload,
+            isLoggedIn: true,
+            isLoading: false,
+            notificationMessage: null,
+          };
+          return user;
+        }
+      )
+      .addCase(registerUser.rejected, (state: CurrentUser) => {
+        state.isLoading = false;
       });
   },
 });
