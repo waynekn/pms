@@ -179,6 +179,9 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+# required for `dj-rest-auth` user registration.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Enable JWT authentication in dj-rest-auth.
 REST_AUTH = {
     'USE_JWT': True,
