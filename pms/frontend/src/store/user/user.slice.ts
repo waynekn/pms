@@ -173,13 +173,8 @@ const userSlice = createSlice({
           return user;
         }
       )
-      .addCase(logInUser.rejected, (state: CurrentUser, action) => {
+      .addCase(logInUser.rejected, (state: CurrentUser) => {
         state.isLoading = false;
-        if (typeof action.payload === "string") {
-          console.warn(action.payload);
-        } else {
-          console.warn(action.payload);
-        }
       })
       /**
        * registerUser thunk
