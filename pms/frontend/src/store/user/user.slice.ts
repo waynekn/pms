@@ -143,6 +143,20 @@ export const registerUser = createAsyncThunk<
   }
 });
 
+/**
+ * Sends Google Authorization Code to the api.
+ */
+export const googleAuth = createAsyncThunk<User, string>(
+  "user/googleAuth",
+  async (code) => {
+    const response = await api.post<SuccessfulAuth>(
+      "dj-rest-auth/google/",
+      code
+    );
+    return response.data.user;
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -198,7 +212,27 @@ const userSlice = createSlice({
       )
       .addCase(registerUser.rejected, (state: CurrentUser) => {
         state.isLoading = false;
-      });
+      })
+      /**
+       * googleAuth thunk
+       */
+      .addCase(googleAuth.pending, (state: CurrentUser) => {
+        state.isLoading = true;
+        state.notificationMessage = null;
+      })
+      .addCase(
+        googleAuth.fulfilled,
+        (state: CurrentUser, action: PayloadAction<User>) => {
+          const user: CurrentUser = {
+            ...state,
+            ...action.payload,
+            isLoggedIn: true,
+            isLoading: false,
+            notificationMessage: null,
+          };
+          return user;
+        }
+      );
   },
 });
 
