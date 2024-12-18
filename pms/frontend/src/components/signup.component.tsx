@@ -219,7 +219,7 @@ const SignUpForm = () => {
           {/* Login link   */}
           <p>
             Already have an account?
-            <Link to="login" className="text-sky-500 underline">
+            <Link to="../login" className="text-sky-500 underline">
               Log in
             </Link>
           </p>
