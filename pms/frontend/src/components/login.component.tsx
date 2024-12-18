@@ -152,7 +152,7 @@ const LogInForm = () => {
 
           <p className="mt-4">
             Don’t have an account?
-            <Link to="signup" className="text-sky-500 underline">
+            <Link to="../signup" className="text-sky-500 underline">
               Sign up
             </Link>
           </p>
