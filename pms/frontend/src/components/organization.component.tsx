@@ -1,0 +1,125 @@
+import { useState, useEffect } from "react";
+import { AxiosResponse } from "axios";
+import { debounce } from "lodash";
+import api from "../api";
+
+type Organization = {
+  organization_id: string;
+  organization_name: string;
+  organization_name_slug: string;
+};
+
+type OrganizationQuery = {
+  organization_name_query: string;
+};
+
+// Text to display when no user organizations are found or
+// an error occured during fetching.
+type FallBackText =
+  | "You are currently not a member of any organization."
+  | "An error occured while fetching organizations. Please try again in a while.";
+
+const OrganizationComponent = () => {
+  const [userOrganizations, setUserOrganizations] = useState<Organization[]>(
+    []
+  );
+  const [searchedOrganizations, setSearchedOrganizations] = useState<
+    Organization[]
+  >([]);
+  const [fallBackText, setFallBackText] = useState<FallBackText>(
+    "You are currently not a member of any organization."
+  );
+
+  useEffect(() => {
+    const fetchUserOrganizations = async () => {
+      try {
+        const response = await api.get<Organization[]>("organizations/");
+        setUserOrganizations(response.data);
+      } catch {
+        setFallBackText(
+          "An error occured while fetching organizations. Please try again in a while."
+        );
+      }
+    };
+    void fetchUserOrganizations();
+  }, []);
+
+  /**
+   * Fetches organizations that a user searches.
+   */
+  const searchOrganizations = debounce(async (organizationName: string) => {
+    try {
+      const response = await api.post<
+        OrganizationQuery,
+        AxiosResponse<Organization[]>
+      >("organizations/search/", { organization_name_query: organizationName });
+      setSearchedOrganizations(response.data);
+    } catch {
+      /* empty */
+    }
+  }, 300);
+
+  return (
+    <div>
+      <div className="flex">
+        <div className="flex flex-col relative grow mr-5">
+          <div className="relative">
+            {/* search div input tag  */}
+            <input
+              className="w-full bg-white border border-gray-300 text-gray-700 px-4 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+              id="search-bar"
+              type="search"
+              onChange={(e) => {
+                void searchOrganizations(e.target.value);
+              }}
+              name="organization_name_query"
+              placeholder="Search for an organization"
+            />
+          </div>
+
+          {/* Display searched organizations. */}
+
+          {searchedOrganizations.length > 0 && (
+            <div className="w-full absolute border-2 border-red-600 top-12 z-50 mt-2 border-2">
+              <ul className="w-full bg-white shadow-lg rounded-md mt-1 z-50">
+                {searchedOrganizations.map((organization) => (
+                  <li
+                    key={organization.organization_id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer z-50"
+                  >
+                    {"searched" + organization.organization_name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* link to create an organization  */}
+        <a
+          href="#"
+          className="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+        >
+          Create an organization.
+        </a>
+      </div>
+      {/* Display user organizations. */}
+      {userOrganizations.length > 0 ? (
+        <ul className="space-y-2">
+          {userOrganizations.map((userOrganization) => (
+            <li
+              key={userOrganization.organization_id}
+              className="bg-white p-2 rounded-md shadow"
+            >
+              {userOrganization.organization_name}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-gray-600">{fallBackText}</p>
+      )}
+    </div>
+  );
+};
+
+export default OrganizationComponent;
