@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 
 import { StoreDispatch } from "../store/store";
@@ -41,6 +41,7 @@ const SignUpForm = () => {
 
   const dispatch = useDispatch<StoreDispatch>();
   const currentUser = useSelector(selectCurrentUser);
+  const navigate = useNavigate();
 
   const googleCallbackUrl = import.meta.env.VITE_GOOGLE_CALLBACK_URL;
   const googleClientId = import.meta.env.VITE_CLIENT_ID;
@@ -58,7 +59,8 @@ const SignUpForm = () => {
       return;
     }
     try {
-      await dispatch(registerUser(formValues)).unwrap();
+      const user = await dispatch(registerUser(formValues)).unwrap();
+      await navigate(`../user/${user.username}`);
     } catch (error) {
       const formErrors = error as SignUpFormErrors;
       setFormErrors((prevErrors) => {
