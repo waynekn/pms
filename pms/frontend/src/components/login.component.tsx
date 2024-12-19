@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { StoreDispatch } from "../store/store";
 import { logInUser } from "../store/user/user.slice";
 import { selectCurrentUser } from "../store/user/user.selector";
@@ -29,6 +29,7 @@ const LogInForm = () => {
 
   const dispatch = useDispatch<StoreDispatch>();
   const currentUser = useSelector(selectCurrentUser);
+  const navigate = useNavigate();
 
   const googleCallbackUrl = import.meta.env.VITE_GOOGLE_CALLBACK_URL;
   const googleClientId = import.meta.env.VITE_CLIENT_ID;
@@ -42,7 +43,8 @@ const LogInForm = () => {
     e.preventDefault();
     setFormErrors({ password: [], nonFieldErrors: [] });
     try {
-      await dispatch(logInUser(formValues)).unwrap();
+      const user = await dispatch(logInUser(formValues)).unwrap();
+      await navigate(`../user/${user.username}/`);
     } catch (error) {
       const formErrors = error as LogInFormErrors;
       setFormErrors((prevState) => {
