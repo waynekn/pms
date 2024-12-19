@@ -14,7 +14,7 @@ from .forms import OrganizationCreateForm
 # Create your views here.
 
 
-class UserOrganizationListView(LoginRequiredMixin, APIView):
+class UserOrganizationListView(APIView):
     """
     Displays a list of organizations that the currently authenticated user
     is a member of.
