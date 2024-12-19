@@ -74,7 +74,7 @@ class OrganizationCreateView(LoginRequiredMixin, CreateView):
         return reverse('profile_page', kwargs={'username': self.request.user.username})
 
 
-class OrganizationSearchView(LoginRequiredMixin, APIView):
+class OrganizationSearchView(APIView):
     """
     Search for organizations by name.
 
