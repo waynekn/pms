@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router";
 import classNames from "classnames";
 
 import OrganizationComponent from "../components/organization.component";
@@ -56,9 +57,12 @@ const ProfilePage = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-blue-500">
+                  <Link
+                    to="../logout"
+                    className="text-gray-700 hover:text-blue-500"
+                  >
                     Logout
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
