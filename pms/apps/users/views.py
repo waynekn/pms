@@ -21,10 +21,6 @@ load_dotenv()
 # Create your views here.
 
 
-class HomeView(TemplateView):
-    template_name = 'users/home.html'
-
-
 class CSRFtokenView(APIView):
     """
     Retrieve a CSRF token and return it to the client.
