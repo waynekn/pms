@@ -17,6 +17,12 @@ export default defineConfig({
       output: {
         dir: "../static/react/",
         entryFileNames: "[name].js",
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name?.endsWith(".css")) {
+            return "style.css";
+          }
+          return "[name].[ext]";
+        },
       },
     },
   },
