@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter } from "react-router";
+import { getCSRFToken } from "./utils/CSRFtoken";
 import Router from "./router";
 
 import { fetchCSRFtoken } from "./utils/CSRFtoken";
@@ -17,7 +18,10 @@ function App() {
     const initCSRFToken = async () => {
       try {
         if (import.meta.env.MODE === "development") {
-          await fetchCSRFtoken();
+          const csrfToken = getCSRFToken();
+          if (!csrfToken.trim()) {
+            await fetchCSRFtoken();
+          }
         }
         setIsLoading(false);
       } catch {
