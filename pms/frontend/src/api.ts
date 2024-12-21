@@ -75,8 +75,9 @@ api.interceptors.request.use(
     return config;
   },
   function (error) {
-    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-    return Promise.reject(error);
+    return Promise.reject(
+      error instanceof Error ? error : new Error(String(error))
+    );
   }
 );
 
