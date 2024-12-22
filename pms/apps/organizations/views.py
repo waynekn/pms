@@ -1,15 +1,13 @@
 from typing import Any
-from django.urls import reverse
-from django.utils.text import slugify
-from django.views.generic import CreateView, DetailView
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework import status
+from rest_framework import generics
+from django.views.generic import DetailView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from pms.utils import camel_case_to_snake_case
 from .models import Organization, OrganizationMember
 from .serializers import OrganizationSerializer
-from .forms import OrganizationCreateForm
 
 # Create your views here.
 
@@ -35,43 +33,24 @@ class UserOrganizationListView(APIView):
         return Response(serializer.data)
 
 
-class OrganizationCreateView(LoginRequiredMixin, CreateView):
+class OrganizationCreateView(generics.CreateAPIView):
     """
     Creates an organization, saves it to the database and adds the
     user who creates the organization to its members.
     """
-    template_name = 'organizations/organization_create.html'
-    form_class = OrganizationCreateForm
+    model = Organization
+    serializer_class = OrganizationSerializer
 
-    def form_valid(self, form):
-        # If form is valid, create the organization
-        organization_name = form.cleaned_data['organization_name']
-        password = form.cleaned_data['organization_password']
-        admin = self.request.user
-        organization_name_slug = slugify(organization_name)
-        hashed_password = make_password(password)
+    def post(self, request, *args, **kwargs):
+        transformed_data = camel_case_to_snake_case(request.data)
+        serializer = self.get_serializer(
+            data=transformed_data, context={'request': request})
 
-        # Ensure the slug is unique by appending a number if necessary
-        counter = 1
-        while Organization.objects.filter(organization_name_slug=organization_name_slug).exists():
-            organization_name_slug = f"{organization_name_slug}-{counter}"
-            counter += 1
+        if (serializer.is_valid()):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        # Create an instance without saving to the database yet
-        organization = form.save(commit=False)
-        organization.admin = admin
-        organization.organization_name_slug = organization_name_slug
-        organization.organization_password = hashed_password
-        organization.save()
-
-        # Add the admin as an organization member.
-        OrganizationMember.objects.create(
-            organization=organization, user=admin)
-
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse('profile_page', kwargs={'username': self.request.user.username})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class OrganizationSearchView(APIView):
