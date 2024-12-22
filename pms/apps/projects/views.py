@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import TemplateCreateForm, ProjectCreateForm
-from .models import Template, TemplatePhase, ProjectPhase, ProjectMember
+from . import models
 
 
 class TemplateCreateView(LoginRequiredMixin, FormView):
@@ -36,15 +36,15 @@ class TemplateCreateView(LoginRequiredMixin, FormView):
         template_name = form.cleaned_data['template_name']
         template_phases = form.cleaned_data['template_phases']
 
-        template = Template.objects.create(
+        template = models.Template.objects.create(
             industry=industry,
             template_name=template_name,
         )
 
         phases_list = [phase.strip()
                        for phase in template_phases.split(",") if phase.strip()]
-        TemplatePhase.objects.bulk_create([
-            TemplatePhase(template=template, phase_name=phase_name)
+        models.TemplatePhase.objects.bulk_create([
+            models.TemplatePhase(template=template, phase_name=phase_name)
             for phase_name in phases_list
         ])
 
@@ -84,14 +84,15 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         project.save()
 
         # add the creator as a member of the project.
-        ProjectMember.objects.create(member=self.request.user, project=project)
+        models.ProjectMember.objects.create(
+            member=self.request.user, project=project)
 
-        template = get_object_or_404(Template, pk=template_id)
+        template = get_object_or_404(models.Template, pk=template_id)
 
         template_phases = template.phases.all()
 
         for template_phase in template_phases:
-            ProjectPhase.objects.create(
+            models.ProjectPhase.objects.create(
                 project=project, template_phase=template_phase)
 
         return super().form_valid(form)
