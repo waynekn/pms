@@ -75,7 +75,7 @@ const OrganizationComponent = () => {
 
       setSearchedOrganizations(organizations);
     } catch {
-      /* empty */
+      setSearchedOrganizations([]);
     }
   }, 300);
 
