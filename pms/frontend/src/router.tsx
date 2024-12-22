@@ -6,6 +6,7 @@ import LogoutPage from "./pages/logout.page";
 import SignUpForm from "./components/signup.component";
 import ProfilePage from "./pages/profle.page";
 import GoogleCallback from "./components/google-callback.component";
+import OrganizationCreationForm from "./pages/organization-creation.page";
 
 const Router = () => {
   return (
@@ -20,6 +21,10 @@ const Router = () => {
       </Route>
       <Route path="user/:username/" element={<ProfilePage />} />
       <Route path="logout/" element={<LogoutPage />} />
+      <Route
+        path="organization/create/"
+        element={<OrganizationCreationForm />}
+      />
     </Routes>
   );
 };
