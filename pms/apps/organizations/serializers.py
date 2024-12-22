@@ -15,6 +15,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
                   'organization_name_slug', 'organization_password']
 
     def validate_organization_name(self, value):
+        value = str(value).strip() if value else ""
+
+        if not value:
+            serializers.ValidationError("Organization name is required.")
+
         if Organization.objects.filter(organization_name=value).exists():
             raise serializers.ValidationError(
                 "An organization with this name already exists.")
