@@ -29,6 +29,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         password1 = attrs.get('organization_password')
         password2 = request.data.get('password2')
+        password2 = str(password2).strip() if password2 else ""
 
         if password1 != password2:
             raise serializers.ValidationError("Passwords do not match.")
