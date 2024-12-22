@@ -21,6 +21,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         return value
 
     def validate_organization_password(self, value):
+        value = str(value).strip() if value else ""
         validate_password(value)
         return value
 
