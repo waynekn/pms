@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AxiosResponse } from "axios";
+import { Link } from "react-router";
 import { debounce } from "lodash";
 import api from "../api";
 
@@ -96,12 +97,12 @@ const OrganizationComponent = () => {
         </div>
 
         {/* link to create an organization  */}
-        <a
-          href="#"
+        <Link
+          to={"/organization/create/"}
           className="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
         >
           Create an organization.
-        </a>
+        </Link>
       </div>
       {/* Display user organizations. */}
       {userOrganizations.length > 0 ? (
