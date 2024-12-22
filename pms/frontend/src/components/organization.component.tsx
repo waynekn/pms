@@ -2,12 +2,19 @@ import { useState, useEffect } from "react";
 import { AxiosResponse } from "axios";
 import { Link } from "react-router";
 import { debounce } from "lodash";
+import camelize from "../utils/snakecase-to-camelcase";
 import api from "../api";
 
-type Organization = {
+type OrganizationResponse = {
   organization_id: string;
   organization_name: string;
   organization_name_slug: string;
+};
+
+type Organization = {
+  organizationId: string;
+  organizationName: string;
+  organizationNameSlug: string;
 };
 
 type OrganizationQuery = {
@@ -34,8 +41,15 @@ const OrganizationComponent = () => {
   useEffect(() => {
     const fetchUserOrganizations = async () => {
       try {
-        const response = await api.get<Organization[]>("organizations/");
-        setUserOrganizations(response.data);
+        const response = await api.get<OrganizationResponse[]>(
+          "organizations/"
+        );
+
+        const organizations = response.data.map((organization) =>
+          camelize(organization)
+        ) as Organization[];
+
+        setUserOrganizations(organizations);
       } catch {
         setFallBackText(
           "An error occured while fetching organizations. Please try again in a while."
@@ -52,9 +66,14 @@ const OrganizationComponent = () => {
     try {
       const response = await api.post<
         OrganizationQuery,
-        AxiosResponse<Organization[]>
+        AxiosResponse<OrganizationResponse[]>
       >("organizations/search/", { organization_name_query: organizationName });
-      setSearchedOrganizations(response.data);
+
+      const organizations = response.data.map((organization) =>
+        camelize(organization)
+      ) as Organization[];
+
+      setSearchedOrganizations(organizations);
     } catch {
       /* empty */
     }
@@ -85,10 +104,10 @@ const OrganizationComponent = () => {
               <ul className="w-full bg-white shadow-lg rounded-md mt-1 z-50">
                 {searchedOrganizations.map((organization) => (
                   <li
-                    key={organization.organization_id}
+                    key={organization.organizationId}
                     className="p-2 hover:bg-gray-200 cursor-pointer z-50"
                   >
-                    {"searched" + organization.organization_name}
+                    {organization.organizationName}
                   </li>
                 ))}
               </ul>
@@ -109,10 +128,10 @@ const OrganizationComponent = () => {
         <ul className="space-y-2">
           {userOrganizations.map((userOrganization) => (
             <li
-              key={userOrganization.organization_id}
+              key={userOrganization.organizationId}
               className="bg-white p-2 rounded-md shadow"
             >
-              {userOrganization.organization_name}
+              {userOrganization.organizationName}
             </li>
           ))}
         </ul>
