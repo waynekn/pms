@@ -73,21 +73,21 @@ class TemplateSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     @transaction.atomic
-    def save(self, **kwargs):
-        industry = self.validated_data.get("industry")
-        template_name = self.validated_data.get("template_name")
+    def create(self, validated_data):
+        industry = validated_data.get("industry")
+        template_name = validated_data.get("template_name")
         template_phases = self.context.get('template_phases')
 
-        # create a new template
+        # Create the template
         template = models.Template.objects.create(
             industry=industry,
             template_name=template_name,
         )
 
-        # create the template phases
+        # Create the template phases
         models.TemplatePhase.objects.bulk_create([
             models.TemplatePhase(template=template, phase_name=phase_name)
             for phase_name in template_phases
         ])
 
-        return super().save(**kwargs)
+        return template
