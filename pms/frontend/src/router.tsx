@@ -7,6 +7,7 @@ import SignUpForm from "./components/signup.component";
 import ProfilePage from "./pages/profle.page";
 import GoogleCallback from "./components/google-callback.component";
 import OrganizationCreationForm from "./pages/organization-creation.page";
+import TemplateCreationForm from "./pages/template-creation.page";
 
 const Router = () => {
   return (
@@ -25,6 +26,7 @@ const Router = () => {
         path="organization/create/"
         element={<OrganizationCreationForm />}
       />
+      <Route path="templates/create/" element={<TemplateCreationForm />} />
     </Routes>
   );
 };
