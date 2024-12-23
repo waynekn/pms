@@ -1,14 +1,18 @@
 from typing import Any
 from django.db import transaction
 from rest_framework import generics
+from rest_framework import status
+from rest_framework.request import Request
+from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
-from django.views.generic.edit import FormView, CreateView
+from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import ProjectCreateForm, TemplateCreateForm
+from .forms import ProjectCreateForm
 from . import models
 from . import serializers
+from pms.utils import camel_case_to_snake_case
 
 
 class IndustryListView(generics.ListAPIView):
@@ -24,49 +28,36 @@ class IndustryListView(generics.ListAPIView):
     serializer_class = serializers.IndustrySerializser
 
 
-class TemplateCreateView(LoginRequiredMixin, FormView):
+class TemplateCreateView(generics.CreateAPIView):
     """
-    Handles the creation of a new template in the database. This view processes
-    the `TemplateCreateForm`, creates a `Template` instance along with associated 
-    `TemplatePhase` instances if the form is valid.
+    A view to handle the creation of a new Template resource.
+
+    This view accepts a POST request with the data for a new template, processes
+    the `TemplateCreateForm` data (transformed to snake_case), and creates a 
+    `Template` instance along with its associated `TemplatePhase` instances. 
+    If the form is valid, the new template and phases are saved to the database 
+    and a successful response with the created template data is returned. 
+    If the form is invalid, a 400 Bad Request response with errors is returned.
 
     Attributes:
-        form_class (Form): The form class used for creating a template.
-        template_name (str): The template used for rendering the form.
-        success_url (str): The URL to redirect to after a successful form submission.
+        model (class): The model associated with this view, `Template`.
+        serializer_class (class): The serializer class used for serializing
+                                  template data, `TemplateSerializer`.
 
-    Methods:
-        form_valid(form): Handles the form submission when the form is valid. Creates a new `Template` and 
-                          `TemplatePhase` instances, then redirects to the success_url .
-        get_success_url(): Returns the URL to redirect to after successfully creating a template, 
-                           which defaults to the user's profile page.
     """
-    form_class = TemplateCreateForm
-    template_name = 'projects/template_create.html'
-    success_url = reverse_lazy("home")
+    model = models.Template
+    serializer_class = serializers.TemplateSerializer
 
-    @transaction.atomic
-    def form_valid(self, form):
-        industry = form.cleaned_data['industry_choice']
-        template_name = form.cleaned_data['template_name']
-        template_phases = form.cleaned_data['template_phases']
+    def post(self, request, *args, **kwargs):
+        transformed_data = camel_case_to_snake_case(request.data)
+        serializer = self.get_serializer(
+            data=transformed_data, context={'request': request, 'template_phases': transformed_data.get('template_phases')})
 
-        template = models.Template.objects.create(
-            industry=industry,
-            template_name=template_name,
-        )
+        if (serializer.is_valid()):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        phases_list = [phase.strip()
-                       for phase in template_phases.split(",") if phase.strip()]
-        models.TemplatePhase.objects.bulk_create([
-            models.TemplatePhase(template=template, phase_name=phase_name)
-            for phase_name in phases_list
-        ])
-
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse('profile_page', kwargs={'username': self.request.user.username})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
