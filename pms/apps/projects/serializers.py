@@ -58,6 +58,9 @@ class TemplateSerializer(serializers.ModelSerializer):
                 "A template must have a workflow."
             )
 
+        # Update context with the validated template workflow.
+        self.context['template_phases'] = template_phases
+
         # Check if a template with the same phases exists in the industry
         industry_templates = industry.templates.prefetch_related("phases")
         for template in industry_templates:
