@@ -58,15 +58,14 @@ class Template(models.Model):
                                    set to the default industry using `get_default_industry`.
         template_id (UUIDField): A unique identifier for the template, automatically 
                                  generated using UUID.
-        template_name (CharField): The name of the template, which should be unique 
-                                   within the database.
+        template_name (CharField): The name of the template.
     """
     industry = models.ForeignKey(Industry, on_delete=models.SET_DEFAULT,
                                  default=get_default_industry, related_name="templates", verbose_name="Industry ID")
     template_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, verbose_name="Template ID")
     template_name = models.CharField(
-        max_length=50, unique=True, verbose_name="Template name")
+        max_length=50, verbose_name="Template name")
 
     def __str__(self) -> str:
         return self.template_name
