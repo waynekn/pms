@@ -52,9 +52,12 @@ const ProfilePage = () => {
             >
               <ul className="space-y-2 py-2 px-4">
                 <li>
-                  <a href="#" className="text-gray-700 hover:text-blue-500">
+                  <Link
+                    to="../templates/create/"
+                    className="text-gray-700 hover:text-blue-500"
+                  >
                     Create a template
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <Link
