@@ -1,12 +1,27 @@
 from typing import Any
 from django.db import transaction
+from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
 from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import TemplateCreateForm, ProjectCreateForm
+from .forms import ProjectCreateForm, TemplateCreateForm
 from . import models
+from . import serializers
+
+
+class IndustryListView(generics.ListAPIView):
+    """
+    A view that returns a list of all industries in the system. This view is used by the 
+    frontend to populate the industry dropdown when creating a new template.
+
+    Attributes:
+        queryset (QuerySet): A queryset containing all industries in the system.
+        serializer_class (Serializer): The serializer class used to serialize the industries.
+    """
+    queryset = models.Industry.objects.all()
+    serializer_class = serializers.IndustrySerializser
 
 
 class TemplateCreateView(LoginRequiredMixin, FormView):
