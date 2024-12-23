@@ -6,6 +6,7 @@ import classNames from "classnames";
 
 import { selectCurrentUser } from "../store/user/user.selector";
 import camelize from "../utils/snakecase-to-camelcase";
+import DisplayTemplateWorkFlow from "../components/template-workflow.component";
 
 import api from "../api";
 
@@ -303,16 +304,9 @@ const TemplateCreationForm = () => {
         </form>
       </main>
 
-      {/* Display added phases */}
+      {/* Display template workflow. */}
       {formValues.templatePhases.length > 0 && (
-        <aside className="border-1 border-black bg-gray-100 p-4 rounded shadow-lg">
-          <h1 className="font-bold underline">Added phases:</h1>
-          <ol>
-            {formValues.templatePhases.map((phase, index) => (
-              <li key={index}>{phase}</li>
-            ))}
-          </ol>
-        </aside>
+        <DisplayTemplateWorkFlow phases={formValues.templatePhases} />
       )}
 
       {/* Ask for verification before submitting form.  */}
