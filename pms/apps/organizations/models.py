@@ -35,12 +35,6 @@ class Organization(models.Model):
         self.organization_password = make_password(
             password)  # Hash the password
 
-    def check_organization_password(self, password: str) -> bool:
-        """
-        Checks if the provided password matches the stored organization's hashed password.
-        """
-        return check_password(password, self.organization_password)
-
     def __str__(self) -> str:
         return self.organization_name
 
