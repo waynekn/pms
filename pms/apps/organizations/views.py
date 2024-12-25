@@ -19,7 +19,7 @@ class UserOrganizationListView(APIView):
     """
     model = Organization
 
-    def get(self, request) -> Response:
+    def get(self, request: Request) -> Response:
         # Get all OrganizationMember entries where the user is a member
         user_organizations = OrganizationMember.objects.filter(
             user=self.request.user)
@@ -41,7 +41,7 @@ class OrganizationCreateView(generics.CreateAPIView):
     model = Organization
     serializer_class = OrganizationSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs) -> Response:
         transformed_data = camel_case_to_snake_case(request.data)
         serializer = self.get_serializer(
             data=transformed_data, context={'request': request})
@@ -94,7 +94,7 @@ class OrganizationDetailView(APIView):
             - 403: If the user is unauthorized to view the organization.
     """
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs) -> Response:
         organization_name_slug = request.data.get('organizationNameSlug')
 
         if not organization_name_slug:
@@ -139,7 +139,7 @@ class OrganizationAuthView(APIView):
           the password is incorrect, or the password is missing).
     """
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs) -> Response:
         organization_name = request.data.get('organizationName')
         password = request.data.get('password')
 
