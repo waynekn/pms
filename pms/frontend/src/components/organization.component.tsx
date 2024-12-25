@@ -107,7 +107,12 @@ const OrganizationComponent = () => {
                     key={organization.organizationId}
                     className="p-2 hover:bg-gray-200 cursor-pointer z-50"
                   >
-                    {organization.organizationName}
+                    <Link
+                      to={`../organization/${organization.organizationNameSlug}`}
+                      className="block"
+                    >
+                      {organization.organizationName}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -131,7 +136,12 @@ const OrganizationComponent = () => {
               key={userOrganization.organizationId}
               className="bg-white p-2 rounded-md shadow"
             >
-              {userOrganization.organizationName}
+              <Link
+                to={`../organization/${userOrganization.organizationNameSlug}`}
+                className="block"
+              >
+                {userOrganization.organizationName}
+              </Link>
             </li>
           ))}
         </ul>
