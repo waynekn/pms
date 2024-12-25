@@ -1,12 +1,13 @@
 from django.urls import path
 
-from .views import (UserOrganizationListView,
-                    OrganizationCreateView, OrganizationSearchView, OrganizationDetailView)
+from . import views
 
 urlpatterns = [
-    path('', UserOrganizationListView.as_view(), name='user_organizations'),
-    path('create/', OrganizationCreateView.as_view(), name='create_organization'),
-    path('search/', OrganizationSearchView.as_view(), name='organization_search'),
-    path('<slug:organization_name_slug>/',
-         OrganizationDetailView.as_view(), name='organization_detail'),
+    path('', views.UserOrganizationListView.as_view(), name='user_organizations'),
+    path('create/', views.OrganizationCreateView.as_view(),
+         name='create_organization'),
+    path('search/', views.OrganizationSearchView.as_view(),
+         name='organization_search'),
+    path('detail/',
+         views.OrganizationDetailView.as_view(), name='organization_detail'),
 ]
