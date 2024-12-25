@@ -1,11 +1,10 @@
-from typing import Any
 from rest_framework import status
 from rest_framework import generics
-from django.views.generic import DetailView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from pms.utils import camel_case_to_snake_case
+from apps.projects.serializers import ProjectSerializer
 from .models import Organization, OrganizationMember
 from .serializers import OrganizationSerializer
 
@@ -76,15 +75,50 @@ class OrganizationSearchView(APIView):
         return Response(serializer.data)
 
 
-class OrganizationDetailView(DetailView):
-    model = Organization
-    context_object_name = 'organization'
-    slug_field = 'organization_name_slug'
-    slug_url_kwarg = 'organization_name_slug'
-    template_name = "organizations/organization_detail.html"
+class OrganizationDetailView(APIView):
+    """
+    Retrieve detailed information about an organization, including its associated projects.
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        organization = self.get_object()
-        context["projects"] = organization.projects.all()
-        return context
+    This view expects a POST request with the organization's name slug (`organizationNameSlug`) in the request body.
+    It performs the following steps:
+
+    **POST Data**:
+        - `organizationNameSlug`: The slug of the organization.
+
+    **Response**:
+        - On success: Returns the organization details, including the associated projects, with HTTP status 200.
+        - On error: Returns error messages with appropriate HTTP status codes:
+            - 400: If the `organizationNameSlug` is missing.
+            - 404: If the organization cannot be found.
+            - 403: If the user is unauthorized to view the organization.
+    """
+
+    def post(self, request, *args, **kwargs):
+        organization_name_slug = request.data.get('organizationNameSlug')
+
+        if not organization_name_slug:
+            return Response({'error': 'Incomplete credentials provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            organization = Organization.objects.get(
+                organization_name_slug=organization_name_slug)
+        except Organization.DoesNotExist:
+            return Response({'error': 'Organization not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Only allow members of the organization to view the detail.
+        if not organization.members.filter(user=self.request.user).exists():
+            return Response({
+                "error": "You are unauthorized to view this organization",
+                "organization_name": organization.organization_name
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        organization_serializer = OrganizationSerializer(organization)
+
+        projects = organization.projects.all()
+        project_serializer = ProjectSerializer(projects, many=True)
+
+        organization_detail = organization_serializer.data
+        organization_detail['projects'] = project_serializer.data
+
+        return Response(
+            organization_detail, status=status.HTTP_200_OK)
