@@ -31,8 +31,13 @@ const GoogleCallback = () => {
   }, [dispatch, location, navigate]);
 
   return (
-    <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-10 text-center px-4 py-2 rounded">
-      <div>Connecting...</div>
+    <div className="fixed bottom-5 left-0 w-full z-10 text-center px-4 py-2 shadow-lg">
+      <span className="bg-green-600 px-3 py-3 text-white text-lg font-bold rounded-2xl">
+        Connecting
+        <span className="text-white text-lg font-bold ml-2 animate-ping">
+          ...
+        </span>
+      </span>
     </div>
   );
 };
