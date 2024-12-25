@@ -10,4 +10,6 @@ urlpatterns = [
          name='organization_search'),
     path('detail/',
          views.OrganizationDetailView.as_view(), name='organization_detail'),
+    path('auth/',
+         views.OrganizationAuthView.as_view(), name='organization_auth'),
 ]
