@@ -94,3 +94,12 @@ class TemplateSerializer(serializers.ModelSerializer):
         ])
 
         return template
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    """
+    `Projects` serializer class.
+    """
+    class Meta:
+        model = models.Project
+        fields = '__all__'
