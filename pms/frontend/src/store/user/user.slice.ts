@@ -149,10 +149,9 @@ export const registerUser = createAsyncThunk<
 export const googleAuth = createAsyncThunk<User, string>(
   "user/googleAuth",
   async (code) => {
-    const response = await api.post<SuccessfulAuth>(
-      "dj-rest-auth/google/",
-      code
-    );
+    const response = await api.post<SuccessfulAuth>("dj-rest-auth/google/", {
+      code,
+    });
     return response.data.user;
   }
 );
