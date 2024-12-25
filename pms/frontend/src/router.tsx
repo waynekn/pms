@@ -5,6 +5,7 @@ import LogInForm from "./components/login.component";
 import LogoutPage from "./pages/logout.page";
 import SignUpForm from "./components/signup.component";
 import ProfilePage from "./pages/profle.page";
+import OrganizationDetail from "./pages/organization-detail.page";
 import GoogleCallback from "./components/google-callback.component";
 import OrganizationCreationForm from "./pages/organization-creation.page";
 import TemplateCreationForm from "./pages/template-creation.page";
@@ -25,6 +26,10 @@ const Router = () => {
       <Route
         path="organization/create/"
         element={<OrganizationCreationForm />}
+      />
+      <Route
+        path="organization/:organizationNameSlug/"
+        element={<OrganizationDetail />}
       />
       <Route path="templates/create/" element={<TemplateCreationForm />} />
     </Routes>
