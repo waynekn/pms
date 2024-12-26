@@ -10,12 +10,12 @@ import DisplayTemplateWorkFlow from "../components/template-workflow.component";
 
 import api from "../api";
 
-type IndustryResponse = {
+export type IndustryResponse = {
   industry_name: string;
   industry_id: string;
 };
 
-type Industry = {
+export type Industry = {
   industryName: string;
   industryId: string;
 };
