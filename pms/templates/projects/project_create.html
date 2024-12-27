@@ -1,9 +1,0 @@
-{% extends "./base_projects.html" %} {% block root %}
-<!--{{form.as_p}}-->
-<form
-  action="{% url 'create_project' slug.organization_name_slug%}"
-  method="post"
->
-  {% csrf_token %} {{form.as_p}}
-</form>
-{% endblock root %}
