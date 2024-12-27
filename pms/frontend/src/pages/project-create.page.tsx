@@ -5,7 +5,7 @@ import ProjectCreateSideBar from "../components/project-create.sidebar";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 
-export type ProjectCreationFormState = {
+export type ProjectCreationPageState = {
   organizationId: string;
   organizationName: string;
 };
@@ -34,7 +34,7 @@ type FormValues = {
 
 const ProjectCreationPage = () => {
   const location = useLocation();
-  const state = location.state as ProjectCreationFormState;
+  const state = location.state as ProjectCreationPageState;
   const initialState: FormValues = {
     organization: state.organizationId,
     projectName: "",
