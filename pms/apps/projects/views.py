@@ -1,15 +1,7 @@
-from typing import Any
-from django.db import transaction
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy, reverse
-from django.utils.text import slugify
-from django.views.generic.edit import CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import ProjectCreateForm
 from . import models
 from . import serializers
 from pms.utils import camel_case_to_snake_case
@@ -60,48 +52,33 @@ class TemplateCreateView(generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
-    form_class = ProjectCreateForm
-    template_name = "projects/project_create.html"
-    success_url = reverse_lazy('organization_detail', kwargs={
-                               'organization_name_slug': ''})
+class ProjectCreateView(generics.CreateAPIView):
+    """
+    A view that handles the creation of a new project.
 
-    def get_form_kwargs(self):
-        """Add custom keyword arguments for the form."""
-        kwargs = super().get_form_kwargs()
-        # Pass the 'organization_name_slug' from URL kwargs to the form
-        kwargs['organization_name_slug'] = self.kwargs['organization_name_slug']
-        return kwargs
+    This view accets a POST request with the data with the following data necessary
+    to create a project: 
+    - organization,project name, template(optional), description and deadline
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['slug'] = self.kwargs.get('organization_name_slug')
-        print(context)
-        print(f'slug {self.kwargs.get('organization_name_slug')}')
-        return context
+    Upon successful validation, the new project instance is created, and a `201 Created` 
+    response with the serialized data of the project is returned.
+    If validation fails, a `400 Bad Request` response with error details is returned.
 
-    @transaction.atomic
-    def form_valid(self, form):
-        template_id = form.cleaned_data.get('template')
-        project_name = form.cleaned_data.get('project_name')
-        project_name_slug = slugify(project_name)
-        project = form.save(commit=False)
-        project.project_name_slug = project_name_slug
-        project.save()
+    Attributes:
+        model (models.Project): The model associated with this view, which is `Project`.
+        serializer_class (serializers.ProjectSerializer): The serializer used to validate and
+            serialize the project data.
+    """
+    model = models.Project
+    serializer_class = serializers.ProjectSerializer
 
-        # add the creator as a member of the project.
-        models.ProjectMember.objects.create(
-            member=self.request.user, project=project)
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        transformed_data = camel_case_to_snake_case(request.data)
+        serializer = self.get_serializer(
+            data=transformed_data, context={'request': request}
+        )
+        if (serializer.is_valid()):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        template = get_object_or_404(models.Template, pk=template_id)
-
-        template_phases = template.phases.all()
-
-        for template_phase in template_phases:
-            models.ProjectPhase.objects.create(
-                project=project, template_phase=template_phase)
-
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse_lazy('organization_detail', kwargs={'organization_name_slug': self.kwargs.get('organization_name_slug')})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
