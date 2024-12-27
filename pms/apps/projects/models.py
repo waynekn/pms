@@ -181,7 +181,7 @@ class ProjectPhase(models.Model):
                                 related_name="phases", help_text="Project which this phase belongs to", verbose_name="Project")
     # The `on_delete=models.RESTRICT` ensures that a template phase cannot be deleted if it is being used in a project.
     template_phase = models.ForeignKey(
-        TemplatePhase, on_delete=models.RESTRICT, help_text="Project phase inheritied from a template", verbose_name="Template phase")
+        TemplatePhase, on_delete=models.RESTRICT, null=True, help_text="Project phase inheritied from a template", verbose_name="Template phase")
     custom_phase = models.ForeignKey(CustomPhase, on_delete=models.CASCADE, null=True,
                                      help_text="Custom phase specific to this project", verbose_name='Custom phase')
 
