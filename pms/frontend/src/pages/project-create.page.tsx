@@ -32,7 +32,7 @@ type FormValues = {
   deadline: string;
 };
 
-const ProjectCreationForm = () => {
+const ProjectCreationPage = () => {
   const location = useLocation();
   const state = location.state as ProjectCreationFormState;
   const initialState: FormValues = {
@@ -283,4 +283,4 @@ const ProjectCreationForm = () => {
     </div>
   );
 };
-export default ProjectCreationForm;
+export default ProjectCreationPage;
