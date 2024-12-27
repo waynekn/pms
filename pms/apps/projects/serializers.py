@@ -175,3 +175,18 @@ class ProjectSerializer(serializers.ModelSerializer):
             models.ProjectPhase.objects.bulk_create(template_phases)
 
         return project
+
+
+class TemplateSearchSerializer(serializers.ModelSerializer):
+    """
+    TemplateSearchSerializer
+
+    This serializer is used to serialize template instances along with their associated
+    industries when performing a search for a template to use in a project. 
+    It utilizes the IndustrySerializer to handle the serialization of the related industry data. 
+    """
+    industry = IndustrySerializser()
+
+    class Meta:
+        model = models.Template
+        fields = '__all__'
