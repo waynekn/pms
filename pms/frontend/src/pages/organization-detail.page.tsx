@@ -4,7 +4,7 @@ import { AxiosError, isAxiosError, AxiosResponse } from "axios";
 import OrgAuthForm from "../components/org-auth-form.component";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
-import { ProjectCreationFormState } from "./project-create.page";
+import { ProjectCreationPageState } from "./project-create.page";
 
 // Projects response from API.
 type ProjectResponse = {
@@ -117,7 +117,7 @@ const OrganizationDetail = () => {
     void getOrganizationDetail();
   }, [organizationNameSlug]);
 
-  const projectCreationFormState: ProjectCreationFormState = {
+  const projectCreationFormState: ProjectCreationPageState = {
     organizationId: organization.organizationId,
     organizationName: organization.organizationName,
   };
