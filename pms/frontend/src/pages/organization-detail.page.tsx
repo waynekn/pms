@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { AxiosError, isAxiosError, AxiosResponse } from "axios";
 import OrgAuthForm from "../components/org-auth-form.component";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
+import { ProjectCreationFormState } from "./project-create.page";
 
 // Projects response from API.
 type ProjectResponse = {
@@ -56,6 +57,7 @@ const OrganizationDetail = () => {
   const [displayOrgAuthForm, setDisplayOrgAuthForm] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { organizationNameSlug } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getOrganizationDetail = async () => {
@@ -115,6 +117,21 @@ const OrganizationDetail = () => {
     void getOrganizationDetail();
   }, [organizationNameSlug]);
 
+  const projectCreationFormState: ProjectCreationFormState = {
+    organizationId: organization.organizationId,
+    organizationName: organization.organizationName,
+  };
+
+  /**
+   * Navigate manually instead of using a link to ensure state is passed properly
+   * as a link will lose state if opened in a new tab.
+   */
+  const navigateToProjectCreationPage = async () => {
+    await navigate(`../${organization.organizationNameSlug}/project/create/`, {
+      state: projectCreationFormState,
+    });
+  };
+
   if (displayOrgAuthForm) {
     return <OrgAuthForm organizationName={organization.organizationName} />;
   }
@@ -126,11 +143,19 @@ const OrganizationDetail = () => {
           <p>{errorMessage}</p>
         ) : (
           <>
-            <header className="border-b-2">
+            <header className="border-b-2 pb-3">
               <h1 className="text-lg font-bold">
                 {organization.organizationName}
               </h1>
             </header>
+            <div className="flex justify-end">
+              <button
+                onClick={navigateToProjectCreationPage}
+                className="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+              >
+                Create Project.
+              </button>
+            </div>
             {organization.projects.length > 0 ? (
               <ul className="space-y-2">
                 {organization.projects.map((project) => (
