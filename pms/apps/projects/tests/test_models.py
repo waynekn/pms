@@ -1,6 +1,6 @@
 import uuid
 from django.test import TestCase
-from apps.projects.models import Industry
+from apps.projects import models
 
 
 # `Industry` model tests.
@@ -18,9 +18,9 @@ class IndustryModelTest(TestCase):
     """
 
     def test_industry_creation(self):
-        industry = Industry.objects.create(
+        industry = models.Industry.objects.create(
             industry_name="Technology"
         )
-        self.assertIsInstance(industry, Industry)
+        self.assertIsInstance(industry, models.Industry)
         self.assertEqual(industry.industry_name, "Technology")
         self.assertTrue(isinstance(industry.industry_id, uuid.UUID))
