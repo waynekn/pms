@@ -121,7 +121,7 @@ class Project(models.Model):
         help_text="A unique identifier for the project, generated automatically.",
         verbose_name="Project ID")
     project_name = models.CharField(
-        max_length=120, help_text="The name of the project, unique within the organization.", verbose_name="Project name")
+        max_length=40, help_text="The name of the project, unique within the organization.", verbose_name="Project name")
     project_name_slug = models.SlugField(
         max_length=255, help_text="A URL-safe slug version of the project name.", verbose_name="Project Name Slug")
     description = models.TextField(
