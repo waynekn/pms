@@ -37,6 +37,10 @@ class TemplateSerializer(serializers.ModelSerializer):
         if not template_name:
             raise serializers.ValidationError("Template name cannot be empty.")
 
+        if len(template_name) > 50:
+            raise serializers.ValidationError(
+                "Template name must be 50 characters or below.")
+
         return template_name
 
     def validate(self, attrs):
