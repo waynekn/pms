@@ -113,6 +113,7 @@ class Project(models.Model):
                                      verbose_name="Project organization")
     template = models.ForeignKey(
         Template, on_delete=models.RESTRICT,
+        null=True,
         help_text="The template from which this project is based.",
         verbose_name="Project base template")
     project_id = models.UUIDField(
