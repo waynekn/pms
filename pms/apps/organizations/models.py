@@ -19,8 +19,6 @@ class Organization(models.Model):
         unique=True,
         default=None
     )
-    admin = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='organizations', verbose_name='Admin')
     organization_password = models.CharField(
         max_length=255, verbose_name='Organization password')
 
