@@ -45,7 +45,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
         validated_data = {
             **self.validated_data,
-            'admin': user,
             'organization_name_slug': slugify_organization_name(self.validated_data['organization_name']),
             'organization_password': make_password(self.validated_data['organization_password'])
         }
