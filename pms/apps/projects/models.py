@@ -123,7 +123,7 @@ class Project(models.Model):
     project_name = models.CharField(
         max_length=40, help_text="The name of the project, unique within the organization.", verbose_name="Project name")
     project_name_slug = models.SlugField(
-        max_length=255, help_text="A URL-safe slug version of the project name.", verbose_name="Project Name Slug")
+        max_length=60, help_text="A URL-safe slug version of the project name.", verbose_name="Project Name Slug")
     description = models.TextField(
         blank=True, verbose_name="Project description")
     created_at = models.DateTimeField(
