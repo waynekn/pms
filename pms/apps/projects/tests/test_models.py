@@ -48,12 +48,12 @@ class TemplateModelTest(TestCase):
         - The template_id is generated as a valid UUID.
         - The industry foreign key correctly references an existing Industry.
         """
-        self.template = models.Template.objects.create(
+        template = models.Template.objects.create(
             industry=self.industry, template_name="Test template"
         )
-        self.assertIsInstance(self.template, models.Template)
-        self.assertEqual(self.template.template_name, "Test template")
-        self.assertTrue(isinstance(self.template.template_id, uuid.UUID))
+        self.assertIsInstance(template, models.Template)
+        self.assertEqual(template.template_name, "Test template")
+        self.assertTrue(isinstance(template.template_id, uuid.UUID))
 
     def test_template_industry_updated_to_default_on_deletion(self):
         """
