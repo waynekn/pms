@@ -1,9 +1,13 @@
 import uuid
+import datetime
 from django.test import TestCase
 from apps.projects import models
-
+from django.utils.text import slugify
+from apps.organizations.models import Organization
 
 # `Industry` model tests.
+
+
 class IndustryModelTest(TestCase):
     """
     Unit test for the Industry model.
@@ -74,3 +78,48 @@ class TemplateModelTest(TestCase):
         default_industry = models.Industry.objects.get(industry_name="Other")
 
         self.assertEqual(template.industry, default_industry)
+
+
+# `Project` model test.
+class ProjectModelTest(TestCase):
+    """
+    Tests for the `Project` model
+    """
+
+    def setUp(self):
+        """
+        Set up a test Organization instance.
+        """
+        organization_name = "Test org"
+        organization_name_slug = slugify(organization_name)
+        self.organization = Organization.objects.create(
+            organization_name=organization_name, organization_name_slug=organization_name_slug,
+            organization_password="securepassword123")
+
+    def test_project_creation(self):
+        """
+        Tests the correct creation of a project.
+
+        This test ensures that:
+         - The project instance is created with the correct name.
+         - The project_id is generated as a valid UUID.
+         - The organization foreign key correctly references an existing organization.
+         - The description matches the provided description.
+         - The deadline is an instance of datetime.date.
+         - The status defaults to 'IN_PROGRESS'
+        """
+
+        deadline = datetime.date.today() + datetime.timedelta(days=1)
+        description = 'Testing project creation'
+
+        project = models.Project.objects.create(
+            organization=self.organization, project_name="Test project",
+            description='Testing project creation', deadline=deadline)
+
+        self.assertIsInstance(project, models.Project)
+        self.assertIs(project.organization, self.organization)
+        self.assertIsInstance(project.project_id, uuid.UUID)
+        self.assertEqual(project.description, description)
+        self.assertIs(project.deadline, deadline)
+        self.assertIsInstance(project.deadline, datetime.date)
+        self.assertEqual(project.status, "IN_PROGRESS")
