@@ -40,7 +40,7 @@ def get_default_industry():
         UUID: The unique identifier (industry_id) of the default industry, 
             which is the "Other" industry.
     """
-    industry = Industry.objects.get_or_create(industry_name="Other")
+    industry, created = Industry.objects.get_or_create(industry_name="Other")
     return industry.pk
 
 
