@@ -54,3 +54,23 @@ class TemplateModelTest(TestCase):
         self.assertIsInstance(self.template, models.Template)
         self.assertEqual(self.template.template_name, "Test template")
         self.assertTrue(isinstance(self.template.template_id, uuid.UUID))
+
+    def test_template_industry_updated_to_default_on_deletion(self):
+        """
+        Test that when an Industry is deleted, the Template is updated
+        to use the default industry.
+        """
+        template = models.Template.objects.create(
+            industry=self.industry, template_name="Test template for deletion"
+        )
+
+        test_industry = models.Industry.objects.get(pk=self.industry.pk)
+        test_industry.delete()
+
+        # Refresh the template object from the database to reflect any changes
+        template.refresh_from_db()
+
+        # Retrieve or create the default industry (which is "Other")
+        default_industry = models.Industry.objects.get(industry_name="Other")
+
+        self.assertEqual(template.industry, default_industry)
