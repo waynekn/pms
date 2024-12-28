@@ -127,9 +127,10 @@ class ProjectSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "The project's name is required.")
 
-        if len(project_name) < 5:
+        length = len(project_name)
+        if length < 5 or length > 60:
             raise serializers.ValidationError(
-                "A project's name must be at least 5 characters long.")
+                "A project's name must be between 5 and 60 characters long.")
 
         return project_name
 
