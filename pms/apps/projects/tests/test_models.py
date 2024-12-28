@@ -24,3 +24,33 @@ class IndustryModelTest(TestCase):
         self.assertIsInstance(industry, models.Industry)
         self.assertEqual(industry.industry_name, "Technology")
         self.assertTrue(isinstance(industry.industry_id, uuid.UUID))
+
+
+# `Template` model tests.
+
+
+class TemplateModelTest(TestCase):
+    """
+    Unit test for `Template` model.
+    """
+
+    def setUp(self):
+        self.industry = models.Industry.objects.create(
+            industry_name="Technology"
+        )
+
+    def test_template_creation(self):
+        """
+        Verifies the correct creation of a Template object in the database.
+
+        This test ensures that:
+        - The Template instance is created with the correct name.
+        - The template_id is generated as a valid UUID.
+        - The industry foreign key correctly references an existing Industry.
+        """
+        self.template = models.Template.objects.create(
+            industry=self.industry, template_name="Test template"
+        )
+        self.assertIsInstance(self.template, models.Template)
+        self.assertEqual(self.template.template_name, "Test template")
+        self.assertTrue(isinstance(self.template.template_id, uuid.UUID))
