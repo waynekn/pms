@@ -16,6 +16,12 @@ class TestOrganizationCreation(APITestCase):
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
+        self.organization = {
+            'organization_name': 'Test org',
+            'description': 'organization description',
+            'organization_password': 'securepassword123',
+            'password2': 'securepassword123',
+        }
 
     def test_organization_creation_from_view_creates_new_organization(self):
         """
@@ -27,14 +33,7 @@ class TestOrganizationCreation(APITestCase):
         """
 
         url = reverse('create_organization')
-        data = {
-            'organization_name': 'Test org',
-            'description': 'organization description',
-            'organization_password': 'securepassword123',
-            'password2': 'securepassword123',
-        }
-
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, self.organization, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('organization_name', response.data)
@@ -45,13 +44,11 @@ class TestOrganizationCreation(APITestCase):
         It ensures that the password mismatch is added as a non_field_error.
         """
         url = reverse('create_organization')
-        data = {
-            'organization_name': 'Test org.',
-            'description': 'organization description',
-            'organization_password': 'securepassword123',
+        organization = {
+            ** self.organization,
             'password2': 'differentpassword123',
         }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, organization, format='json')
 
         self.assertEqual(response.status_code, 400)
         self.assertIn('non_field_errors', response.data)
@@ -61,12 +58,9 @@ class TestOrganizationCreation(APITestCase):
         Test that the organization creation fails if no organization name is provided.
         """
         url = reverse('create_organization')
-        data = {
-            'description': 'organization description',
-            'organization_password': 'securepassword123',
-            'password2': 'differentpassword123',
-        }
-        response = self.client.post(url, data, format='json')
+        organization = self.organization
+        del organization['organization_name']
+        response = self.client.post(url, organization, format='json')
 
         self.assertEqual(response.status_code, 400)
         self.assertIn('organization_name', response.data)
@@ -77,16 +71,10 @@ class TestOrganizationCreation(APITestCase):
         the same name already exists.
         """
         url = reverse('create_organization')
-        data = {
-            'organization_name': 'Test org',
-            'description': 'organization description',
-            'organization_password': 'securepassword123',
-            'password2': 'securepassword123',
-        }
 
-        self.client.post(url, data, format='json')
+        self.client.post(url, self.organization, format='json')
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, self.organization, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertIn('organization_name', response.data)
 
