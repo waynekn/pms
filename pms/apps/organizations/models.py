@@ -33,6 +33,8 @@ class Organization(models.Model):
         self.organization_password = make_password(
             password)  # Hash the password
 
+        self.save()
+
     def __str__(self) -> str:
         return self.organization_name
 
