@@ -160,3 +160,21 @@ class TestOrganizationDetailRetreival(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.data, ReturnDict)
         self.assertIn('projects', response.data)
+
+    def test_non_members_cant_access_organization_detail(self):
+        """
+        Tests that users who are not members of an organization cannot view the
+        organization's detail
+        """
+        user = User.objects.create_user(
+            username='nonmember', email='nonmembermail@test.com', password='securepassword123'
+        )
+        client = APIClient()
+        client.force_authenticate(user=user)
+
+        url = reverse('organization_detail')
+        query = {
+            'organizationNameSlug': slugify(self.organization['organization_name'])
+        }
+        response = client.post(url, query, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
