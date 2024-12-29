@@ -1,8 +1,9 @@
 from django.urls import reverse
+from django.utils.text import slugify
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from apps.users.models import User
-from rest_framework.utils.serializer_helpers import ReturnList
+from rest_framework.utils.serializer_helpers import ReturnList, ReturnDict
 
 
 class TestOrganizationCreation(APITestCase):
@@ -115,3 +116,47 @@ class TestUserOrganizationsRetrieval(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(type(response.data) == ReturnList)
+
+
+class TestOrganizationDetailRetreival(APITestCase):
+    """
+    Tests for retreiving organization detail.
+    """
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser', email='testmail@test.com', password='securepassword123'
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+        url = reverse('create_organization')
+
+        self.organization = {
+            'organization_name': 'Test org2',
+            'description': 'organization description',
+            'organization_password': 'securepassword123',
+            'password2': 'securepassword123',
+        }
+
+        self.client.post(
+            url, self.organization, format='json')
+
+    def test_member_can_access_organization_detail(self):
+        """
+        Tests that an authenticated user who is a member of an organization 
+        can successfully view the organization's details.
+
+        This test ensures the following:
+        - The response status code is HTTP 200 OK.
+        - The response data is a dictionary.
+        - The response dictionary contains a 'projects' key.
+        """
+        url = reverse('organization_detail')
+        query = {
+            'organizationNameSlug': slugify(self.organization['organization_name'])
+        }
+        response = self.client.post(url, query, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.data, ReturnDict)
+        self.assertIn('projects', response.data)
