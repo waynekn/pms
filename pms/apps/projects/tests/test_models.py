@@ -12,12 +12,12 @@ class IndustryModelTest(TestCase):
     """
     Unit test for the Industry model.
 
-    This test suite verifies that industries are being created correctly in the database. 
-    It checks that an instance of the Industry model is created with the correct attributes 
+    This test suite verifies that industries are being created correctly in the database.
+    It checks that an instance of the Industry model is created with the correct attributes
     and that the industry_id is properly generated as a UUID.
 
     Test cases:
-        - test_industry_creation: Verifies that an Industry object is created with a valid 
+        - test_industry_creation: Verifies that an Industry object is created with a valid
           industry_name and a UUID for industry_id.
     """
 
@@ -88,13 +88,28 @@ class ProjectModelTest(TestCase):
 
     def setUp(self):
         """
-        Set up a test Organization instance.
+        Set up a test Organization and Template instance.
         """
         organization_name = "Test org"
         organization_name_slug = slugify(organization_name)
         self.organization = Organization.objects.create(
             organization_name=organization_name, organization_name_slug=organization_name_slug,
             organization_password="securepassword123")
+
+        ############################
+        # set up a Template instance
+        ############################
+
+        industry = models.Industry.objects.create(
+            industry_name="Test industry.")
+        template_name = 'Project creation template'
+        self.template_phases = ['do x', 'do y', 'do z']
+        self.template = models.Template.objects.create(
+            industry=industry, template_name=template_name)
+        models.TemplatePhase.objects.bulk_create([
+            models.TemplatePhase(template=self.template, phase_name=phase_name)
+            for phase_name in self.template_phases
+        ])
 
     def test_project_creation(self):
         """
@@ -123,3 +138,24 @@ class ProjectModelTest(TestCase):
         self.assertIs(project.deadline, deadline)
         self.assertIsInstance(project.deadline, datetime.date)
         self.assertEqual(project.status, "IN_PROGRESS")
+
+    def test_project_creation_from_template(self):
+        """
+        Test creating a project from a template.
+
+        This test ensures that:
+         - The project is using the correct template.
+         - The project's workflow matches the template's workflow.
+        """
+        deadline = datetime.date.today() + datetime.timedelta(days=1)
+        description = 'Testing project creation from template'
+
+        project = models.Project.objects.create(
+            organization=self.organization, project_name="Test template project", template=self.template,
+            description=description, deadline=deadline)
+
+        self.assertIs(project.template, self.template)
+
+        phase_names = [
+            phase.phase_name for phase in project.template.phases.all()]
+        self.assertListEqual(phase_names, self.template_phases)
