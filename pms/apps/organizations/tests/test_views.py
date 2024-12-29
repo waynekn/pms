@@ -178,3 +178,16 @@ class TestOrganizationDetailRetreival(APITestCase):
         }
         response = client.post(url, query, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_invalid_payload_returns_400(self):
+        """
+        Test that a bad requ in a 400 bad request to get organization detail results in a 400
+        bad request error.
+        """
+        url = reverse('organization_detail')
+        query = {
+            'wrong_key': slugify(self.organization['organization_name'])
+        }
+        response = self.client.post(url, query, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
