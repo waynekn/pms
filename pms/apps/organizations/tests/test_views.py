@@ -37,3 +37,20 @@ class OrganizationViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('organization_name', response.data)
+
+    def test_organization_creation_password_mismatch(self):
+        """
+        Test that the organization creation fails if passwords don't match.
+        It ensures that the password mismatch is added as a non_field_error.
+        """
+        url = reverse('create_organization')
+        data = {
+            'organization_name': 'Test org.',
+            'description': 'organization description',
+            'organization_password': 'securepassword123',
+            'password2': 'differentpassword123',
+        }
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('non_field_errors', response.data)
