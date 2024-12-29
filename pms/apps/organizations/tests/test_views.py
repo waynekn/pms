@@ -54,3 +54,18 @@ class OrganizationViewTests(APITestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn('non_field_errors', response.data)
+
+    def test_create_organization_missing_name(self):
+        """
+        Test that the organization creation fails if no organization name is provided.
+        """
+        url = reverse('create_organization')
+        data = {
+            'description': 'organization description',
+            'organization_password': 'securepassword123',
+            'password2': 'differentpassword123',
+        }
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('organization_name', response.data)
