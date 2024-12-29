@@ -69,3 +69,22 @@ class OrganizationViewTests(APITestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn('organization_name', response.data)
+
+    def test_create_organization_duplicate_name(self):
+        """
+        Test that organization creation fails if an organization with 
+        the same name already exists.
+        """
+        url = reverse('create_organization')
+        data = {
+            'organization_name': 'Test org',
+            'description': 'organization description',
+            'organization_password': 'securepassword123',
+            'password2': 'securepassword123',
+        }
+
+        self.client.post(url, data, format='json')
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('organization_name', response.data)
