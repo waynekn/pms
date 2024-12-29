@@ -4,9 +4,9 @@ from rest_framework.test import APITestCase, APIClient
 from apps.users.models import User
 
 
-class OrganizationViewTests(APITestCase):
+class TestOrganizationCreation(APITestCase):
     """
-    Tests for `organizations` app views.
+    Tests for creating an organization.
     """
 
     def setUp(self):
