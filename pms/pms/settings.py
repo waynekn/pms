@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.organizations.apps.OrganizationsConfig',
     'apps.projects.apps.ProjectsConfig',
+    'apps.tasks.apps.TasksConfig',
 
     # 3rd party
     'rest_framework',
