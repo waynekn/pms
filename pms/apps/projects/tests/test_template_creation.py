@@ -6,7 +6,7 @@ from apps.projects import models
 from apps.users.models import User
 
 
-class TestTemplateCreation(APITransactionTestCase):
+class TemplateCreationTests(APITransactionTestCase):
     """
     Tests for creating a template.
     """
