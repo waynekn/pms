@@ -44,6 +44,8 @@ class Task(models.Model):
                                  db_comment='Task name unique within a task collection', max_length=30)
     start_date = models.DateField(verbose_name='Start date', auto_now_add=True)
     deadline = models.DateField(verbose_name='Deadline data')
+    description = models.TextField(
+        max_length=500, default='')
     status = models.CharField(
         max_length=15,
         choices=TASK_STATUS_CHOICES,
