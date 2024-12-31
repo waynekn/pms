@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from apps.projects.models import ProjectPhase
+from apps.users.models import User
 
 # Create your models here.
 
@@ -50,3 +51,13 @@ class Task(models.Model):
         help_text="The current status of the task.",
         verbose_name="Task status"
     )
+
+
+class TaskAssignment(models.Model):
+    """
+    Represents users who have been assigned a task.
+    """
+    task = models.ForeignKey(
+        Task, on_delete=models.CASCADE, related_name='assignments')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='tasks')
