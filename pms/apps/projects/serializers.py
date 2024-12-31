@@ -109,7 +109,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.Project
-        fields = ['organization', 'template',
+        fields = ['organization', 'template', 'project_id',
                   'project_name', 'description', 'deadline']
 
     def validate_description(self, description: str) -> str:
