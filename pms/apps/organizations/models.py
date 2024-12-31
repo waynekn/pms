@@ -11,8 +11,8 @@ class Organization(models.Model):
     """
     organization_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, verbose_name='Organization ID')
-    organization_name = models.CharField(
-        max_length=50, unique=True, verbose_name='Organization name')
+    organization_name = models.CharField(error_messages={'unique': 'An organization with this name already exists.'},
+                                         max_length=50, unique=True, verbose_name='Organization name')
     organization_name_slug = models.SlugField(
         max_length=100,
         verbose_name="Organization Slug",
