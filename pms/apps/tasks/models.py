@@ -16,7 +16,8 @@ class TaskCollection(models.Model):
                                      unique=True, editable=False, default=uuid.uuid4)
     collection_name = models.CharField(
         verbose_name='Task name', db_comment='Collection name unique in the phase of the project', max_length=100)
-    project_phase = models.ForeignKey(ProjectPhase, on_delete=models.CASCADE)
+    project_phase = models.ForeignKey(
+        ProjectPhase, on_delete=models.CASCADE, related_name='task_collections')
 
 
 class Task(models.Model):
