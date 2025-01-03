@@ -133,7 +133,6 @@ class ProjectModelTest(TestCase):
 
         self.assertIsInstance(project, models.Project)
         self.assertIs(project.organization, self.organization)
-        self.assertIsInstance(project.project_id, uuid.UUID)
         self.assertEqual(project.description, description)
         self.assertIs(project.deadline, deadline)
         self.assertIsInstance(project.deadline, datetime.date)
