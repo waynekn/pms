@@ -103,9 +103,18 @@ class TemplateSerializer(serializers.ModelSerializer):
         return template
 
 
-class ProjectSerializer(serializers.ModelSerializer):
+class ProjectRetrievalSerializer(serializers.ModelSerializer):
     """
-    `Projects` serializer class.
+    Serializer for retrieving project data.
+    """
+    class Meta:
+        model = models.Project
+        fields = "__all__"
+
+
+class ProjectCreationSerializer(serializers.ModelSerializer):
+    """
+    `Project` creation serializer class.
     """
     class Meta:
         model = models.Project
