@@ -151,7 +151,7 @@ class ProjectMember(models.Model):
     """
 
     member = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="Project Member")
+        User, on_delete=models.CASCADE, related_name="projects", verbose_name="Project Member")
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="members", verbose_name="Project")
 
