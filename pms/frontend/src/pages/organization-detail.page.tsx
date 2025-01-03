@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, Link } from "react-router";
 import { AxiosError, isAxiosError, AxiosResponse } from "axios";
 import OrgAuthForm from "../components/org-auth-form.component";
 import api from "../api";
@@ -159,7 +159,13 @@ const OrganizationDetail = () => {
             {organization.projects.length > 0 ? (
               <ul className="space-y-2">
                 {organization.projects.map((project) => (
-                  <li key={project.projectId}>{project.projectName}</li>
+                  <li key={project.projectId}>
+                    <Link
+                      to={`../${project.projectId}/${project.projectNameSlug}/`}
+                    >
+                      {project.projectName}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             ) : (
