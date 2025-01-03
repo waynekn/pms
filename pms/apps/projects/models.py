@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from apps.organizations.models import Organization
 from apps.users.models import User
+from pms.utils import base_62_pk
 
 # Create your models here.
 
@@ -116,9 +117,9 @@ class Project(models.Model):
         null=True,
         help_text="The template from which this project is based.",
         verbose_name="Project base template")
-    project_id = models.UUIDField(
-        default=uuid.uuid4, editable=False, primary_key=True,
-        help_text="A unique identifier for the project, generated automatically.",
+    project_id = models.CharField(
+        default=base_62_pk, editable=False, primary_key=True, max_length=40,
+        help_text="A unique identifier for the project.",
         verbose_name="Project ID")
     project_name = models.CharField(
         max_length=40, help_text="The name of the project, unique within the organization.", verbose_name="Project name")
