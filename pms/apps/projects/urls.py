@@ -9,4 +9,6 @@ urlpatterns = [
          name='template_search'),
     path('project/create/',
          views.ProjectCreateView.as_view(), name='create_project'),
+    path('project/stats/',
+         views.ProjectStatsView.as_view(), name='project_stats'),
 ]
