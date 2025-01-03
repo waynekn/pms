@@ -92,6 +92,23 @@ class ProjectCreationTests(APITransactionTestCase):
         self.assertIn('description', response.data)
         self.assertIn('deadline', response.data)
 
+    def test_user_is_added_as_project_member(self):
+        """
+        Test that a user has been added as a project member after creating
+        a project.
+        """
+        response = self.client.post(self.url, self.data, format='json')
+
+        pk = response.data['project_id']
+
+        created_project = models.Project.objects.get(pk=pk)
+
+        members = created_project.members.all()
+
+        member_users = [member.member for member in members]
+
+        self.assertIn(self.user, member_users)
+
     def test_no_duplicate_project_names_in_an_organization(self):
         """
         Test that a project's name must be unique within the organization.
