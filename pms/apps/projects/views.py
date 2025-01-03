@@ -67,11 +67,11 @@ class ProjectCreateView(generics.CreateAPIView):
 
     Attributes:
         model (models.Project): The model associated with this view, which is `Project`.
-        serializer_class (serializers.ProjectSerializer): The serializer used to validate and
+        serializer_class (serializers.ProjectCreationSerializer): The serializer used to validate and
             serialize the project data.
     """
     model = models.Project
-    serializer_class = serializers.ProjectSerializer
+    serializer_class = serializers.ProjectCreationSerializer
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         transformed_data = camel_case_to_snake_case(request.data)
