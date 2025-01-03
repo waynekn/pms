@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from pms.utils import camel_case_to_snake_case
-from apps.projects.serializers import ProjectSerializer
+from apps.projects.serializers import ProjectRetrievalSerializer
 from .models import Organization, OrganizationMember
 from .serializers import OrganizationSerializer
 
@@ -116,7 +116,7 @@ class OrganizationDetailView(APIView):
         organization_serializer = OrganizationSerializer(organization)
 
         projects = organization.projects.all()
-        project_serializer = ProjectSerializer(projects, many=True)
+        project_serializer = ProjectRetrievalSerializer(projects, many=True)
 
         organization_detail = organization_serializer.data
         organization_detail['projects'] = project_serializer.data
