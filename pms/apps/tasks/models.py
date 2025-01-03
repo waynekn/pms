@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from apps.projects.models import ProjectPhase
+from apps.projects.models import ProjectPhase, Project
 from apps.users.models import User
 
 # Create your models here.
@@ -38,6 +38,8 @@ class Task(models.Model):
 
     collection = models.ForeignKey(
         TaskCollection, on_delete=models.CASCADE, related_name='tasks')
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, related_name='tasks', default=None)
     task_id = models.UUIDField(
         verbose_name="Task ID", primary_key=True,  unique=True, editable=False, default=uuid.uuid4)
     task_name = models.CharField(verbose_name='Task name',
