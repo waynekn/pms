@@ -39,11 +39,14 @@ class UserProjectRetrievalListTest(APITestCase):
 
         ##################################
         # create a project.
-        deadline = datetime.date.today() + datetime.timedelta(days=1)
-
-        self.project = models.Project.objects.create(
-            organization=self.organization, project_name="Test project",
-            description='Testing project creation', deadline=deadline)
+        url = reverse('create_project')
+        data = {
+            'organization': f'{self.organization.organization_id}',
+            'project_name': 'test project',
+            'description': 'project description',
+            'deadline': f'{datetime.date.today() + datetime.timedelta(days=1)}'
+        }
+        self.project_response = self.client.post(url, data, format='json')
 
         #########################
         # url
@@ -57,3 +60,5 @@ class UserProjectRetrievalListTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.data, list)
+        self.assertEqual(self.project_response.data['project_id'],
+                         response.data[0]['project_id'])
