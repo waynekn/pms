@@ -128,6 +128,18 @@ class ProjectStatsView(APIView):
         return Response(stats, status=status.HTTP_200_OK)
 
 
+class UserProjectsListView(generics.ListAPIView):
+    """
+    Returns all the projects that the user is a member of.
+    """
+    serializer_class = serializers.ProjectRetrievalSerializer
+
+    def get_queryset(self):
+        memberships = self.request.user.projects.all()
+        projects = [membership.project for membership in memberships]
+        return projects
+
+
 class TemplateSearchView(APIView):
     """
     Handles searching for a template by name.
