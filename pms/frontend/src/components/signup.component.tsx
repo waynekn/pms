@@ -86,7 +86,7 @@ const SignUpForm = () => {
         <form method="post" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Username Field  */}
-            <div className="form-group">
+            <div>
               <label
                 htmlFor="username"
                 className="block text-sm font-medium text-gray-700"
@@ -97,6 +97,8 @@ const SignUpForm = () => {
                 id="username"
                 type="text"
                 name="username"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                     focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 value={formValues.username}
                 placeholder="Enter username"
                 onChange={handleChange}
@@ -117,7 +119,7 @@ const SignUpForm = () => {
             </div>
 
             {/* Email Field  */}
-            <div className="form-group">
+            <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
@@ -128,6 +130,8 @@ const SignUpForm = () => {
                 id="email"
                 type="email"
                 name="email"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                     focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 value={formValues.email}
                 placeholder="Enter your email"
                 onChange={handleChange}
@@ -159,6 +163,8 @@ const SignUpForm = () => {
                 id="password1"
                 type="password"
                 name="password1"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                     focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 value={formValues.password1}
                 placeholder="Enter your password"
                 onChange={handleChange}
@@ -190,6 +196,8 @@ const SignUpForm = () => {
                 id="password2"
                 type="password"
                 name="password2"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                     focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 value={formValues.password2}
                 placeholder="Enter your password"
                 onChange={handleChange}
@@ -214,14 +222,14 @@ const SignUpForm = () => {
             {/*  Submit Button  */}
             <input
               type="submit"
-              className="w-full cursor-pointer bg-blue-600 text-white mb-5 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full cursor-pointer bg-blue-600 text-white mb-5 py-2 rounded-md hover:bg-blue-700 focus:outline-none"
               value="Sign Up"
             />
           </div>
           {/* Login link   */}
           <p>
             Already have an account?
-            <Link to="../login" className="text-sky-500 underline">
+            <Link to="../login" className="text-blue-500 underline mt-1">
               Log in
             </Link>
           </p>
