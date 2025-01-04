@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import classNames from "classnames";
 
 import OrganizationComponent from "../components/organization.component";
+import UserProjectsDisplay from "../components/user-projects.component";
 
 type Tabs = "organizations" | "projects";
 
@@ -105,6 +106,7 @@ const ProfilePage = () => {
 
         <section className="w-full rounded-b-md p-4">
           {activeTab === "organizations" && <OrganizationComponent />}
+          {activeTab === "projects" && <UserProjectsDisplay />}
         </section>
       </div>
     </div>
