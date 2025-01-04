@@ -6,6 +6,8 @@ import { logInUser } from "../store/user/user.slice";
 import { selectCurrentUser } from "../store/user/user.selector";
 
 import GoogleSVG from "../assets/google.svg";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 export type LogInCredentials = {
   username: string;
@@ -27,12 +29,18 @@ const LogInForm = () => {
     nonFieldErrors: [],
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const dispatch = useDispatch<StoreDispatch>();
   const currentUser = useSelector(selectCurrentUser);
   const navigate = useNavigate();
 
   const googleCallbackUrl = import.meta.env.VITE_GOOGLE_CALLBACK_URL;
   const googleClientId = import.meta.env.VITE_CLIENT_ID;
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -90,24 +98,40 @@ const LogInForm = () => {
             {/**
              * Password field.
              */}
-            <div>
+            <div className="relative">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                   focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                value={formValues.password}
-                placeholder="Password"
-                onChange={handleChange}
-              />
+              <div className="relative mt-1">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className="block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm
+                 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  value={formValues.password}
+                  placeholder="Password"
+                  onChange={handleChange}
+                />
+                {showPassword ? (
+                  <VisibilityOffOutlinedIcon
+                    onClick={togglePasswordVisibility}
+                    fontSize="small"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-sm text-gray-500 hover:text-gray-700"
+                  />
+                ) : (
+                  <VisibilityOutlinedIcon
+                    onClick={togglePasswordVisibility}
+                    fontSize="small"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-sm text-gray-500 hover:text-gray-700"
+                  />
+                )}
+              </div>
             </div>
+
             {/**
              * Password errors errors if any.
              */}

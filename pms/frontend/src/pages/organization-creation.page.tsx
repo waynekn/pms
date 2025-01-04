@@ -6,6 +6,9 @@ import { selectCurrentUser } from "../store/user/user.selector";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+
 // Error response from the API
 type ErrorResponse = {
   organization_name?: string[];
@@ -34,7 +37,13 @@ const OrganizationCreationForm = () => {
     nonFieldErrors: [],
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const currentUser = useSelector(selectCurrentUser);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -136,16 +145,33 @@ const OrganizationCreationForm = () => {
           >
             Password
           </label>
-          <input
-            name="organizationPassword"
-            type="password"
-            id="password1"
-            placeholder="Password"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            onChange={handleChange}
-            value={formValues.organizationPassword}
-            required
-          ></input>
+          <div className="relative mt-1">
+            <input
+              id="password1"
+              type={showPassword ? "text" : "password"}
+              name="organizationPassword"
+              className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
+                            focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              value={formValues.organizationPassword}
+              placeholder="Password"
+              onChange={handleChange}
+              required
+            />
+            {showPassword ? (
+              <VisibilityOffOutlinedIcon
+                onClick={togglePasswordVisibility}
+                fontSize="small"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+              />
+            ) : (
+              <VisibilityOutlinedIcon
+                onClick={togglePasswordVisibility}
+                fontSize="small"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+              />
+            )}
+          </div>
+
           {formErrors.organizationPassword &&
             formErrors.organizationPassword.length > 0 && (
               <ul>
@@ -166,16 +192,32 @@ const OrganizationCreationForm = () => {
           >
             Confirm password
           </label>
-          <input
-            name="password2"
-            type="password"
-            id="password2"
-            placeholder="Confirm password"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            onChange={handleChange}
-            value={formValues.password2}
-            required
-          ></input>
+          <div className="relative mt-1">
+            <input
+              id="password2"
+              type={showPassword ? "text" : "password"}
+              name="password2"
+              className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
+                            focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              value={formValues.password2}
+              placeholder="Confirm password"
+              onChange={handleChange}
+              required
+            />
+            {showPassword ? (
+              <VisibilityOffOutlinedIcon
+                onClick={togglePasswordVisibility}
+                fontSize="small"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+              />
+            ) : (
+              <VisibilityOutlinedIcon
+                onClick={togglePasswordVisibility}
+                fontSize="small"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+              />
+            )}
+          </div>
         </div>
 
         {formErrors.nonFieldErrors && formErrors.nonFieldErrors.length > 0 && (

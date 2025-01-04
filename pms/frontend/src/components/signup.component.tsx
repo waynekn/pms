@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { StoreDispatch } from "../store/store";
 import { registerUser } from "../store/user/user.slice";
 import { selectCurrentUser } from "../store/user/user.selector";
+
 import GoogleSVG from "../assets/google.svg";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 export type SignUpCredentials = {
   username: string;
@@ -38,6 +41,7 @@ const SignUpForm = () => {
     useState<SignUpCredentials>(initialFormValues);
   const [formErrors, setFormErrors] =
     useState<SignUpFormErrors>(initialFormErrors);
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch<StoreDispatch>();
   const currentUser = useSelector(selectCurrentUser);
@@ -45,6 +49,10 @@ const SignUpForm = () => {
 
   const googleCallbackUrl = import.meta.env.VITE_GOOGLE_CALLBACK_URL;
   const googleClientId = import.meta.env.VITE_CLIENT_ID;
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -159,22 +167,35 @@ const SignUpForm = () => {
               >
                 Password
               </label>
-              <input
-                id="password1"
-                type="password"
-                name="password1"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                     focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                value={formValues.password1}
-                placeholder="Enter your password"
-                onChange={handleChange}
-                required
-              />
-              {/**
-               * Password1 errors.
-               */}
+              <div className="relative mt-1">
+                <input
+                  id="password1"
+                  type={showPassword ? "text" : "password"}
+                  name="password1"
+                  className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
+                            focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  value={formValues.password1}
+                  placeholder="Enter your password"
+                  onChange={handleChange}
+                  required
+                />
+                {showPassword ? (
+                  <VisibilityOffOutlinedIcon
+                    onClick={togglePasswordVisibility}
+                    fontSize="small"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                  />
+                ) : (
+                  <VisibilityOutlinedIcon
+                    onClick={togglePasswordVisibility}
+                    fontSize="small"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                  />
+                )}
+              </div>
+              {/** Password1 errors */}
               {formErrors.password1 && formErrors.password1.length > 0 && (
-                <ul>
+                <ul className="mt-2">
                   {formErrors.password1.map((error) => (
                     <li key={error} className="text-red-600 text-sm">
                       {error}
@@ -192,17 +213,32 @@ const SignUpForm = () => {
               >
                 Confirm Password
               </label>
-              <input
-                id="password2"
-                type="password"
-                name="password2"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-                     focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                value={formValues.password2}
-                placeholder="Enter your password"
-                onChange={handleChange}
-                required
-              />
+              <div className="relative mt-1">
+                <input
+                  id="password2"
+                  type={showPassword ? "text" : "password"}
+                  name="password2"
+                  className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
+                            focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  value={formValues.password2}
+                  placeholder="Confirm your password"
+                  onChange={handleChange}
+                  required
+                />
+                {showPassword ? (
+                  <VisibilityOffOutlinedIcon
+                    onClick={togglePasswordVisibility}
+                    fontSize="small"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                  />
+                ) : (
+                  <VisibilityOutlinedIcon
+                    onClick={togglePasswordVisibility}
+                    fontSize="small"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                  />
+                )}
+              </div>
             </div>
 
             {/**
