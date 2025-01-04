@@ -63,15 +63,13 @@ const LogInForm = () => {
         <Link to="/" className="w-full flex justify-end font-bold">
           &#x2715;
         </Link>
-        <header className="flex justify-center text-lg font-bold tracking-wide mb-2">
-          Login
-        </header>
+        <header className="text-xl font-bold text-center">Login</header>
         <form method="post" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/**
              * Email or username field.
              */}
-            <div className="form-group">
+            <div>
               <label
                 htmlFor="login"
                 className="block text-sm font-medium text-gray-700"
@@ -83,6 +81,8 @@ const LogInForm = () => {
                 type="text"
                 name="username"
                 value={formValues.username}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                     focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Enter email or username"
                 onChange={handleChange}
               />
@@ -90,7 +90,7 @@ const LogInForm = () => {
             {/**
              * Password field.
              */}
-            <div className="form-group">
+            <div>
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
@@ -101,6 +101,8 @@ const LogInForm = () => {
                 id="password"
                 type="password"
                 name="password"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                   focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 value={formValues.password}
                 placeholder="Password"
                 onChange={handleChange}
@@ -121,7 +123,7 @@ const LogInForm = () => {
 
             <input
               type="submit"
-              className="w-full cursor-pointer bg-blue-600 text-white mb-5 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md mt-4 cursor-pointer"
               value="Log in"
               disabled={currentUser.isLoading}
             />
@@ -148,13 +150,13 @@ const LogInForm = () => {
             Sign In with Google
           </a>
 
-          <Link to="#" className="text-sky-500 underline block mt-2">
+          <Link to="#" className="text-blue-500 underline block mt-2">
             Forgot password?
           </Link>
 
-          <p className="mt-4">
+          <p className="mt-2">
             Don’t have an account?
-            <Link to="../signup" className="text-sky-500 underline">
+            <Link to="../signup" className="text-blue-500 underline">
               Sign up
             </Link>
           </p>
