@@ -21,9 +21,10 @@ from .views import FrontendView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    re_path(r'^accounts/google/login/callback/$',
+            FrontendView.as_view(), name='intercept_google_auth_code'),
     path('', include('apps.users.urls')),
     path('organizations/', include('apps.organizations.urls')),
     path('', include('apps.projects.urls')),
-    # The `react_frontend` should be the last url.
     re_path(r'^.*$', FrontendView.as_view(), name='react_frontend'),
 ]
