@@ -10,6 +10,16 @@ from rest_framework import serializers
 from .models import User
 
 
+class UserRetrievalSerializer(serializers.ModelSerializer):
+    """
+    Serializer for retrieving a user's username.
+    """
+
+    class Meta:
+        model = User
+        fields = ['username']
+
+
 class UserDetailsSerializer(serializers.ModelSerializer):
     """
     Serializer class for `REST_AUTH`. 
