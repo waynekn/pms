@@ -7,6 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from . import models
 from . import serializers
+from apps.users.serializers import UserRetrievalSerializer
 from pms.utils import camel_case_to_snake_case
 
 
@@ -126,6 +127,26 @@ class ProjectStatsView(APIView):
         }
 
         return Response(stats, status=status.HTTP_200_OK)
+
+
+class ProjectMembersListView(generics.ListAPIView):
+    """
+    Returns a list of members of a project.
+    """
+
+    serializer_class = UserRetrievalSerializer
+
+    def get_queryset(self):
+        project_id = self.kwargs.get('project_id')
+
+        if not project_id:
+            return Response({'error': 'No project was provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        project = get_object_or_404(models.Project, pk=project_id)
+
+        memberships = project.members.all()
+        members = [membership.member for membership in memberships]
+        return members
 
 
 class UserProjectsListView(generics.ListAPIView):
