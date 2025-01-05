@@ -43,7 +43,7 @@ const ProjectDetailPage = () => {
             Dashboard
           </Link>
           <Link
-            to={"#"}
+            to={"members/"}
             className="hover:bg-stone-200 rounded-md p-2 transition-colors duration-300 ease-in-out"
           >
             Members
