@@ -7,6 +7,7 @@ import SignUpForm from "./components/signup.component";
 import ProfilePage from "./pages/profle.page";
 import ProjectDetailPage from "./pages/project-detail.page";
 import ProjectDashBoard from "./components/project-dashboard.component";
+import ProjectMembersList from "./components/project-members-list.component";
 import ProjectCreationPage from "./pages/project-create.page";
 import OrganizationDetail from "./pages/organization-detail.page";
 import GoogleCallback from "./components/google-callback.component";
@@ -45,6 +46,7 @@ const Router = () => {
       >
         <Route index element={<ProjectDashBoard />} />
         <Route path="dashboard/" element={<ProjectDashBoard />} />
+        <Route path="members/" element={<ProjectMembersList />} />
       </Route>
     </Routes>
   );
