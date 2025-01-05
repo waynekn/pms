@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, reverse
 from . import views
 
 urlpatterns = [
@@ -13,4 +13,6 @@ urlpatterns = [
          views.ProjectStatsView.as_view(), name='project_stats'),
     path('user/projects/',
          views.UserProjectsListView.as_view(), name='user_project_list'),
+    path('project/<str:project_id>/members/',
+         views.ProjectMembersListView.as_view(), name='project_members_list'),
 ]
