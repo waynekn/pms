@@ -7,7 +7,9 @@ from django.http import HttpRequest, HttpResponseBadRequest
 from django.db import IntegrityError
 from allauth.socialaccount.providers.oauth2.client import OAuth2Error
 from rest_framework import serializers
+from dj_rest_auth.registration.serializers import RegisterSerializer
 from .models import User
+from .utils import slugify_username
 
 
 class UserRetrievalSerializer(serializers.ModelSerializer):
@@ -222,3 +224,14 @@ class SocialLoginSerializer(serializers.Serializer):
         :type attrs: dict
         """
         pass
+
+
+class CustomRegisterSerializer(RegisterSerializer):
+    def save(self, request):
+        user = super().save(request)
+
+        user.username_slug = slugify_username(user.username)
+
+        user.save()
+
+        return user
