@@ -15,4 +15,6 @@ urlpatterns = [
          views.UserProjectsListView.as_view(), name='user_project_list'),
     path('project/<str:project_id>/members/',
          views.ProjectMembersListView.as_view(), name='project_members_list'),
+    path('project/<str:project_id>/non-members/',
+         views.NonProjectMemberListView.as_view(), name='non_project_members_list'),
 ]
