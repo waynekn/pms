@@ -48,6 +48,12 @@ const ProjectDetailPage = () => {
           >
             Members
           </Link>
+          <Link
+            to={"members/add/"}
+            className="hover:bg-stone-200 rounded-md p-2 transition-colors duration-300 ease-in-out"
+          >
+            Add Members
+          </Link>
         </Stack>
       </nav>
 
