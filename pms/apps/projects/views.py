@@ -5,9 +5,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from . import models
 from . import serializers
 from apps.users.serializers import UserRetrievalSerializer
+from apps.users.models import User
 from pms.utils import camel_case_to_snake_case
 
 
@@ -147,6 +149,35 @@ class ProjectMembersListView(generics.ListAPIView):
         memberships = project.members.all()
         members = [membership.member for membership in memberships]
         return members
+
+
+class NonProjectMemberListView(generics.ListAPIView):
+    """
+    Returns a list of users who are members of an organization
+    but not members of the project.
+    """
+
+    serializer_class = UserRetrievalSerializer
+
+    def get_queryset(self):
+        project_id = self.kwargs.get('project_id')
+
+        if not project_id:
+            raise ValidationError(
+                {'error': 'No project was provided'})
+
+        project = get_object_or_404(models.Project, pk=project_id)
+
+        organization_members = User.objects.filter(
+            organizationmember__organization=project.organization)
+
+        project_members = models.ProjectMember.objects.filter(
+            project=project).values_list('member_id', flat=True)
+
+        non_project_members = organization_members.exclude(
+            user_id__in=project_members)
+
+        return non_project_members
 
 
 class UserProjectsListView(generics.ListAPIView):
