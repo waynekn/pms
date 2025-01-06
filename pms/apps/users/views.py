@@ -36,23 +36,6 @@ class CSRFtokenView(APIView):
         return Response({'csrftoken': csrftoken}, status=status.HTTP_200_OK)
 
 
-class ProfilePageView(LoginRequiredMixin, TemplateView):
-    """
-    Returns a user's profile page. If the user is not authenticated or is trying to view a profile
-    that is not theirs, they will be redirected to the login page or the their own page.
-    """
-    template_name = 'users/profile_page.html'
-
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse | HttpResponseRedirect:
-        username = kwargs.get('username')
-
-        if request.user.username != username:
-            # Redirect to the user's own profile if they are trying to access someone else's profile
-            return redirect('profile_page', username=request.user.username)
-
-        return super().dispatch(request, *args, **kwargs)
-
-
 class GoogleLogin(SocialLoginView):
     """
     Handle Google auth using Authorization Code Grant
