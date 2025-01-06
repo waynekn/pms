@@ -57,7 +57,7 @@ const ProjectDetailPage = () => {
         </Stack>
       </nav>
 
-      <main className="grow p-4 pt-10 md:pt-3 md:ml-48 h-full overflow-y-auto md:overflow-hidden">
+      <main className="grow p-4 pt-10 md:pt-3 md:ml-48 h-full overflow-y-auto">
         <Outlet />
       </main>
     </div>
