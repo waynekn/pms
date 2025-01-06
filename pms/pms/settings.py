@@ -189,6 +189,7 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE': 'access_token',
     'JWT_AUTH_REFRESH_COOKIE': 'refresh_token',
     'USER_DETAILS_SERIALIZER': 'apps.users.serializers.UserDetailsSerializer',
+    'REGISTER_SERIALIZER': 'apps.users.serializers.CustomRegisterSerializer',
 }
 
 CORS_ALLOWED_ORIGINS = [
