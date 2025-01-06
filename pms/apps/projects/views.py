@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Count, Case, When, IntegerField
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
@@ -178,6 +179,39 @@ class NonProjectMemberListView(generics.ListAPIView):
             user_id__in=project_members)
 
         return non_project_members
+
+
+class ProjectMemberAdditionView(generics.CreateAPIView):
+    """
+    Handles request from project managers to add members to a 
+    project.
+
+    This view expects a POST request with a list of usernames.
+    """
+
+    @transaction.atomic
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        usernames: list[str] = request.data.get('members')
+
+        if not usernames:
+            return Response({'error': 'No members to be added were provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        project_id = self.kwargs.get('project_id')
+
+        username_set = set(usernames)
+
+        users = User.objects.filter(username__in=username_set)
+
+        project = get_object_or_404(models.Project, pk=project_id)
+
+        models.ProjectMember.objects.bulk_create(
+            [
+                models.ProjectMember(project=project, member=user)
+                for user in users
+            ]
+        )
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class UserProjectsListView(generics.ListAPIView):
