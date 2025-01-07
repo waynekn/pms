@@ -143,7 +143,7 @@ class ProjectMembersListView(generics.ListAPIView):
         project_id = self.kwargs.get('project_id')
 
         if not project_id:
-            return Response({'error': 'No project was provided'}, status=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'detail': 'No project was provided.'})
 
         project = get_object_or_404(models.Project, pk=project_id)
 
