@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import api from "../../api";
 import {
@@ -75,7 +75,7 @@ export const logInUser = createAsyncThunk<
     );
     return response.data.user;
   } catch (error) {
-    if (error instanceof AxiosError) {
+    if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulLogIn>;
       const rejectValue = {
         password: axiosError.response?.data.password,
@@ -106,7 +106,7 @@ export const registerUser = createAsyncThunk<
     );
     return response.data.user;
   } catch (error) {
-    if (error instanceof AxiosError) {
+    if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulRegistration>;
 
       const statusCode = axiosError.status;
