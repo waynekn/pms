@@ -38,6 +38,7 @@ export default tseslint.config(
           },
         },
       ],
+      "no-duplicate-imports": ["error"],
     },
   }
 );
