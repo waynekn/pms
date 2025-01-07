@@ -109,7 +109,7 @@ const OrganizationCreationForm = () => {
             name="organizationName"
             id="organizationName"
             placeholder="Enter name of your organization"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             value={formValues.organizationName}
             onChange={handleChange}
             required
@@ -138,7 +138,7 @@ const OrganizationCreationForm = () => {
             name="description"
             id="description"
             placeholder="Enter a description of your organization (optional)"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             value={formValues.description}
             onChange={handleChange}
           ></textarea>
@@ -158,7 +158,7 @@ const OrganizationCreationForm = () => {
               type={showPassword ? "text" : "password"}
               name="organizationPassword"
               className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
-                            focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               value={formValues.organizationPassword}
               placeholder="Password"
               onChange={handleChange}
@@ -205,7 +205,7 @@ const OrganizationCreationForm = () => {
               type={showPassword ? "text" : "password"}
               name="password2"
               className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
-                            focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               value={formValues.password2}
               placeholder="Confirm password"
               onChange={handleChange}
@@ -242,10 +242,10 @@ const OrganizationCreationForm = () => {
           <button
             type="submit"
             className={classNames(
-              "w-full bg-indigo-600 text-white p-2 rounded-md",
+              "w-full bg-blue-600 text-white p-2 rounded-md",
               isLoading
                 ? "cursor-not-allowed"
-                : "cursor-pointer hover:bg-indigo-700"
+                : "cursor-pointer hover:bg-blue-700"
             )}
           >
             Create
