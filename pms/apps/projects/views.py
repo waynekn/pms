@@ -85,8 +85,10 @@ class ProjectCreateView(generics.CreateAPIView):
             data=transformed_data, context={'request': request}
         )
         if (serializer.is_valid()):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            project = serializer.save()
+            project_retrieval_serializer = serializers.ProjectRetrievalSerializer(
+                project)
+            return Response(project_retrieval_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
