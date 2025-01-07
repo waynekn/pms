@@ -130,7 +130,7 @@ const ProjectDashBoard = () => {
                   {projectStats.percentageCompletion} %
                 </p>
 
-                {/* Optional Progress Bar */}
+                {/* Progress Bar */}
                 <div className="w-full h-2 bg-gray-200 rounded-full mt-4">
                   <div
                     className="h-2 rounded-full bg-yellow-400"
