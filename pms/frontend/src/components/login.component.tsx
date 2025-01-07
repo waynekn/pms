@@ -52,6 +52,11 @@ const LogInForm = () => {
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+
+    if (currentUser.isLoading) {
+      return;
+    }
+
     setFormErrors({ password: [], nonFieldErrors: [] });
     try {
       const user = await dispatch(logInUser(formValues)).unwrap();

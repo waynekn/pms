@@ -59,6 +59,11 @@ const OrganizationCreationForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (isLoading) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       await api.post("/organizations/create/", formValues);
