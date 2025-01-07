@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { isAxiosError } from "axios";
+import { isAxiosError, AxiosError } from "axios";
 import { Container } from "@mui/material";
 
 import api from "../api";
@@ -31,7 +31,22 @@ const ProjectMembersList = () => {
           const statusCode = error.status;
 
           if (statusCode === 404) {
-            setErrorMessage("Could not get project members.");
+            const axiosError = error as AxiosError<{ detail: string }>;
+            setErrorMessage(
+              axiosError.response?.data.detail ||
+                "Could not get project members."
+            );
+            return;
+          }
+
+          if (statusCode === 400) {
+            const axiosError = error as AxiosError<{ detail: string }>;
+            setErrorMessage(axiosError.response?.data.detail || "Bad request.");
+            return;
+          }
+
+          if (statusCode && statusCode >= 500) {
+            setErrorMessage("A server error occurred.");
             return;
           }
 
