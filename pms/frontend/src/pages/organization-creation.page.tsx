@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { AxiosError, isAxiosError } from "axios";
 import classNames from "classnames";
@@ -11,6 +11,11 @@ import camelize from "../utils/snakecase-to-camelcase";
 import CircularProgress from "@mui/material/CircularProgress";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+
+import {
+  Organization,
+  OrganizationResponse,
+} from "../components/organization.component";
 
 // Error response from the API
 type ErrorResponse = {
@@ -46,6 +51,8 @@ const OrganizationCreationForm = () => {
 
   const currentUser = useSelector(selectCurrentUser);
 
+  const navigate = useNavigate();
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -66,7 +73,12 @@ const OrganizationCreationForm = () => {
 
     setIsLoading(true);
     try {
-      await api.post("/organizations/create/", formValues);
+      const response = await api.post<OrganizationResponse>(
+        "/organizations/create/",
+        formValues
+      );
+      const organization = camelize(response.data) as Organization;
+      await navigate(`../organization/${organization.organizationNameSlug}/`);
     } catch (error) {
       setIsLoading(false);
       if (isAxiosError(error)) {
