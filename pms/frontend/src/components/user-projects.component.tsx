@@ -7,7 +7,7 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 
-type ProjectResponse = {
+export type ProjectResponse = {
   created_at: string;
   deadline: string;
   description: string;
@@ -19,7 +19,7 @@ type ProjectResponse = {
   // this project belongs to
 };
 
-type Project = Omit<
+export type Project = Omit<
   ProjectResponse,
   "created_at" | "project_id" | "project_name" | "project_name_slug"
 > & {
