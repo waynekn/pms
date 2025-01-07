@@ -5,9 +5,9 @@ from .models import Organization, OrganizationMember
 from .utils import slugify_organization_name
 
 
-class OrganizationSerializer(serializers.ModelSerializer):
+class OrganizationCreationSerializer(serializers.ModelSerializer):
     """
-    Organization model serializer.
+    Serializer for creating organizations.
     """
     class Meta:
         model = Organization
@@ -57,3 +57,13 @@ class OrganizationSerializer(serializers.ModelSerializer):
         )
 
         return organization
+
+
+class OrganizationRetrievalSerializer(serializers.ModelSerializer):
+    """
+    Serializer for retrieving organization(s).
+    """
+    class Meta:
+        model = Organization
+        fields = ['organization_id', 'organization_name',
+                  'organization_name_slug']
