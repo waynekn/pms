@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { isAxiosError } from "axios";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import ProjectCreateSideBar from "../components/project-create.sidebar";
+
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
+
+import {
+  Project,
+  ProjectResponse,
+} from "../components/user-projects.component";
 
 export type ProjectCreationPageState = {
   organizationId: string;
@@ -54,6 +60,8 @@ const ProjectCreationPage = () => {
   };
   const [formErrors, setFormErrors] = useState<FormErrors>(initialErrorsState);
 
+  const navigate = useNavigate();
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -87,7 +95,12 @@ const ProjectCreationPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post("project/create/", formValues);
+      const response = await api.post<ProjectResponse>(
+        "project/create/",
+        formValues
+      );
+      const project = camelize(response.data) as Project;
+      await navigate(`../${project.projectId}/${project.projectNameSlug}/`);
     } catch (error) {
       if (isAxiosError(error)) {
         const errorResponse = error.response?.data as ErrorResponse;
