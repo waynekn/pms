@@ -252,6 +252,7 @@ const OrganizationCreationForm = () => {
                 ? "cursor-not-allowed"
                 : "cursor-pointer hover:bg-blue-700"
             )}
+            disabled={isLoading}
           >
             Create
             {isLoading && (

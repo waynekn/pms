@@ -266,6 +266,7 @@ const SignUpForm = () => {
                   ? "cursor-not-allowed"
                   : "hover:bg-blue-700 cursor-pointer "
               )}
+              disabled={currentUser.isLoading}
             >
               Sign up
               {currentUser.isLoading && (
