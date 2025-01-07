@@ -2,10 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
 import { AxiosError, isAxiosError } from "axios";
+import classNames from "classnames";
+
 import { selectCurrentUser } from "../store/user/user.selector";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 
+import CircularProgress from "@mui/material/CircularProgress";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
@@ -37,6 +40,8 @@ const OrganizationCreationForm = () => {
     nonFieldErrors: [],
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const currentUser = useSelector(selectCurrentUser);
@@ -54,9 +59,11 @@ const OrganizationCreationForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await api.post("/organizations/create/", formValues);
     } catch (error) {
+      setIsLoading(false);
       if (isAxiosError(error)) {
         const status = error.status;
 
@@ -234,9 +241,19 @@ const OrganizationCreationForm = () => {
         <div className="mt-4">
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white p-2 rounded-md"
+            className={classNames(
+              "w-full bg-indigo-600 text-white p-2 rounded-md",
+              isLoading
+                ? "cursor-not-allowed"
+                : "cursor-pointer hover:bg-indigo-700"
+            )}
           >
             Create
+            {isLoading && (
+              <span className="ml-2">
+                <CircularProgress size={13} sx={{ color: "white" }} />
+              </span>
+            )}
           </button>
         </div>
       </form>

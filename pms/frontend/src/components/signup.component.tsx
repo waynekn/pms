@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
+import classNames from "classnames";
 
 import { StoreDispatch } from "../store/store";
 import { registerUser } from "../store/user/user.slice";
 import { selectCurrentUser } from "../store/user/user.selector";
 
 import GoogleSVG from "../assets/google.svg";
+import CircularProgress from "@mui/material/CircularProgress";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
@@ -256,11 +258,22 @@ const SignUpForm = () => {
               )}
 
             {/*  Submit Button  */}
-            <input
+            <button
               type="submit"
-              className="w-full cursor-pointer bg-blue-600 text-white mb-5 py-2 rounded-md hover:bg-blue-700 focus:outline-none"
-              value="Sign Up"
-            />
+              className={classNames(
+                "w-full bg-blue-600 text-white mb-5 py-2 rounded-md  focus:outline-none",
+                currentUser.isLoading
+                  ? "cursor-not-allowed"
+                  : "hover:bg-blue-700 cursor-pointer "
+              )}
+            >
+              Sign up
+              {currentUser.isLoading && (
+                <span className="ml-2">
+                  <CircularProgress size={13} sx={{ color: "white" }} />
+                </span>
+              )}
+            </button>
           </div>
           {/* Login link   */}
           <p>

@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
+import classNames from "classnames";
+
 import { StoreDispatch } from "../store/store";
 import { logInUser } from "../store/user/user.slice";
 import { selectCurrentUser } from "../store/user/user.selector";
 
 import GoogleSVG from "../assets/google.svg";
+import CircularProgress from "@mui/material/CircularProgress";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
@@ -145,12 +148,23 @@ const LogInForm = () => {
               </ul>
             )}
 
-            <input
+            <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md mt-4 cursor-pointer"
-              value="Log in"
+              className={classNames(
+                "w-full bg-blue-600  text-white p-2 rounded-md mt-4 ",
+                currentUser.isLoading
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer hover:bg-blue-700"
+              )}
               disabled={currentUser.isLoading}
-            />
+            >
+              Login
+              {currentUser.isLoading && (
+                <span className="ml-2">
+                  <CircularProgress size={13} sx={{ color: "white" }} />
+                </span>
+              )}
+            </button>
           </div>
           {/**
            * Non field errors.
