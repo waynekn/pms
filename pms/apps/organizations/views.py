@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from pms.utils import camel_case_to_snake_case
 from apps.projects.serializers import ProjectRetrievalSerializer
 from .models import Organization, OrganizationMember
-from .serializers import OrganizationSerializer
+from . import serializers
 
 # Create your views here.
 
@@ -29,7 +29,8 @@ class UserOrganizationListView(APIView):
             organization_id__in=user_organizations.values('organization_id')
         )
 
-        serializer = OrganizationSerializer(organizations, many=True)
+        serializer = serializers.OrganizationRetrievalSerializer(
+            organizations, many=True)
         return Response(serializer.data)
 
 
@@ -39,7 +40,7 @@ class OrganizationCreateView(generics.CreateAPIView):
     user who creates the organization to its members.
     """
     model = Organization
-    serializer_class = OrganizationSerializer
+    serializer_class = serializers.OrganizationCreationSerializer
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         transformed_data = camel_case_to_snake_case(request.data)
@@ -47,8 +48,10 @@ class OrganizationCreateView(generics.CreateAPIView):
             data=transformed_data, context={'request': request})
 
         if (serializer.is_valid()):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            organization = serializer.save()
+            retrieval_serializer = serializers.OrganizationRetrievalSerializer(
+                organization)
+            return Response(retrieval_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -72,7 +75,8 @@ class OrganizationSearchView(APIView):
         organizations = Organization.objects.filter(
             organization_name__icontains=organization_name_query)
 
-        serializer = OrganizationSerializer(organizations, many=True)
+        serializer = serializers.OrganizationRetrievalSerializer(
+            organizations, many=True)
         return Response(serializer.data)
 
 
@@ -113,7 +117,8 @@ class OrganizationDetailView(APIView):
                 "organization_name": organization.organization_name
             }, status=status.HTTP_403_FORBIDDEN)
 
-        organization_serializer = OrganizationSerializer(organization)
+        organization_serializer = serializers.OrganizationRetrievalSerializer(
+            organization)
 
         projects = organization.projects.all()
         project_serializer = ProjectRetrievalSerializer(projects, many=True)
