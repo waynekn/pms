@@ -10,6 +10,7 @@ from rest_framework.exceptions import ValidationError
 from . import models
 from . import serializers
 from apps.users.serializers import UserRetrievalSerializer
+from apps.tasks.serializers import TaskRetrievalSerializer
 from apps.users.models import User
 from pms.utils import camel_case_to_snake_case
 
@@ -214,6 +215,30 @@ class ProjectMemberAdditionView(generics.CreateAPIView):
         )
 
         return Response(status=status.HTTP_201_CREATED)
+
+
+class ProjectTasksView(APIView):
+    """
+    Returns all the tasks related to a project.
+    """
+
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        project_id = self.kwargs.get('project_id')
+
+        if not project_id:
+            return Response({'detail': 'No project was provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        project = get_object_or_404(models.Project, pk=project_id)
+
+        project_detail = serializers.ProjectRetrievalSerializer(project).data
+
+        tasks = project.tasks.all()
+
+        tasks_data = TaskRetrievalSerializer(tasks, many=True).data
+
+        project_detail['tasks'] = tasks_data
+
+        return Response(project_detail, status=status.HTTP_200_OK)
 
 
 class UserProjectsListView(generics.ListAPIView):
