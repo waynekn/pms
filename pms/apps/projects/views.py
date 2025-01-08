@@ -241,6 +241,31 @@ class ProjectTasksView(APIView):
         return Response(project_detail, status=status.HTTP_200_OK)
 
 
+class ProjectPhaseRetrieveView(generics.RetrieveAPIView):
+    """
+    Retrieves all the phases of a project.
+    """
+
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        project_id = self.kwargs.get('project_id')
+
+        if not project_id:
+            return Response({'detail': 'No project was provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        project = get_object_or_404(models.Project, pk=project_id)
+
+        project_data = serializers.ProjectRetrievalSerializer(project).data
+
+        project_phases = project.phases.all()
+
+        serializer = serializers.ProjectPhaseSerializer(
+            project_phases, many=True)
+
+        project_data['phases'] = serializer.data
+
+        return Response(project_data, status=status.HTTP_200_OK)
+
+
 class UserProjectsListView(generics.ListAPIView):
     """
     Returns all the projects that the user is a member of.
