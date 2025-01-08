@@ -63,6 +63,12 @@ const ProjectDetailPage = () => {
             Add Members
           </Link>
           <Link
+            to={`../workflow/${projectId}/`}
+            className="hover:bg-stone-200 rounded-md p-2 transition-colors duration-300 ease-in-out"
+          >
+            Project phases
+          </Link>
+          <Link
             to={`../tasks/${projectId}/`}
             className="hover:bg-stone-200 rounded-md p-2 transition-colors duration-300 ease-in-out"
           >
