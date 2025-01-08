@@ -177,8 +177,8 @@ class ProjectPhase(models.Model):
     Represents a phase within a project. This model links the project to its various phases, which can either be inherited from a template
     or be custom-specific phases created for the project.
     """
-    phase_id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Phase id")
+    phase_id = models.CharField(
+        primary_key=True, max_length=11, default=base_62_pk, editable=False, verbose_name="Phase id")
     project = models.ForeignKey(Project, on_delete=models.CASCADE,
                                 related_name="phases", help_text="Project which this phase belongs to", verbose_name="Project")
     # The `on_delete=models.RESTRICT` ensures that a template phase cannot be deleted if it is being used in a project.
