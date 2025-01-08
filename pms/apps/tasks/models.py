@@ -1,4 +1,3 @@
-import uuid
 from django.db import models
 from apps.projects.models import ProjectPhase, Project
 from apps.users.models import User
@@ -46,8 +45,8 @@ class Task(models.Model):
         TaskCollection, on_delete=models.CASCADE, related_name='tasks')
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name='tasks', default=None)
-    task_id = models.UUIDField(
-        verbose_name="Task ID", primary_key=True,  unique=True, editable=False, default=uuid.uuid4)
+    task_id = models.CharField(
+        verbose_name="Task ID", primary_key=True, max_length=11, unique=True, editable=False, default=base_62_pk)
     task_name = models.CharField(verbose_name='Task name',
                                  db_comment='Task name unique within a task collection', max_length=30)
     start_date = models.DateField(verbose_name='Start date', auto_now_add=True)
