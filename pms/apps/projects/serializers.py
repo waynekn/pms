@@ -204,3 +204,35 @@ class TemplateSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Template
         fields = '__all__'
+
+
+class TemplatePhaseSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for `TemplatePhase` model.
+    """
+    class Meta:
+        model = models.TemplatePhase
+        fields = ['phase_name']
+
+
+class ProjectPhaseSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for `ProjectPhase` model.
+    """
+    template_phase = TemplatePhaseSerializer()
+
+    class Meta:
+        model = models.ProjectPhase
+        fields = ['phase_id', 'template_phase']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        if instance.template_phase:
+            representation['phase_name'] = instance.template_phase.phase_name
+        else:
+            representation['phase_name'] = None
+
+        representation.pop('template_phase', None)
+
+        return representation
