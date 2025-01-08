@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useParams } from "react-router";
 import classNames from "classnames";
 import Stack from "@mui/material/Stack";
 import ClearIcon from "@mui/icons-material/Clear";
 
 const ProjectDetailPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+
+  const { projectId } = useParams();
+
+  if (!projectId) {
+    return (
+      <p className="bg-red-600 text-white rounded-lg py-4 px-2">Invalid url</p>
+    );
+  }
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -53,6 +61,12 @@ const ProjectDetailPage = () => {
             className="hover:bg-stone-200 rounded-md p-2 transition-colors duration-300 ease-in-out"
           >
             Add Members
+          </Link>
+          <Link
+            to={`../tasks/${projectId}/`}
+            className="hover:bg-stone-200 rounded-md p-2 transition-colors duration-300 ease-in-out"
+          >
+            Tasks
           </Link>
         </Stack>
       </nav>
