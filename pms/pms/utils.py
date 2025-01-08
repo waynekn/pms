@@ -38,7 +38,7 @@ def _to_base62(num):
         base62.append(BASE62_ALPHABET[num % 62])
         num //= 62
 
-    return ''.join(reversed(base62))
+    return ''.join(reversed(base62))[:11]
 
 
 def base_62_pk():
