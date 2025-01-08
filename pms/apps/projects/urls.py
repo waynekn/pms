@@ -19,4 +19,6 @@ urlpatterns = [
          views.NonProjectMemberListView.as_view(), name='non_project_members_list'),
     path('project/<str:project_id>/members/add/',
          views.ProjectMemberAdditionView.as_view(), name='project_members_addition'),
+    path('project/<str:project_id>/tasks/',
+         views.ProjectTasksView.as_view(), name='project_tasks_retrieval'),
 ]
