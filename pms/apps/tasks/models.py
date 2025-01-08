@@ -20,6 +20,9 @@ class TaskCollection(models.Model):
     project_phase = models.ForeignKey(
         ProjectPhase, on_delete=models.CASCADE, related_name='task_collections')
 
+    def __str__(self):
+        return f'{self.project_phase.project.project_name | self.collection_name}'
+
 
 class Task(models.Model):
     """
@@ -56,6 +59,9 @@ class Task(models.Model):
         verbose_name="Task status"
     )
 
+    def __str__(self):
+        return f'{self.project.project_name} | {self.task_name}'
+
 
 class TaskAssignment(models.Model):
     """
@@ -65,3 +71,6 @@ class TaskAssignment(models.Model):
         Task, on_delete=models.CASCADE, related_name='assignments')
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='tasks')
+
+    def __str__(self):
+        return f'{self.user.username} | {self.task.task_name}'
