@@ -3,6 +3,8 @@ from django.db import models
 from apps.projects.models import ProjectPhase, Project
 from apps.users.models import User
 
+from pms.utils import base_62_pk
+
 # Create your models here.
 
 
@@ -13,8 +15,9 @@ class TaskCollection(models.Model):
     For example a project is in the testing phase, a task collection would be
     something like "test views" which contains tasks related to testing views.
     """
-    collection_id = models.UUIDField(verbose_name='Collection ID', primary_key=True,
-                                     unique=True, editable=False, default=uuid.uuid4)
+    collection_id = models.CharField(verbose_name='Collection ID', primary_key=True,
+                                     max_length=11, unique=True, editable=False,
+                                     default=base_62_pk)
     collection_name = models.CharField(
         verbose_name='Task name', db_comment='Collection name unique in the phase of the project', max_length=100)
     project_phase = models.ForeignKey(
