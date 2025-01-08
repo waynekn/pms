@@ -118,7 +118,7 @@ class Project(models.Model):
         help_text="The template from which this project is based.",
         verbose_name="Project base template")
     project_id = models.CharField(
-        default=base_62_pk, editable=False, primary_key=True, max_length=40,
+        default=base_62_pk, editable=False, primary_key=True, max_length=11,
         help_text="A unique identifier for the project.",
         verbose_name="Project ID")
     project_name = models.CharField(
