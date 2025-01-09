@@ -58,7 +58,8 @@ api.interceptors.response.use(
       } else {
         // Reset flag.
         madeAttemptToGetAccessToken = false;
-        window.location.href = "/login";
+        const path = window.location.pathname;
+        window.location.href = `/login?next=${path}`;
       }
     }
 
