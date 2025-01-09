@@ -7,25 +7,6 @@ from pms.utils import base_62_pk
 # Create your models here.
 
 
-class TaskCollection(models.Model):
-    """
-    Container for a collection of tasks within a project phase.
-
-    For example a project is in the testing phase, a task collection would be
-    something like "test views" which contains tasks related to testing views.
-    """
-    collection_id = models.CharField(verbose_name='Collection ID', primary_key=True,
-                                     max_length=11, unique=True, editable=False,
-                                     default=base_62_pk)
-    collection_name = models.CharField(
-        verbose_name='Task name', db_comment='Collection name unique in the phase of the project', max_length=100)
-    project_phase = models.ForeignKey(
-        ProjectPhase, on_delete=models.CASCADE, related_name='task_collections')
-
-    def __str__(self):
-        return f'{self.project_phase.project.project_name | self.collection_name}'
-
-
 class Task(models.Model):
     """
     Represents a task within a task collection.
@@ -40,9 +21,6 @@ class Task(models.Model):
         (ON_HOLD, "ON_HOLD"),
         (DONE, "Done"),
     ]
-
-    collection = models.ForeignKey(
-        TaskCollection, on_delete=models.CASCADE, related_name='tasks')
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name='tasks', default=None)
     task_id = models.CharField(
