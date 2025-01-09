@@ -103,7 +103,7 @@ const ProjectPhasePage = () => {
           {projectWorkflow.phases.map((workflow) => (
             <Link
               key={workflow.phaseId}
-              to={`#`}
+              to={`../phase/${workflow.phaseId}/detail/`}
               className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
                          md:max-h-48 overflow-y-hidden"
             >
