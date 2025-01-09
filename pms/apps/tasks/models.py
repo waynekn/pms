@@ -23,6 +23,8 @@ class Task(models.Model):
     ]
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name='tasks', default=None)
+    project_phase = models.ForeignKey(
+        ProjectPhase, on_delete=models.CASCADE, related_name='phase_tasks', default=None)
     task_id = models.CharField(
         verbose_name="Task ID", primary_key=True, max_length=11, unique=True, editable=False, default=base_62_pk)
     task_name = models.CharField(verbose_name='Task name',
