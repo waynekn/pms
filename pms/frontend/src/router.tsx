@@ -7,6 +7,7 @@ import SignUpForm from "./components/signup.component";
 import ProfilePage from "./pages/profle.page";
 import ProjectDetailPage from "./pages/project-detail.page";
 import ProjectPhasePage from "./pages/project-phases.page";
+import ProjectPhaseDetail from "./pages/project-phase-detail.page";
 import ProjectDashBoard from "./components/project-dashboard.component";
 import ProjectMembersList from "./components/project-members-list.component";
 import NonProjectMembersList from "./components/project-member-addition.component";
@@ -45,6 +46,10 @@ const Router = () => {
       <Route path="templates/create/" element={<TemplateCreationForm />} />
       <Route path="tasks/:projectId/" element={<ProjectTasksPage />} />
       <Route path="workflow/:projectId/" element={<ProjectPhasePage />} />
+      <Route
+        path="phase/:projectPhaseId/detail/"
+        element={<ProjectPhaseDetail />}
+      />
       <Route
         path=":projectId/:projectNameSlug/"
         element={<ProjectDetailPage />}
