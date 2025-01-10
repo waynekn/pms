@@ -12,12 +12,12 @@ import {
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 
-type ProjectPhaseResponse = {
+export type ProjectPhaseResponse = {
   phase_id: string;
   phase_name: string;
 };
 
-type ProjectPhase = {
+export type ProjectPhase = {
   phaseId: string;
   phaseName: string;
 };
