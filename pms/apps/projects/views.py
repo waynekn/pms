@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from . import models
 from . import serializers
+from apps.tasks.models import Task
 from apps.users.serializers import UserRetrievalSerializer
 from apps.tasks.serializers import TaskRetrievalSerializer
 from apps.users.models import User
@@ -264,6 +265,37 @@ class ProjectPhaseRetrieveView(generics.RetrieveAPIView):
         project_data['phases'] = serializer.data
 
         return Response(project_data, status=status.HTTP_200_OK)
+
+
+class ProjectPhaseDetailView(generics.RetrieveAPIView):
+    """
+    Retrieve detailed information about a specific ProjectPhase.
+    """
+
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        phase_id = kwargs.get('phase_id')
+
+        project_phase: models.ProjectPhase = get_object_or_404(
+            models.ProjectPhase, pk=phase_id)
+
+        in_progress_tasks = Task.objects.filter(
+            project_phase=project_phase, status=Task.IN_PROGRESS)
+        on_hold_tasks = Task.objects.filter(
+            project_phase=project_phase, status=Task.ON_HOLD)
+        done_tasks = Task.objects.filter(
+            project_phase=project_phase, status=Task.DONE)
+
+        project = project_phase.project
+
+        detail = {
+            "project": serializers.ProjectRetrievalSerializer(project).data,
+            "phase": serializers.ProjectPhaseSerializer(project_phase).data,
+            "in_progress": TaskRetrievalSerializer(in_progress_tasks, many=True).data,
+            "on_hold": TaskRetrievalSerializer(on_hold_tasks, many=True).data,
+            "completed": TaskRetrievalSerializer(done_tasks, many=True).data,
+        }
+
+        return Response(detail, status=status.HTTP_200_OK)
 
 
 class UserProjectsListView(generics.ListAPIView):
