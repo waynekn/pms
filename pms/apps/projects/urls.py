@@ -23,4 +23,6 @@ urlpatterns = [
          views.ProjectTasksView.as_view(), name='project_tasks_retrieval'),
     path('project/<str:project_id>/workflow/',
          views.ProjectPhaseRetrieveView.as_view(), name='project_phases'),
+    path('project/phase/<str:phase_id>/detail/',
+         views.ProjectPhaseDetailView.as_view(), name='project_phase_detail'),
 ]
