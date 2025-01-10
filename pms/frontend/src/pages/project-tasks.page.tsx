@@ -13,7 +13,7 @@ import {
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 
-type TaskResponse = {
+export type TaskResponse = {
   task_id: string;
   task_name: string;
   start_date: string;
@@ -21,7 +21,10 @@ type TaskResponse = {
   description: string;
 };
 
-type Task = Omit<TaskResponse, "task_id" | "task_name" | "start_date"> & {
+export type Task = Omit<
+  TaskResponse,
+  "task_id" | "task_name" | "start_date"
+> & {
   taskId: string;
   taskName: string;
   startDate: string;
