@@ -59,3 +59,26 @@ class TaskDetailView(generics.RetrieveAPIView):
         task_data['assignees'] = assignees
 
         return Response(task_data, status=status.HTTP_200_OK)
+
+
+class TaskAssignmentView(generics.CreateAPIView):
+    """
+    View to handle the assignment of users to a task.
+
+    This endpoint allows users to be assigned to a specific task.
+    """
+    serializer_class = serializers.TaskAssignMentSerializer
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        task_id = self.kwargs.get('task_id')
+        data = {
+            'task_id': task_id,
+            'usernames': request.data.get('assignees') or []
+        }
+
+        serializer = self.get_serializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
