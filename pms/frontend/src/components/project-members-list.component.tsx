@@ -5,7 +5,7 @@ import { Container } from "@mui/material";
 
 import api from "../api";
 
-type ProjectMember = {
+export type ProjectMember = {
   username: string;
 };
 
