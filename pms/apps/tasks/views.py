@@ -1,8 +1,10 @@
 from rest_framework import status, generics
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from apps.users.models import User
+from apps.projects.models import ProjectMember
 from apps.users.serializers import UserRetrievalSerializer
 from pms.utils import camel_case_to_snake_case
 
@@ -82,3 +84,37 @@ class TaskAssignmentView(generics.CreateAPIView):
             return Response(status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NonTaskAssigneesListView(generics.ListAPIView):
+    """
+    Retrieves a list of users who are members of a project but have not been
+    assigned to a specific task.
+
+    The response will be a list of users who are project members but not 
+    task assignees.
+    """
+
+    serializer_class = UserRetrievalSerializer
+
+    def get_queryset(self):
+        task_id = self.kwargs.get('task_id')
+
+        try:
+            task = models.Task.objects.get(pk=task_id)
+        except models.Task.DoesNotExist:
+            raise ValidationError({'detail': 'Could not get the task.'})
+
+        project = task.project
+
+        task_assignments = set(models.TaskAssignment.objects.filter(
+            task_id=task_id).values_list('user', flat=True))
+
+        memberships = ProjectMember.objects.filter(
+            project=project).values_list('member', flat=True)
+
+        # Exclude users who are assigned to the task
+        non_assignees_ids = [
+            member for member in memberships if member not in task_assignments]
+
+        return User.objects.filter(user_id__in=[non_assignees_id for non_assignees_id in non_assignees_ids])
