@@ -17,6 +17,7 @@ import OrganizationDetail from "./pages/organization-detail.page";
 import GoogleCallback from "./components/google-callback.component";
 import OrganizationCreationForm from "./pages/organization-creation.page";
 import TemplateCreationForm from "./pages/template-creation.page";
+import TaskDetailPage from "./pages/task-detail.page";
 
 const Router = () => {
   return (
@@ -50,6 +51,7 @@ const Router = () => {
         path="phase/:projectPhaseId/detail/"
         element={<ProjectPhaseDetail />}
       />
+      <Route path="task/:taskId/detail/" element={<TaskDetailPage />} />
       <Route
         path=":projectId/:projectNameSlug/"
         element={<ProjectDetailPage />}
