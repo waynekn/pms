@@ -1,8 +1,10 @@
 from datetime import datetime, timezone
+from django.db import transaction
 from rest_framework import serializers
 
 from apps.projects.models import ProjectPhase
 from apps.projects.serializers import ProjectPhaseSerializer
+from apps.users.models import User
 from . import models
 
 
@@ -79,6 +81,56 @@ class TaskCreationSerializser(serializers.ModelSerializer):
         model = models.Task
         fields = ['project_phase', 'task_name',
                   'deadline', 'description']
+
+
+class TaskAssignMentSerializer(serializers.Serializer):
+    """
+    Serializer for assigning users to a task.
+    This serializer is used to validate and save task assignments.
+    """
+    usernames = serializers.ListField(
+        child=serializers.CharField(),
+        write_only=True
+    )
+    task_id = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        task_id = data.get('task_id')
+        try:
+            task = models.Task.objects.get(pk=task_id)
+        except models.Task.DoesNotExist:
+            raise serializers.ValidationError(
+                {'task_id': 'Task does not exist.'})
+
+        data['task'] = task
+
+        usernames = data.get('usernames')
+        users = User.objects.filter(username__in=usernames)
+        if not users.exists():
+            raise serializers.ValidationError(
+                {'usernames': 'No valid users found.'})
+
+        data['users'] = users
+        return data
+
+    @transaction.atomic
+    def create(self, validated_data):
+        task = validated_data['task']
+        users = validated_data['users']
+
+        # Avoid duplicate assignments
+        existing_assignments = models.TaskAssignment.objects.filter(
+            task=task, user__in=users
+        ).values_list('user_id', flat=True)
+        new_assignments = [
+            models.TaskAssignment(task=task, user=user)
+            for user in users if user.user_id not in existing_assignments
+        ]
+
+        models.TaskAssignment.objects.bulk_create(
+            new_assignments, ignore_conflicts=True)
+
+        return {'task': task, 'assigned_users': [user.username for user in users]}
 
 
 class TaskRetrievalSerializer(serializers.ModelSerializer):
