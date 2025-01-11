@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from rest_framework import serializers
 
 from apps.projects.models import ProjectPhase
+from apps.projects.serializers import ProjectPhaseSerializer
 from . import models
 
 
@@ -81,6 +82,7 @@ class TaskCreationSerializser(serializers.ModelSerializer):
 
 
 class TaskRetrievalSerializer(serializers.ModelSerializer):
+    project_phase = ProjectPhaseSerializer()
 
     class Meta:
         model = models.Task
