@@ -9,6 +9,7 @@ import {
   ProjectResponse,
   Project,
 } from "../components/user-projects.component";
+import { ProjectPhaseResponse, ProjectPhase } from "./project-phases.page";
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
@@ -19,15 +20,17 @@ export type TaskResponse = {
   start_date: string;
   deadline: string;
   description: string;
+  project_phase: ProjectPhaseResponse;
 };
 
 export type Task = Omit<
   TaskResponse,
-  "task_id" | "task_name" | "start_date"
+  "task_id" | "task_name" | "start_date" | "project_phase"
 > & {
   taskId: string;
   taskName: string;
   startDate: string;
+  projectPhase: ProjectPhase;
 };
 
 type ProjectTasksResponse = ProjectResponse & {
@@ -119,7 +122,7 @@ const ProjectTasksPage = () => {
           {projectTasks.tasks.map((task) => (
             <Link
               key={task.taskId}
-              to={`#`}
+              to={`../task/${task.taskId}/detail/`}
               className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
                          md:max-h-48 overflow-y-hidden"
             >
