@@ -56,3 +56,6 @@ class TaskAssignment(models.Model):
 
     def __str__(self):
         return f'{self.user.username} | {self.task.task_name}'
+
+    class Meta:
+        unique_together = ('task', 'user',)
