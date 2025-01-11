@@ -25,7 +25,7 @@ const KanbanTask = ({ task }: KanbanTaskProps) => {
       </header>
       <Link
         className=" block text-gray-600 hover:bg-stone-100 transition-colors duration-300 ease-in-out"
-        to={"#"}
+        to={`../task/${task.taskId}/detail/`}
       >
         {task.description}
       </Link>
