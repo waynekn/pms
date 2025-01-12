@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import classNames from "classnames";
 
 import { StoreDispatch } from "../store/store";
@@ -32,6 +32,8 @@ const LogInForm = () => {
     nonFieldErrors: [],
   });
 
+  const [searchParams] = useSearchParams();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch<StoreDispatch>();
@@ -60,7 +62,13 @@ const LogInForm = () => {
     setFormErrors({ password: [], nonFieldErrors: [] });
     try {
       const user = await dispatch(logInUser(formValues)).unwrap();
-      await navigate(`../user/${user.username}/`);
+
+      const next = searchParams.get("next");
+      if (next) {
+        await navigate(next);
+      } else {
+        await navigate(`../user/${user.username}/`);
+      }
     } catch (error) {
       const formErrors = error as LogInFormErrors;
       setFormErrors((prevState) => {
