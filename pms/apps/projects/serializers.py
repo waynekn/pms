@@ -285,19 +285,21 @@ class ProjectPhaseSerializer(serializers.ModelSerializer):
     Serializer class for `ProjectPhase` model.
     """
     template_phase = TemplatePhaseSerializer()
+    custom_phase = CustomPhaseRetrievalSerializer()
 
     class Meta:
         model = models.ProjectPhase
-        fields = ['phase_id', 'template_phase']
+        fields = ['phase_id', 'template_phase', 'custom_phase']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
         if instance.template_phase:
             representation['phase_name'] = instance.template_phase.phase_name
-        else:
-            representation['phase_name'] = None
+        elif instance.custom_phase:
+            representation['phase_name'] = instance.custom_phase.phase_name
 
         representation.pop('template_phase', None)
+        representation.pop('custom_phase', None)
 
         return representation
