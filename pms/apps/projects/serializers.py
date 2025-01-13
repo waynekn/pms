@@ -255,9 +255,15 @@ class CustomPhaseCreateSerializer(serializers.ModelSerializer):
         project: models.Project = validated_data.get('project')
         phase_name: str = validated_data.get('phase_name')
 
-        return models.CustomPhase.objects.create(
+        phase = models.CustomPhase.objects.create(
             project=project, phase_name=phase_name
         )
+
+        models.ProjectPhase.objects.create(
+            project=project, custom_phase=phase
+        )
+
+        return phase
 
     class Meta:
         model = models.CustomPhase
