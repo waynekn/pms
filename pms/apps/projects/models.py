@@ -188,4 +188,5 @@ class ProjectPhase(models.Model):
                                      help_text="Custom phase specific to this project", verbose_name='Custom phase')
 
     def __str__(self) -> str:
-        return f'{self.project.project_name}| {self.template_phase.phase_name or self.custom_phase.phase_name}'
+        return f'{self.project.project_name}| {self.template_phase.phase_name if
+                                               self.template_phase else self.custom_phase.phase_name}'
