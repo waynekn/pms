@@ -136,42 +136,42 @@ const OrganizationDetail = () => {
     return <OrgAuthForm organizationName={organization.organizationName} />;
   }
 
+  if (errorMessage) {
+    return (
+      <p className="bg-red-600 text-white rounded-lg py-4 px-2 mt-3 md:mx-10">
+        {errorMessage}
+      </p>
+    );
+  }
+
   return (
     <div className=" flex justify-center h-full w-full">
       <main className="w-3/5 ">
-        {errorMessage ? (
-          <p>{errorMessage}</p>
+        <header className="border-b-2 pb-3">
+          <h1 className="text-lg font-bold">{organization.organizationName}</h1>
+        </header>
+        <div className="flex justify-end">
+          <button
+            onClick={navigateToProjectCreationPage}
+            className="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            Create Project.
+          </button>
+        </div>
+        {organization.projects.length > 0 ? (
+          <ul className="space-y-2">
+            {organization.projects.map((project) => (
+              <li key={project.projectId}>
+                <Link
+                  to={`../${project.projectId}/${project.projectNameSlug}/`}
+                >
+                  {project.projectName}
+                </Link>
+              </li>
+            ))}
+          </ul>
         ) : (
-          <>
-            <header className="border-b-2 pb-3">
-              <h1 className="text-lg font-bold">
-                {organization.organizationName}
-              </h1>
-            </header>
-            <div className="flex justify-end">
-              <button
-                onClick={navigateToProjectCreationPage}
-                className="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
-              >
-                Create Project.
-              </button>
-            </div>
-            {organization.projects.length > 0 ? (
-              <ul className="space-y-2">
-                {organization.projects.map((project) => (
-                  <li key={project.projectId}>
-                    <Link
-                      to={`../${project.projectId}/${project.projectNameSlug}/`}
-                    >
-                      {project.projectName}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>{organization.organizationName} does not have any projects</p>
-            )}
-          </>
+          <p>{organization.organizationName} does not have any projects</p>
         )}
       </main>
     </div>
