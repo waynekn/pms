@@ -298,6 +298,42 @@ class ProjectPhaseDetailView(generics.RetrieveAPIView):
         return Response(detail, status=status.HTTP_200_OK)
 
 
+class CustomProjectPhaseCreateView(generics.CreateAPIView):
+    """
+    Handle requests to create a custom project phase.
+
+    This view expects a dict, with a name key, which will be the
+    name of the new project phase
+    """
+
+    serializer_class = serializers.CustomPhaseCreateSerializer
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        project_id = kwargs.get('project_id')
+        phase_name = request.data.get('name')
+
+        if not phase_name:
+            return Response({'detail': 'Please provide a name for your new project workflow.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        try:
+            models.Project.objects.get(pk=project_id)
+        except models.Project.DoesNotExist:
+            return Response({'detail': 'Could not get the project.'}, status=status.HTTP_400_BAD_REQUEST)
+        data = {
+            'project': project_id,
+            'phase_name': phase_name
+        }
+        serializer = self.get_serializer(data=data)
+
+        if serializer.is_valid():
+            phase = serializer.save()
+            phase = serializers.CustomPhaseRetrievalSerializer(phase).data
+
+            return Response(phase, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserProjectsListView(generics.ListAPIView):
     """
     Returns all the projects that the user is a member of.
