@@ -215,6 +215,55 @@ class TemplatePhaseSerializer(serializers.ModelSerializer):
         fields = ['phase_name']
 
 
+class CustomPhaseCreateSerializer(serializers.ModelSerializer):
+    """
+    Handles creation of a custom project phase
+    """
+
+    def validate_phase_name(self, phase_name: str) -> str:
+        phase_name = phase_name.strip() if phase_name else None
+
+        if not phase_name:
+            raise serializers.ValidationError(
+                'Please provide a name for your new project workflow')
+
+        return phase_name
+
+    def validate(self, attrs):
+        project: models.Project = attrs.get('project')
+        phase_name: str = attrs.get('phase_name')
+
+        if project.template:
+            if (models.CustomPhase.objects.filter(project=project, phase_name__iexact=phase_name).exists() or
+                    project.template.phases.filter(phase_name__iexact=phase_name).exists()):
+                raise serializers.ValidationError(
+                    {
+                        'phase_name': 'A project\'s phase name must be unique'
+                    }
+                )
+        else:
+            if models.CustomPhase.objects.filter(project=project, phase_name__iexact=phase_name).exists():
+                raise serializers.ValidationError(
+                    {
+                        'phase_name': 'A project\'s phase name must be unique'
+                    }
+                )
+
+        return attrs
+
+    def create(self, validated_data):
+        project: models.Project = validated_data.get('project')
+        phase_name: str = validated_data.get('phase_name')
+
+        return models.CustomPhase.objects.create(
+            project=project, phase_name=phase_name
+        )
+
+    class Meta:
+        model = models.CustomPhase
+        fields = '__all__'
+
+
 class ProjectPhaseSerializer(serializers.ModelSerializer):
     """
     Serializer class for `ProjectPhase` model.
