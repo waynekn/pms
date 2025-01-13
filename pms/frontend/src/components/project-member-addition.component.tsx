@@ -16,6 +16,7 @@ const NonProjectMembersList = () => {
   const [nonProjectMembers, setNonProjectMembers] = useState<
     NonProjectMember[]
   >([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [addedMembers, setAddedMembers] = useState<string[]>([]);
   const [askForConfirmation, setAskForConfirmation] = useState(false);
@@ -66,8 +67,10 @@ const NonProjectMembersList = () => {
           `project/${projectId}/non-members/`
         );
         setNonProjectMembers(res.data);
+        setIsLoading(false);
       } catch (error) {
         handleErrors(error);
+        setIsLoading(false);
       }
     };
     void getNonProjectMembers();
@@ -138,22 +141,28 @@ const NonProjectMembersList = () => {
         </button>
       </div>
 
-      <ul className="space-y-2">
-        {nonProjectMembers.map((nonProjectMember, index) => (
-          <li
-            key={index}
-            className="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg hover:bg-gray-200 transition duration-200"
-          >
-            <span className="mr-2">
-              <Checkbox
-                name={nonProjectMember.username}
-                onChange={handleChange}
-              />
-            </span>
-            <span className="text-gray-800">{nonProjectMember.username}</span>
-          </li>
-        ))}
-      </ul>
+      {isLoading ? (
+        <div className="w-full h-full mt-10 text-center">
+          <CircularProgress sx={{ color: "gray" }} />
+        </div>
+      ) : (
+        <ul className="space-y-2">
+          {nonProjectMembers.map((nonProjectMember, index) => (
+            <li
+              key={index}
+              className="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg hover:bg-gray-200 transition duration-200"
+            >
+              <span className="mr-2">
+                <Checkbox
+                  name={nonProjectMember.username}
+                  onChange={handleChange}
+                />
+              </span>
+              <span className="text-gray-800">{nonProjectMember.username}</span>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {askForConfirmation && (
         <div className="fixed top-2 left-1/2 transform -translate-x-1/2 bg-white p-8 rounded-lg shadow-lg w-full max-w-md">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AxiosResponse } from "axios";
 import { Link } from "react-router";
+import CircularProgress from "@mui/material/CircularProgress";
 import { debounce } from "lodash";
 import camelize from "../utils/snakecase-to-camelcase";
 import api from "../api";
@@ -38,6 +39,8 @@ const OrganizationComponent = () => {
     "You are currently not a member of any organization."
   );
 
+  const [isLoading, setIslLoading] = useState(true);
+
   useEffect(() => {
     const fetchUserOrganizations = async () => {
       try {
@@ -50,10 +53,12 @@ const OrganizationComponent = () => {
         ) as Organization[];
 
         setUserOrganizations(organizations);
+        setIslLoading(false);
       } catch {
         setFallBackText(
           "An error occured while fetching organizations. Please try again in a while."
         );
+        setIslLoading(false);
       }
     };
     void fetchUserOrganizations();
@@ -128,25 +133,33 @@ const OrganizationComponent = () => {
           Create an organization.
         </Link>
       </div>
-      {/* Display user organizations. */}
-      {userOrganizations.length > 0 ? (
-        <ul className="space-y-2">
-          {userOrganizations.map((userOrganization) => (
-            <li
-              key={userOrganization.organizationId}
-              className="bg-white p-2 rounded-md shadow"
-            >
-              <Link
-                to={`../organization/${userOrganization.organizationNameSlug}`}
-                className="block"
-              >
-                {userOrganization.organizationName}
-              </Link>
-            </li>
-          ))}
-        </ul>
+      {isLoading ? (
+        <div className="w-full h-full mt-10 text-center">
+          <CircularProgress sx={{ color: "gray" }} />
+        </div>
       ) : (
-        <p className="text-gray-600">{fallBackText}</p>
+        <>
+          {/* Display user organizations. */}
+          {userOrganizations.length > 0 ? (
+            <ul className="space-y-2">
+              {userOrganizations.map((userOrganization) => (
+                <li
+                  key={userOrganization.organizationId}
+                  className="bg-white p-2 rounded-md shadow"
+                >
+                  <Link
+                    to={`../organization/${userOrganization.organizationNameSlug}`}
+                    className="block"
+                  >
+                    {userOrganization.organizationName}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-600">{fallBackText}</p>
+          )}
+        </>
       )}
     </div>
   );

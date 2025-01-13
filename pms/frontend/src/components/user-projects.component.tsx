@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { isAxiosError } from "axios";
 import Stack from "@mui/material/Stack";
+import CircularProgress from "@mui/material/CircularProgress";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 
 import api from "../api";
@@ -32,6 +33,7 @@ export type Project = Omit<
 const UserProjectsDisplay = () => {
   const [userProjects, setUserProjects] = useState<Project[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIslLoading] = useState(true);
 
   useEffect(() => {
     const getUserProjects = async () => {
@@ -42,6 +44,7 @@ const UserProjectsDisplay = () => {
           camelize(project)
         ) as Project[];
         setUserProjects(projects);
+        setIslLoading(false);
       } catch (error) {
         if (isAxiosError(error)) {
           const statuscode = error.status;
@@ -50,12 +53,15 @@ const UserProjectsDisplay = () => {
             setErrorMessage(
               "The server is temporarily unavailabe. Please try again in a while."
             );
+            setIslLoading(false);
             return;
           }
 
           setErrorMessage("An unexpected error occured ");
+          setIslLoading(false);
         } else {
           setErrorMessage("An unexpected error occured");
+          setIslLoading(false);
         }
       }
     };
@@ -76,31 +82,39 @@ const UserProjectsDisplay = () => {
 
   return (
     <div>
-      {userProjects.length > 0 ? (
-        <Stack spacing={0.5}>
-          {userProjects.map((project) => (
-            <Link
-              key={project.projectId}
-              to={`../${project.projectId}/${project.projectNameSlug}`}
-              className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
-                         md:max-h-48 overflow-y-hidden"
-            >
-              <p className="text-lg font-bold">{project.projectName}</p>
-              <p className="flex items-center">
-                <AccessTimeOutlinedIcon
-                  sx={{ color: "grey" }}
-                  fontSize="small"
-                />
-                <span className="ml-3 text-gray-600">
-                  {getDate(project.deadline)}
-                </span>
-              </p>
-              <p className="text-gray-600">{project.description}</p>
-            </Link>
-          ))}
-        </Stack>
+      {isLoading ? (
+        <div className="w-full h-full mt-10 text-center">
+          <CircularProgress sx={{ color: "gray" }} />
+        </div>
       ) : (
-        <p>You are not a member of any project</p>
+        <>
+          {userProjects.length > 0 ? (
+            <Stack spacing={0.5}>
+              {userProjects.map((project) => (
+                <Link
+                  key={project.projectId}
+                  to={`../${project.projectId}/${project.projectNameSlug}`}
+                  className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
+                         md:max-h-48 overflow-y-hidden"
+                >
+                  <p className="text-lg font-bold">{project.projectName}</p>
+                  <p className="flex items-center">
+                    <AccessTimeOutlinedIcon
+                      sx={{ color: "grey" }}
+                      fontSize="small"
+                    />
+                    <span className="ml-3 text-gray-600">
+                      {getDate(project.deadline)}
+                    </span>
+                  </p>
+                  <p className="text-gray-600">{project.description}</p>
+                </Link>
+              ))}
+            </Stack>
+          ) : (
+            <p>You are not a member of any project</p>
+          )}
+        </>
       )}
     </div>
   );

@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router";
 import { AxiosError, isAxiosError } from "axios";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import {
   ProjectResponse,
@@ -44,6 +45,8 @@ const ProjectPhasePage = () => {
   const [projectWorkflow, setProjectWorkflow] =
     useState<ProjectWorkFlow>(initialState);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [errorMessage, setErrorMessage] = useState("");
   const { projectId } = useParams();
 
@@ -78,8 +81,10 @@ const ProjectPhasePage = () => {
         );
         const workflow = camelize(res.data) as ProjectWorkFlow;
         setProjectWorkflow(workflow);
+        setIsLoading(false);
       } catch (error) {
         handleErrors(error);
+        setIsLoading(false);
       }
     };
 
@@ -94,31 +99,39 @@ const ProjectPhasePage = () => {
 
   return (
     <Container className="border-x min-h-screen">
-      {projectWorkflow.phases.length > 0 ? (
-        <Stack spacing={0.5} className="pt-2">
-          <p className="underline font-bold text-center text-lg">
-            <span>{projectWorkflow.projectName}</span> phases:
-          </p>
-
-          {projectWorkflow.phases.map((workflow) => (
-            <Link
-              key={workflow.phaseId}
-              to={`../phase/${workflow.phaseId}/detail/`}
-              className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
-                         md:max-h-48 overflow-y-hidden"
-            >
-              <p>{workflow.phaseName}</p>
-            </Link>
-          ))}
-        </Stack>
+      {isLoading ? (
+        <div className="w-full h-full pt-10 text-center">
+          <CircularProgress sx={{ color: "gray" }} />
+        </div>
       ) : (
         <>
-          <p className="font-bold md:text-lg">
-            {projectWorkflow.projectName} does not have a workflow.
-          </p>
-          <p className="text-gray-500">
-            Add phases to start creating, assigning and monitoring tasks.
-          </p>
+          {projectWorkflow.phases.length > 0 ? (
+            <Stack spacing={0.5} className="pt-2">
+              <p className="underline font-bold text-center text-lg">
+                <span>{projectWorkflow.projectName}</span> phases:
+              </p>
+
+              {projectWorkflow.phases.map((workflow) => (
+                <Link
+                  key={workflow.phaseId}
+                  to={`../phase/${workflow.phaseId}/detail/`}
+                  className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
+                             md:max-h-48 overflow-y-hidden"
+                >
+                  <p>{workflow.phaseName}</p>
+                </Link>
+              ))}
+            </Stack>
+          ) : (
+            <>
+              <p className="font-bold md:text-lg">
+                {projectWorkflow.projectName} does not have a workflow.
+              </p>
+              <p className="text-gray-500">
+                Add phases to start creating, assigning and monitoring tasks.
+              </p>
+            </>
+          )}
         </>
       )}
     </Container>

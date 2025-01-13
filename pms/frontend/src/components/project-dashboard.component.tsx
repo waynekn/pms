@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { BarChart } from "@mui/x-charts/BarChart";
+import ProjectDashBoardPlaceHolder from "../placeholders/project-dashboard.placeholder";
 
 import camelize from "../utils/snakecase-to-camelcase";
 import api from "../api";
@@ -40,6 +41,8 @@ const ProjectDashBoard = () => {
   };
   const [projectStats, setProjectStats] = useState<ProjectStats>(initialState);
 
+  const [isLoading, setIslLoading] = useState(true);
+
   const barColors = ["#FF5733", "#FFC300", "#28A745"];
 
   const { projectId } = useParams();
@@ -52,13 +55,19 @@ const ProjectDashBoard = () => {
         );
         const stats = camelize(res.data) as ProjectStats;
         setProjectStats(stats);
+        setIslLoading(false);
       } catch (error) {
         // TODO
         console.log(error);
+        setIslLoading(false);
       }
     };
     void getProjectStats();
   }, [projectId]);
+
+  if (isLoading) {
+    return <ProjectDashBoardPlaceHolder />;
+  }
 
   return (
     <div className="h-full w-full flex flex-col ">

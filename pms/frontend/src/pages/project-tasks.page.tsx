@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router";
 import { AxiosError, isAxiosError } from "axios";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import CircularProgress from "@mui/material/CircularProgress";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 
 import {
@@ -53,6 +54,7 @@ const ProjectTasksPage = () => {
     tasks: [],
   };
   const [projectTasks, setProjectTasks] = useState<ProjectTasks>(initialState);
+  const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
   const { projectId } = useParams();
@@ -83,6 +85,7 @@ const ProjectTasksPage = () => {
     const getProjectTasks = async () => {
       if (!projectId) {
         setErrorMessage("Invalid url");
+        setIsLoading(false);
         return;
       }
 
@@ -92,8 +95,10 @@ const ProjectTasksPage = () => {
         );
         const projectTasks = camelize(res.data) as ProjectTasks;
         setProjectTasks(projectTasks);
+        setIsLoading(false);
       } catch (error) {
         handleErrors(error);
+        setIsLoading(false);
       }
     };
     void getProjectTasks();
@@ -117,35 +122,43 @@ const ProjectTasksPage = () => {
 
   return (
     <Container className="border-x min-h-screen">
-      {projectTasks.tasks.length > 0 ? (
-        <Stack spacing={0.5}>
-          {projectTasks.tasks.map((task) => (
-            <Link
-              key={task.taskId}
-              to={`../task/${task.taskId}/detail/`}
-              className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
-                         md:max-h-48 overflow-y-hidden"
-            >
-              <p className="text-lg font-bold">{task.taskName}</p>
-              <p className="flex items-center">
-                <AccessTimeOutlinedIcon
-                  sx={{ color: "grey" }}
-                  fontSize="small"
-                />
-                <span className="ml-3 text-gray-600">
-                  {getDate(task.deadline)}
-                </span>
-              </p>
-              <p className="text-gray-600">{task.description}</p>
-            </Link>
-          ))}
-        </Stack>
+      {isLoading ? (
+        <div className="w-full h-full pt-10 text-center">
+          <CircularProgress sx={{ color: "gray" }} />
+        </div>
       ) : (
         <>
-          <p className="font-bold md:text-lg">
-            {projectTasks.projectName} does not have any tasks currently.
-          </p>
-          <p className="text-gray-500">Tasks created will appear here.</p>
+          {projectTasks.tasks.length > 0 ? (
+            <Stack spacing={0.5}>
+              {projectTasks.tasks.map((task) => (
+                <Link
+                  key={task.taskId}
+                  to={`../task/${task.taskId}/detail/`}
+                  className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
+                         md:max-h-48 overflow-y-hidden"
+                >
+                  <p className="text-lg font-bold">{task.taskName}</p>
+                  <p className="flex items-center">
+                    <AccessTimeOutlinedIcon
+                      sx={{ color: "grey" }}
+                      fontSize="small"
+                    />
+                    <span className="ml-3 text-gray-600">
+                      {getDate(task.deadline)}
+                    </span>
+                  </p>
+                  <p className="text-gray-600">{task.description}</p>
+                </Link>
+              ))}
+            </Stack>
+          ) : (
+            <>
+              <p className="font-bold md:text-lg">
+                {projectTasks.projectName} does not have any tasks currently.
+              </p>
+              <p className="text-gray-500">Tasks created will appear here.</p>
+            </>
+          )}
         </>
       )}
     </Container>

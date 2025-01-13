@@ -6,6 +6,7 @@ import Stack from "@mui/material/Stack";
 
 import KanbanTask from "../components/kanban-task.component";
 import TaskCreateForm from "../components/task-creation-form";
+import ProjectPhaseDetailPlaceholder from "../placeholders/project-phase-detail.placeholder";
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
@@ -52,6 +53,7 @@ const ProjectPhaseDetail = () => {
   const [detail, setDetail] = useState(initialState);
 
   const [displayTaskCreateForm, setDisplayTaskCreateForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const { projectPhaseId } = useParams();
 
@@ -90,12 +92,18 @@ const ProjectPhaseDetail = () => {
         );
         const detail: PhaseDetail = camelize(res.data) as PhaseDetail;
         setDetail(detail);
+        setIsLoading(false);
       } catch (error) {
         handleErrors(error);
+        setIsLoading(false);
       }
     };
     void getProjectPhaseDetail();
   }, [projectPhaseId]);
+
+  if (isLoading) {
+    return <ProjectPhaseDetailPlaceholder />;
+  }
 
   if (errorMessage) {
     return (
