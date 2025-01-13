@@ -46,8 +46,14 @@ const ProjectPhasePage = () => {
     useState<ProjectWorkFlow>(initialState);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isaddingProjectWorkflow, setIsAddingProjectWorkflow] = useState(false);
+  const [phaseInput, setPhaseInput] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [
+    projectPhaseAdditionErrorMessage,
+    setProjectPhaseAdditionErrorMessage,
+  ] = useState("");
   const { projectId } = useParams();
 
   const handleErrors = (error: unknown) => {
@@ -91,6 +97,55 @@ const ProjectPhasePage = () => {
     void getProjectWorkflow();
   }, [projectId]);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhaseInput(e.target.value);
+  };
+
+  const createProjectPhase = async () => {
+    setIsAddingProjectWorkflow(true);
+    setProjectPhaseAdditionErrorMessage("");
+    try {
+      const res = await api.post<ProjectPhaseResponse>(
+        `project/${projectId}/phase/create/`,
+        {
+          name: phaseInput,
+        }
+      );
+      const newWorkflow = camelize(res.data) as ProjectPhase;
+      setProjectWorkflow((prevState) => ({
+        ...prevState,
+        phases: [...prevState.phases, newWorkflow],
+      }));
+      setIsAddingProjectWorkflow(false);
+    } catch (error) {
+      setIsAddingProjectWorkflow(false);
+      if (isAxiosError(error)) {
+        const statusCode = error.status;
+
+        if (statusCode === 400 || statusCode === 404) {
+          const axiosError = error as AxiosError<{
+            phase_name?: string;
+            detail?: string;
+          }>;
+          setProjectPhaseAdditionErrorMessage(
+            axiosError.response?.data.phase_name ||
+              axiosError.response?.data.detail ||
+              "An unexpected error occurred."
+          );
+          return;
+        }
+
+        if (statusCode && statusCode >= 500) {
+          setProjectPhaseAdditionErrorMessage("A server error occurred.");
+          return;
+        }
+        setProjectPhaseAdditionErrorMessage("An unexpected error occurred.");
+      } else {
+        setProjectPhaseAdditionErrorMessage("An unexpected error occurred.");
+      }
+    }
+  };
+
   if (errorMessage) {
     <p className="bg-red-600 text-white rounded-lg py-4 px-2 mt-3 md:mx-10">
       {errorMessage}
@@ -110,6 +165,32 @@ const ProjectPhasePage = () => {
               <p className="underline font-bold text-center text-lg">
                 <span>{projectWorkflow.projectName}</span> phases:
               </p>
+
+              <div className="md:w-1/2">
+                <div className="flex justify-center">
+                  <input
+                    type="text"
+                    className="my-1 mr-3 block grow px-3 py-2 border border-gray-300 rounded-md shadow-sm
+                     focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Create new project phase"
+                    onChange={handleChange}
+                  />
+                  <button
+                    className="bg-blue-600 text-white rounded-md my-1 px-2"
+                    onClick={createProjectPhase}
+                  >
+                    Create
+                    {isaddingProjectWorkflow && (
+                      <span className="ml-2">
+                        <CircularProgress size={13} sx={{ color: "white" }} />
+                      </span>
+                    )}
+                  </button>
+                </div>
+                <p className="text-red-600 text-sm">
+                  {projectPhaseAdditionErrorMessage}
+                </p>
+              </div>
 
               {projectWorkflow.phases.map((workflow) => (
                 <Link
