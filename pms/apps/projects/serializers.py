@@ -270,6 +270,16 @@ class CustomPhaseCreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CustomPhaseRetrievalSerializer(serializers.ModelSerializer):
+    """
+    Handles retreival of a custom project phase
+    """
+
+    class Meta:
+        model = models.CustomPhase
+        fields = ['phase_id', 'phase_name']
+
+
 class ProjectPhaseSerializer(serializers.ModelSerializer):
     """
     Serializer class for `ProjectPhase` model.
