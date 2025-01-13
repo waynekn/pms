@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { isAxiosError, AxiosError } from "axios";
 import classNames from "classnames";
 
+import FormPlaceHolder from "../placeholders/form.placeholder";
+
 import { selectCurrentUser } from "../store/user/user.selector";
 import camelize from "../utils/snakecase-to-camelcase";
 import DisplayTemplateWorkFlow from "../components/template-workflow.component";
@@ -69,10 +71,11 @@ const TemplateCreationForm = () => {
         const industries = industryResponse.map((industry) =>
           camelize(industry)
         ) as Industry[];
-        setIslLoading(false);
         setIndustries(industries);
+        setIslLoading(false);
       } catch {
         setInitializationError(true);
+        setIslLoading(false);
       }
     };
     void fetchIndustries();
@@ -134,6 +137,14 @@ const TemplateCreationForm = () => {
       <p className="text-red-500 font-bold">
         Could not initialize form. Please try again later.
       </p>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex w-full h-dvh items-center justify-center space-even">
+        <FormPlaceHolder />
+      </div>
     );
   }
 
