@@ -69,6 +69,13 @@ class TaskDetailView(generics.RetrieveAPIView):
         except models.Task.DoesNotExist:
             return Response({'detail': 'Could not get the task'}, status=status.HTTP_404_NOT_FOUND)
 
+        try:
+            membership = ProjectMember.objects.get(
+                project=task.project, member=self.request.user)
+        except ProjectMember.DoesNotExist:
+            return Response({'detail': 'You are unauthorized to access this information.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
         task_data = serializers.TaskRetrievalSerializer(task).data
 
         user_ids = models.TaskAssignment.objects.filter(
@@ -79,6 +86,7 @@ class TaskDetailView(generics.RetrieveAPIView):
         assignees = UserRetrievalSerializer(users, many=True).data
 
         task_data['assignees'] = assignees
+        task_data['role'] = membership.role
 
         return Response(task_data, status=status.HTTP_200_OK)
 
