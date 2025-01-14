@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { isAxiosError, AxiosError } from "axios";
 import { Container } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import api from "../api";
+import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 export type ProjectMember = {
   username: string;
@@ -30,38 +30,11 @@ const ProjectMembersList = () => {
         setProjectMembers(res.data);
         setIsLoading(false);
       } catch (error) {
-        if (isAxiosError(error)) {
-          const statusCode = error.status;
-
-          if (statusCode === 404) {
-            const axiosError = error as AxiosError<{ detail: string }>;
-            setErrorMessage(
-              axiosError.response?.data.detail ||
-                "Could not get project members."
-            );
-            setIsLoading(false);
-            return;
-          }
-
-          if (statusCode === 400) {
-            const axiosError = error as AxiosError<{ detail: string }>;
-            setErrorMessage(axiosError.response?.data.detail || "Bad request.");
-            setIsLoading(false);
-            return;
-          }
-
-          if (statusCode && statusCode >= 500) {
-            setErrorMessage("A server error occurred.");
-            setIsLoading(false);
-            return;
-          }
-
-          setErrorMessage("An unknown error occured.");
-          setIsLoading(false);
-        } else {
-          setErrorMessage("An unkown error occured.");
-          setIsLoading(false);
-        }
+        const errorMessageConfig: ErrorMessageConfig = {
+          404: "Could not get project members.",
+        };
+        setErrorMessage(handleGenericApiErrors(error, errorMessageConfig));
+        setIsLoading(false);
       }
     };
 

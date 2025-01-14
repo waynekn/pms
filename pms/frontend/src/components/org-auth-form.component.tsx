@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { isAxiosError, AxiosError } from "axios";
 import api from "../api";
+import handleGenericApiErrors from "../utils/errors";
 
 type OrgAuthFormProps = {
   organizationName: string;
@@ -27,14 +27,7 @@ const OrgAuthForm = ({ organizationName }: OrgAuthFormProps) => {
       // reload the page to display organization detail if auth attempt was successful
       location.reload();
     } catch (error) {
-      if (isAxiosError(error)) {
-        const axiosError = error as AxiosError<{ error: string }>;
-        setErrorMessage(
-          axiosError.response?.data.error || " An unexpected error occurred."
-        );
-      } else {
-        setErrorMessage("An unexpected error occurred.");
-      }
+      setErrorMessage(handleGenericApiErrors(error));
     }
   };
 

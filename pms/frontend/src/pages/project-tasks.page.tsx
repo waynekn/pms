@@ -14,6 +14,7 @@ import { ProjectPhaseResponse, ProjectPhase } from "./project-phases.page";
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
+import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 export type TaskResponse = {
   task_id: string;
@@ -98,6 +99,12 @@ const ProjectTasksPage = () => {
         setIsLoading(false);
       } catch (error) {
         handleErrors(error);
+        const messageConfig: ErrorMessageConfig = {
+          400: "An unexpected error occurred.",
+          404: "An unexpected error occurred.",
+          500: "A server error occurred.",
+        };
+        setErrorMessage(handleGenericApiErrors(error, messageConfig));
         setIsLoading(false);
       }
     };

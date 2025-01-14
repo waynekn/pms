@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { isAxiosError, AxiosError } from "axios";
-
 import classNames from "classnames";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -8,6 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { ProjectMember } from "./project-members-list.component";
 import api from "../api";
 import Checkbox from "@mui/material/Checkbox";
+import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 type TaskAssignmentComponentProps = {
   taskId: string;
@@ -25,28 +24,6 @@ const TaskAssignmentComponent = ({
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleErrors = (error: unknown) => {
-    if (isAxiosError(error)) {
-      const statusCode = error.status;
-
-      if (statusCode === 400 || statusCode === 404) {
-        const axiosError = error as AxiosError<{ detail: string }>;
-        setErrorMessage(
-          axiosError.response?.data.detail || "An unexpected error occurred."
-        );
-        return;
-      }
-
-      if (statusCode && statusCode >= 500) {
-        setErrorMessage("A server error occurred.");
-        return;
-      }
-      setErrorMessage("An unexpected error occurred.");
-    } else {
-      setErrorMessage("An unexpected error occurred.");
-    }
-  };
-
   useEffect(() => {
     const getNonAssignees = async () => {
       try {
@@ -56,8 +33,13 @@ const TaskAssignmentComponent = ({
         setNonAssignees(res.data);
         setIsLoading(false);
       } catch (error) {
+        const messageConfig: ErrorMessageConfig = {
+          400: "An unexpected error occurred.",
+          404: "An unexpected error occurred.",
+          500: "A server error occurred.",
+        };
+        setErrorMessage(handleGenericApiErrors(error, messageConfig));
         setIsLoading(false);
-        handleErrors(error);
       }
     };
     void getNonAssignees();
@@ -88,9 +70,14 @@ const TaskAssignmentComponent = ({
       setAskForConfirmation(false);
       changeTab();
     } catch (error) {
+      const messageConfig: ErrorMessageConfig = {
+        400: "An unexpected error occurred.",
+        404: "An unexpected error occurred.",
+        500: "A server error occurred.",
+      };
+      setErrorMessage(handleGenericApiErrors(error, messageConfig));
       setdisplayCircularProgress(false);
       setAskForConfirmation(false);
-      handleErrors(error);
     }
   };
 

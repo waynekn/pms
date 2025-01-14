@@ -12,6 +12,7 @@ import {
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
+import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 export type ProjectPhaseResponse = {
   phase_id: string;
@@ -56,28 +57,6 @@ const ProjectPhasePage = () => {
   ] = useState("");
   const { projectId } = useParams();
 
-  const handleErrors = (error: unknown) => {
-    if (isAxiosError(error)) {
-      const statusCode = error.status;
-
-      if (statusCode === 400 || statusCode === 404) {
-        const axiosError = error as AxiosError<{ detail: string }>;
-        setErrorMessage(
-          axiosError.response?.data.detail || "An unexpected error occurred."
-        );
-        return;
-      }
-
-      if (statusCode && statusCode >= 500) {
-        setErrorMessage("A server error occurred.");
-        return;
-      }
-      setErrorMessage("An unexpected error occurred.");
-    } else {
-      setErrorMessage("An unexpected error occurred.");
-    }
-  };
-
   useEffect(() => {
     const getProjectWorkflow = async () => {
       setErrorMessage("");
@@ -89,7 +68,11 @@ const ProjectPhasePage = () => {
         setProjectWorkflow(workflow);
         setIsLoading(false);
       } catch (error) {
-        handleErrors(error);
+        const messageConfig: ErrorMessageConfig = {
+          400: "An unexpected error occurred.",
+          404: "An unexpected error occurred.",
+        };
+        setErrorMessage(handleGenericApiErrors(error, messageConfig));
         setIsLoading(false);
       }
     };
@@ -99,6 +82,33 @@ const ProjectPhasePage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhaseInput(e.target.value);
+  };
+
+  const handleErrors = (error: unknown) => {
+    if (isAxiosError(error)) {
+      const statusCode = error.status;
+
+      if (statusCode === 400 || statusCode === 404) {
+        const axiosError = error as AxiosError<{
+          phase_name?: string;
+          detail?: string;
+        }>;
+        setProjectPhaseAdditionErrorMessage(
+          axiosError.response?.data.phase_name ||
+            axiosError.response?.data.detail ||
+            "An unexpected error occurred."
+        );
+        return;
+      }
+
+      if (statusCode && statusCode >= 500) {
+        setProjectPhaseAdditionErrorMessage("A server error occurred.");
+        return;
+      }
+      setProjectPhaseAdditionErrorMessage("An unexpected error occurred.");
+    } else {
+      setProjectPhaseAdditionErrorMessage("An unexpected error occurred.");
+    }
   };
 
   const createProjectPhase = async () => {
@@ -118,31 +128,8 @@ const ProjectPhasePage = () => {
       }));
       setIsAddingProjectWorkflow(false);
     } catch (error) {
+      handleErrors(error);
       setIsAddingProjectWorkflow(false);
-      if (isAxiosError(error)) {
-        const statusCode = error.status;
-
-        if (statusCode === 400 || statusCode === 404) {
-          const axiosError = error as AxiosError<{
-            phase_name?: string;
-            detail?: string;
-          }>;
-          setProjectPhaseAdditionErrorMessage(
-            axiosError.response?.data.phase_name ||
-              axiosError.response?.data.detail ||
-              "An unexpected error occurred."
-          );
-          return;
-        }
-
-        if (statusCode && statusCode >= 500) {
-          setProjectPhaseAdditionErrorMessage("A server error occurred.");
-          return;
-        }
-        setProjectPhaseAdditionErrorMessage("An unexpected error occurred.");
-      } else {
-        setProjectPhaseAdditionErrorMessage("An unexpected error occurred.");
-      }
     }
   };
 

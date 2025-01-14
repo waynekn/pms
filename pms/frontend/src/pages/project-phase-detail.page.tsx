@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { isAxiosError, AxiosError } from "axios";
 import { useParams } from "react-router";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
@@ -10,6 +9,7 @@ import ProjectPhaseDetailPlaceholder from "../placeholders/project-phase-detail.
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
+import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 import { TaskResponse, Task } from "./project-tasks.page";
 import { ProjectPhaseResponse, ProjectPhase } from "./project-phases.page";
@@ -57,33 +57,6 @@ const ProjectPhaseDetail = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { projectPhaseId } = useParams();
 
-  const handleErrors = (error: unknown) => {
-    if (isAxiosError(error)) {
-      const statusCode = error.status;
-
-      if (statusCode === 400) {
-        const axiosError = error as AxiosError<{ detail: string }>;
-        setErrorMessage(
-          axiosError.response?.data.detail || "An unexpected error occurred."
-        );
-        return;
-      }
-
-      if (statusCode === 404) {
-        setErrorMessage("Could not find project phase.");
-        return;
-      }
-
-      if (statusCode && statusCode >= 500) {
-        setErrorMessage("A server error occurred.");
-        return;
-      }
-      setErrorMessage("An unexpected error occurred.");
-    } else {
-      setErrorMessage("An unexpected error occurred.");
-    }
-  };
-
   useEffect(() => {
     const getProjectPhaseDetail = async () => {
       try {
@@ -94,7 +67,12 @@ const ProjectPhaseDetail = () => {
         setDetail(detail);
         setIsLoading(false);
       } catch (error) {
-        handleErrors(error);
+        const messageConfig: ErrorMessageConfig = {
+          400: "An unexpected error occurred.",
+          404: "Could not find project phase.",
+          500: "A server error occurred.",
+        };
+        setErrorMessage(handleGenericApiErrors(error, messageConfig));
         setIsLoading(false);
       }
     };

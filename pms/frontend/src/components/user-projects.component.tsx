@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { isAxiosError } from "axios";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
+import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 export type ProjectResponse = {
   created_at: string;
@@ -46,23 +46,11 @@ const UserProjectsDisplay = () => {
         setUserProjects(projects);
         setIslLoading(false);
       } catch (error) {
-        if (isAxiosError(error)) {
-          const statuscode = error.status;
-
-          if (!statuscode) {
-            setErrorMessage(
-              "The server is temporarily unavailabe. Please try again in a while."
-            );
-            setIslLoading(false);
-            return;
-          }
-
-          setErrorMessage("An unexpected error occured ");
-          setIslLoading(false);
-        } else {
-          setErrorMessage("An unexpected error occured");
-          setIslLoading(false);
-        }
+        const messageConfig: ErrorMessageConfig = {
+          500: "The server is temporarily unavailabe. Please try again in a while.",
+        };
+        setErrorMessage(handleGenericApiErrors(error, messageConfig));
+        setIslLoading(false);
       }
     };
     void getUserProjects();

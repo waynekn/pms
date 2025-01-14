@@ -7,6 +7,7 @@ import OrgAuthForm from "../components/org-auth-form.component";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import { ProjectCreationPageState } from "./project-create.page";
+import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 // Projects response from API.
 type ProjectResponse = {
@@ -81,16 +82,7 @@ const OrganizationDetail = () => {
       } catch (error) {
         if (isAxiosError(error)) {
           const axiosError = error as AxiosError;
-
           const statusCode = axiosError.status;
-          // If there is then the error is not from the server.
-          if (!statusCode) {
-            setErrorMessage(
-              "The server is temporarily unavailable. Please try again in a while."
-            );
-            setIslLoading(false);
-            return;
-          }
 
           if (statusCode === 403) {
             const forbiddenError = error as AxiosError<{
@@ -107,11 +99,10 @@ const OrganizationDetail = () => {
             return;
           }
 
-          const unexpectedError = error as AxiosError<{ error: string }>;
-          setErrorMessage(
-            unexpectedError.response?.data.error ||
-              "An unexpected error occurred."
-          );
+          const messageConfig: ErrorMessageConfig = {
+            500: "The server is temporarily unavailable. Please try again in a while.",
+          };
+          setErrorMessage(handleGenericApiErrors(error, messageConfig));
           setIslLoading(false);
         } else {
           setErrorMessage("An unexpected error occurred.");

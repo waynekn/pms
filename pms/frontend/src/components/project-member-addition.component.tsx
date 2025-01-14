@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames";
-import { AxiosError, isAxiosError } from "axios";
 import { useParams, useNavigate } from "react-router";
 import Checkbox from "@mui/material/Checkbox";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import api from "../api";
+import handleGenericApiErrors from "../utils/errors";
 
 type NonProjectMember = {
   username: string;
@@ -25,36 +25,36 @@ const NonProjectMembersList = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
 
-  const handleErrors = (error: unknown) => {
-    if (isAxiosError(error)) {
-      const statusCode = error.status;
+  // const handleErrors = (error: unknown) => {
+  //   if (isAxiosError(error)) {
+  //     const statusCode = error.status;
 
-      if (!statusCode) {
-        setErrorMessage("An unexpected error occurred");
-        return;
-      }
+  //     if (!statusCode) {
+  //       setErrorMessage("An unexpected error occurred");
+  //       return;
+  //     }
 
-      if (statusCode === 400) {
-        const axiosError = error as AxiosError<{ error: string }>;
-        setErrorMessage(
-          axiosError.response?.data.error || "An unexpected error occurred"
-        );
-        return;
-      }
+  //     if (statusCode === 400) {
+  //       const axiosError = error as AxiosError<{ error: string }>;
+  //       setErrorMessage(
+  //         axiosError.response?.data.error || "An unexpected error occurred"
+  //       );
+  //       return;
+  //     }
 
-      if (statusCode === 404) {
-        const axiosError = error as AxiosError<{ detail: string }>;
-        setErrorMessage(
-          axiosError.response?.data.detail || "An unexpected error occurred"
-        );
-        return;
-      }
+  //     if (statusCode === 404) {
+  //       const axiosError = error as AxiosError<{ detail: string }>;
+  //       setErrorMessage(
+  //         axiosError.response?.data.detail || "An unexpected error occurred"
+  //       );
+  //       return;
+  //     }
 
-      setErrorMessage("An unexpected error occurred");
-    } else {
-      setErrorMessage("An unexpected error occurred");
-    }
-  };
+  //     setErrorMessage("An unexpected error occurred");
+  //   } else {
+  //     setErrorMessage("An unexpected error occurred");
+  //   }
+  // };
 
   useEffect(() => {
     const getNonProjectMembers = async () => {
@@ -69,7 +69,7 @@ const NonProjectMembersList = () => {
         setNonProjectMembers(res.data);
         setIsLoading(false);
       } catch (error) {
-        handleErrors(error);
+        setErrorMessage(handleGenericApiErrors(error));
         setIsLoading(false);
       }
     };
@@ -87,7 +87,8 @@ const NonProjectMembersList = () => {
 
       await navigate("../members/");
     } catch (error) {
-      handleErrors(error);
+      setErrorMessage(handleGenericApiErrors(error));
+      setIsLoading(false);
     }
   };
 
@@ -109,7 +110,7 @@ const NonProjectMembersList = () => {
   if (errorMessage) {
     return (
       <div className="bg-red-600 text-white rounded-lg py-4 px-2 flex">
-        <p className="font-bold grow">{errorMessage}</p>
+        <p className="grow">{errorMessage}</p>
         <span
           onClick={() => (
             setErrorMessage(""),

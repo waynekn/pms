@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames";
 import { useParams } from "react-router";
-import { AxiosError, isAxiosError } from "axios";
 import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -12,6 +11,7 @@ import { ProjectMember } from "../components/project-members-list.component";
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
+import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 type TaskDetailResponse = TaskResponse & { assignees: ProjectMember[] };
 
@@ -35,28 +35,6 @@ const TaskDetailPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { taskId } = useParams();
 
-  const handleErrors = (error: unknown) => {
-    if (isAxiosError(error)) {
-      const statusCode = error.status;
-
-      if (statusCode === 400 || statusCode === 404) {
-        const axiosError = error as AxiosError<{ detail: string }>;
-        setErrorMessage(
-          axiosError.response?.data.detail || "An unexpected error occurred."
-        );
-        return;
-      }
-
-      if (statusCode && statusCode >= 500) {
-        setErrorMessage("A server error occurred.");
-        return;
-      }
-      setErrorMessage("An unexpected error occurred.");
-    } else {
-      setErrorMessage("An unexpected error occurred.");
-    }
-  };
-
   useEffect(() => {
     const getTaskDetail = async () => {
       try {
@@ -65,7 +43,12 @@ const TaskDetailPage = () => {
         setTaskDetail(data);
         setIsLoading(false);
       } catch (error) {
-        handleErrors(error);
+        const messageConfig: ErrorMessageConfig = {
+          400: "An unexpected error occurred.",
+          404: "An unexpected error occurred.",
+          500: "A server error occurred.",
+        };
+        setErrorMessage(handleGenericApiErrors(error, messageConfig));
         setIsLoading(false);
       }
     };

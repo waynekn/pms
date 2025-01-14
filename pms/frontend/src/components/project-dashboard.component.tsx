@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { BarChart } from "@mui/x-charts/BarChart";
 import ProjectDashBoardPlaceHolder from "../placeholders/project-dashboard.placeholder";
 
+import handleGenericApiErrors from "../utils/errors";
 import camelize from "../utils/snakecase-to-camelcase";
 import api from "../api";
 
@@ -42,6 +43,7 @@ const ProjectDashBoard = () => {
   const [projectStats, setProjectStats] = useState<ProjectStats>(initialState);
 
   const [isLoading, setIslLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const barColors = ["#FF5733", "#FFC300", "#28A745"];
 
@@ -58,7 +60,7 @@ const ProjectDashBoard = () => {
         setIslLoading(false);
       } catch (error) {
         // TODO
-        console.log(error);
+        setErrorMessage(handleGenericApiErrors(error));
         setIslLoading(false);
       }
     };
@@ -67,6 +69,14 @@ const ProjectDashBoard = () => {
 
   if (isLoading) {
     return <ProjectDashBoardPlaceHolder />;
+  }
+
+  if (errorMessage) {
+    return (
+      <p className="bg-red-600 text-white rounded-lg py-4 px-2 mt-3 md:mx-10">
+        {errorMessage}
+      </p>
+    );
   }
 
   return (
