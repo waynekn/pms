@@ -106,7 +106,7 @@ class ProjectStatsView(APIView):
         pk = request.query_params.get('pk')
 
         if not pk:
-            return Response({'error': 'No project was provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'No project was provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         project = get_object_or_404(models.Project, pk=pk)
 
@@ -169,7 +169,7 @@ class NonProjectMemberListView(generics.ListAPIView):
 
         if not project_id:
             raise ValidationError(
-                {'error': 'No project was provided'})
+                {'detail': 'No project was provided'})
 
         project = get_object_or_404(models.Project, pk=project_id)
 
@@ -198,7 +198,7 @@ class ProjectMemberAdditionView(generics.CreateAPIView):
         usernames: list[str] = request.data.get('members')
 
         if not usernames:
-            return Response({'error': 'No members to be added were provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'No members to be added were provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         project_id = self.kwargs.get('project_id')
 

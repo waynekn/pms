@@ -70,7 +70,7 @@ class OrganizationSearchView(APIView):
             'organization_name_query', '')
 
         if not organization_name_query:
-            return Response({"error": "No organization name provided"}, status=400)
+            return Response({"detail": "No organization name provided"}, status=400)
 
         organizations = Organization.objects.filter(
             organization_name__icontains=organization_name_query)
@@ -102,13 +102,13 @@ class OrganizationDetailView(APIView):
         organization_name_slug = request.data.get('organizationNameSlug')
 
         if not organization_name_slug:
-            return Response({'error': 'Incomplete credentials provided.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Incomplete credentials provided.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             organization = Organization.objects.get(
                 organization_name_slug=organization_name_slug)
         except Organization.DoesNotExist:
-            return Response({'error': 'Organization not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': 'Organization not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Only allow members of the organization to view the detail.
         if not organization.members.filter(user=self.request.user).exists():
@@ -152,16 +152,16 @@ class OrganizationAuthView(APIView):
             organization = Organization.objects.get(
                 organization_name=organization_name)
         except Organization.DoesNotExist:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
         password = password.strip() if password else None
 
         if not password:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
         if check_password(password, organization.organization_password):
             OrganizationMember.objects.create(
                 organization=organization, user=self.request.user)
             return Response(status=status.HTTP_201_CREATED)
 
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
