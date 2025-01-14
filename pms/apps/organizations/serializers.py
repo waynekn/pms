@@ -53,7 +53,8 @@ class OrganizationCreationSerializer(serializers.ModelSerializer):
 
         OrganizationMember.objects.create(
             organization=organization,
-            user=user
+            user=user,
+            role='Admin'
         )
 
         return organization
