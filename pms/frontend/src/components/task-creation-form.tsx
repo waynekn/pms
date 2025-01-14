@@ -87,17 +87,14 @@ const TaskCreateForm = ({
     } catch (error) {
       setIsLoading(false);
       if (isAxiosError(error)) {
-        const statusCode = error.status;
-
-        if (statusCode === 400) {
-          const axiosError = error as AxiosError<ErrorResponse>;
-          const errorResponse = axiosError.response?.data as ErrorResponse;
+        const axiosError = error as AxiosError<ErrorResponse>;
+        const errorResponse = axiosError.response?.data;
+        if (!errorResponse) {
+          setFormErrors({ nonFieldErrors: ["An unexpected error occurred."] });
+        } else {
           const formErrors = camelize(errorResponse) as FormErrors;
           setFormErrors(formErrors);
-          return;
         }
-
-        setFormErrors({ nonFieldErrors: ["An unexpected error occurred."] });
       } else {
         setFormErrors({ nonFieldErrors: ["An unexpected error occurred."] });
       }
@@ -147,6 +144,15 @@ const TaskCreateForm = ({
             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 text-sm"
             value={phaseName}
           />
+          {formErrors.projectPhase && formErrors.projectPhase.length > 0 && (
+            <ul>
+              {formErrors.projectPhase.map((error) => (
+                <li key={error} className="text-red-600 text-sm">
+                  {error}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Task name field*/}
