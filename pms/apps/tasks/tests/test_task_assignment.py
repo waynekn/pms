@@ -118,3 +118,15 @@ class TaskAssignMentTest(APITestCase):
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_only_project_manager_can_assign_task(self):
+        user = User.objects.create_user(
+            username='testuser2', email='testmail2@test.com', password='securepassword123'
+        )
+        client = APIClient()
+        client.force_authenticate(user=user)
+
+        data = {'assignees': [user.username]}
+        response = client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
