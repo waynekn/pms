@@ -4,9 +4,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 
-from apps.projects import models
 from apps.users.models import User
-from apps.organizations.models import Organization
 
 
 class CustomProjectPhaseCreationTests(APITestCase):
@@ -61,3 +59,21 @@ class CustomProjectPhaseCreationTests(APITestCase):
         response = self.client.post(self.url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_only_project_manager_can_create_custom_phase(self):
+        user = User.objects.create_user(
+            username='testuser2', email='testmail2@test.com', password='securepassword123'
+        )
+        self.client.force_authenticate(user=user)
+        project_member_url = reverse('project_members_addition', kwargs={
+                                     'project_id': f'{self.project.data['project_id']}'})
+
+        # create a new project member
+        self.client.post(project_member_url, {'members':
+                                              f'{user.username}'}, format='json')
+
+        data = {'name': 'custom_phase'}
+
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
