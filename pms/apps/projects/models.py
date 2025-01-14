@@ -149,11 +149,18 @@ class ProjectMember(models.Model):
     """
     Represents users who are members of a `Project` 
     """
+    MANAGER = 'Manager'
+    MEMBER = 'Member'
+    ROLES = [
+        (MANAGER, 'Manager'),
+        (MEMBER, 'Member'),
+    ]
 
     member = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="projects", verbose_name="Project Member")
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="members", verbose_name="Project")
+    role = models.CharField(max_length=50, choices=ROLES, default=MEMBER)
 
 
 class CustomPhase(models.Model):
