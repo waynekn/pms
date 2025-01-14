@@ -301,6 +301,15 @@ class ProjectPhaseDetailView(generics.RetrieveAPIView):
         project_phase: models.ProjectPhase = get_object_or_404(
             models.ProjectPhase, pk=phase_id)
 
+        project = project_phase.project
+
+        try:
+            membership = models.ProjectMember.objects.get(
+                project=project, member=self.request.user)
+        except models.ProjectMember.DoesNotExist:
+            return Response({'detail': 'You are not authorized to access this information'},
+                            status=status.HTTP_403_FORBIDDEN)
+
         in_progress_tasks = Task.objects.filter(
             project_phase=project_phase, status=Task.IN_PROGRESS)
         on_hold_tasks = Task.objects.filter(
@@ -308,11 +317,10 @@ class ProjectPhaseDetailView(generics.RetrieveAPIView):
         done_tasks = Task.objects.filter(
             project_phase=project_phase, status=Task.DONE)
 
-        project = project_phase.project
-
         detail = {
             "project": serializers.ProjectRetrievalSerializer(project).data,
             "phase": serializers.ProjectPhaseSerializer(project_phase).data,
+            'role': membership.role,
             "in_progress": TaskRetrievalSerializer(in_progress_tasks, many=True).data,
             "on_hold": TaskRetrievalSerializer(on_hold_tasks, many=True).data,
             "completed": TaskRetrievalSerializer(done_tasks, many=True).data,
