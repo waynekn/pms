@@ -4,8 +4,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 
-from apps.organizations.models import Organization
-from apps.projects.models import (Project, ProjectPhase, CustomPhase)
+from apps.projects.models import (ProjectPhase, CustomPhase)
 from apps.users.models import User
 
 
@@ -21,31 +20,41 @@ class TaskCreationTests(APITestCase):
 
         ####################################
         # create an organization.
-        organization_name = 'Test org'
-        organization_name_slug = 'test-org'
-        organization_password = 'securepassword123'
+        organization_url = reverse('create_organization')
+        organization_data = {'organization_name': 'Test org',
+                             'organization_password': 'securepassword123',
+                             'password2': 'securepassword123'
+                             }
+        self.organization = self.client.post(
+            organization_url, organization_data, format='json')
 
-        self.organization = Organization.objects.create(
-            organization_name=organization_name, organization_name_slug=organization_name_slug,
-            organization_password=organization_password)
-
-        ###################################
+        ##################################
         # create a project.
-        deadline = datetime.date.today() + datetime.timedelta(days=1)
-
-        self.project = Project.objects.create(
-            organization=self.organization, project_name="Test project",
-            description='Testing project creation', deadline=deadline)
+        project_data = {
+            'organization': f'{self.organization.data['organization_id']}',
+            'project_name': 'test project',
+            'description': 'project description',
+            'deadline': f'{datetime.date.today() + datetime.timedelta(days=1)}'
+        }
+        project_url = reverse('create_project')
+        self.project = self.client.post(
+            project_url, project_data, format='json')
 
         ################################
-        # create a custom project phase phase.
-        self.custom_phase = CustomPhase.objects.create(
-            project=self.project, phase_name='test phase')
+        # create a custom phase.
+        phase_url = reverse('create_project_phase', kwargs={
+            'project_id': f'{self.project.data['project_id']}'})
 
-        #################################
-        # create a project phase.
+        phase_data = {'name': 'custom_phase'}
+        self.custom_phase = self.client.post(
+            phase_url, phase_data, format='json')
+
+        ###################################
+        # create a project phase
         self.project_phase = ProjectPhase.objects.create(
-            project=self.project, custom_phase=self.custom_phase)
+            project_id=self.project.data['project_id'],
+            custom_phase_id=self.custom_phase.data['phase_id']
+        )
 
         ############################
         # create data
@@ -115,3 +124,13 @@ class TaskCreationTests(APITestCase):
         response = self.client.post(self.url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_only_project_member_can_create_task(self):
+        user = User.objects.create_user(
+            username='testuser2', email='testmail2@test.com', password='securepassword123'
+        )
+        client = APIClient()
+        client.force_authenticate(user=user)
+        response = client.post(self.url, self.data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
