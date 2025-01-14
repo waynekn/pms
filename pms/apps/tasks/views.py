@@ -101,6 +101,23 @@ class TaskAssignmentView(generics.CreateAPIView):
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         task_id = self.kwargs.get('task_id')
+
+        try:
+            task = models.Task.objects.get(pk=task_id)
+        except models.Task.DoesNotExist:
+            return Response({'detail': 'Could not get the task'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            membership = ProjectMember.objects.get(
+                project=task.project, member=self.request.user)
+        except ProjectMember.DoesNotExist:
+            return Response({'detail': 'You are unauthorized to access this information.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        if membership.role != 'Manager':
+            return Response({'detail': 'You are unauthorized to perform this action.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
         data = {
             'task_id': task_id,
             'usernames': request.data.get('assignees') or []
