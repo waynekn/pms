@@ -20,45 +20,62 @@ class TaskAssignMentTest(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        ####################################
+       ####################################
         # create an organization.
-        organization_name = 'Test org'
-        organization_name_slug = 'test-org'
-        organization_password = 'securepassword123'
+        organization_url = reverse('create_organization')
+        organization_data = {'organization_name': 'Test org',
+                             'organization_password': 'securepassword123',
+                             'password2': 'securepassword123'
+                             }
+        self.organization = self.client.post(
+            organization_url, organization_data, format='json')
 
-        self.organization = Organization.objects.create(
-            organization_name=organization_name, organization_name_slug=organization_name_slug,
-            organization_password=organization_password)
-
-        ###################################
+        ##################################
         # create a project.
-        deadline = datetime.date.today() + datetime.timedelta(days=1)
-
-        self.project = Project.objects.create(
-            organization=self.organization, project_name="Test project",
-            description='Testing project creation', deadline=deadline)
+        project_data = {
+            'organization': f'{self.organization.data['organization_id']}',
+            'project_name': 'test project',
+            'description': 'project description',
+            'deadline': f'{datetime.date.today() + datetime.timedelta(days=1)}'
+        }
+        project_url = reverse('create_project')
+        self.project = self.client.post(
+            project_url, project_data, format='json')
 
         ################################
-        # create a custom project phase phase.
-        self.custom_phase = CustomPhase.objects.create(
-            project=self.project, phase_name='test phase')
+        # create a custom phase.
+        phase_url = reverse('create_project_phase', kwargs={
+            'project_id': f'{self.project.data['project_id']}'})
 
-        #################################
-        # create a project phase.
+        phase_data = {'name': 'custom_phase'}
+        self.custom_phase = self.client.post(
+            phase_url, phase_data, format='json')
+
+        ###################################
+        # create a project phase
         self.project_phase = ProjectPhase.objects.create(
-            project=self.project, custom_phase=self.custom_phase)
+            project_id=self.project.data['project_id'],
+            custom_phase_id=self.custom_phase.data['phase_id']
+        )
 
         ############################
         # create task
         deadline = (datetime.date.today() +
                     datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        task_data = {
+            'project_phase': f'{self.project_phase.pk}',
+            'task_name': "test task",
+            'deadline': deadline,
+            'description': "task description",
+        }
+        task_url = reverse('create_task')
 
-        self.task = models.Task.objects.create(
-            project=self.project, project_phase=self.project_phase, task_name='test task',
-            description='task description', deadline=deadline,
-        )
+        task_response = self.client.post(task_url, task_data, format='json')
 
-        self.url = reverse('assign_task', kwargs={'task_id': self.task.pk})
+        self.task = task_response.data
+
+        self.url = reverse('assign_task', kwargs={
+                           'task_id': self.task['task_id']})
 
     def test_tasks_assignment(self):
         user1 = User.objects.create_user(
@@ -78,7 +95,7 @@ class TaskAssignMentTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
 
         task_assignments = models.TaskAssignment.objects.filter(
-            task_id=self.task.pk)
+            task_id=self.task['task_id'])
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(len(task_assignments), 2)
@@ -90,14 +107,14 @@ class TaskAssignMentTest(APITestCase):
         self.client.post(self.url, data, format='json')
 
         task_assignments = models.TaskAssignment.objects.filter(
-            task_id=self.task.pk)
+            task_id=self.task['task_id'])
 
         self.assertEqual(len(task_assignments), 1)
 
-    def test_task_assignment_with_nonexistent_task_id_returns_400(self):
+    def test_task_assignment_with_nonexistent_task_id_returns_404(self):
         url = reverse("assign_task", kwargs={'task_id': '123'})
 
         data = {'assignees': [self.user.username]}
         response = self.client.post(url, data, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
