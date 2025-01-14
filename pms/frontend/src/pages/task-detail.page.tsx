@@ -15,7 +15,10 @@ import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
 type TaskDetailResponse = TaskResponse & { assignees: ProjectMember[] };
 
-type TaskDetail = Task & { assignees: ProjectMember[] };
+type TaskDetail = Task & {
+  assignees: ProjectMember[];
+  role: "Manager" | "Member";
+};
 
 type Tabs = "description" | "assignees" | "add members";
 
@@ -25,6 +28,7 @@ const TaskDetailPage = () => {
     taskName: "",
     startDate: "",
     deadline: "",
+    role: "Member",
     description: "",
     projectPhase: { phaseId: "", phaseName: "" },
     assignees: [],
@@ -116,19 +120,21 @@ const TaskDetailPage = () => {
               >
                 Assignees
               </button>
-              {/* Members addition  */}
-              <button
-                className={classNames(
-                  "flex-1 py-2 text-center hover:bg-blue-200 focus:bg-blue-300 transition-colors border-b-4",
-                  {
-                    "border-blue-500": activeTab === "add members",
-                    "border-transparent": activeTab !== "add members",
-                  }
-                )}
-                onClick={() => setActiveTab("add members")}
-              >
-                Assign members
-              </button>
+              {/* Only display option to assign task to project managers*/}
+              {taskDetail.role === "Manager" && (
+                <button
+                  className={classNames(
+                    "flex-1 py-2 text-center hover:bg-blue-200 focus:bg-blue-300 transition-colors border-b-4",
+                    {
+                      "border-blue-500": activeTab === "add members",
+                      "border-transparent": activeTab !== "add members",
+                    }
+                  )}
+                  onClick={() => setActiveTab("add members")}
+                >
+                  Assign members
+                </button>
+              )}
             </nav>
             <section className="w-full rounded-b-md p-4">
               {activeTab === "description" && <p>{taskDetail.description}</p>}
