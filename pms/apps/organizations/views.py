@@ -111,7 +111,10 @@ class OrganizationDetailView(APIView):
             return Response({'detail': 'Organization not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Only allow members of the organization to view the detail.
-        if not organization.members.filter(user=self.request.user).exists():
+        try:
+            membership = OrganizationMember.objects.get(
+                organization=organization, user=self.request.user)
+        except OrganizationMember.DoesNotExist:
             return Response({
                 "error": "You are unauthorized to view this organization",
                 "organization_name": organization.organization_name
@@ -125,6 +128,7 @@ class OrganizationDetailView(APIView):
 
         organization_detail = organization_serializer.data
         organization_detail['projects'] = project_serializer.data
+        organization_detail['role'] = membership.role
 
         return Response(
             organization_detail, status=status.HTTP_200_OK)
