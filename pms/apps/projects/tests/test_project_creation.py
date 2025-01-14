@@ -92,6 +92,16 @@ class ProjectCreationTests(APITransactionTestCase):
         self.assertIn('description', response.data)
         self.assertIn('deadline', response.data)
 
+    def test_project_creator_is_added_as_manager(self):
+        response = self.client.post(self.url, self.data, format='json')
+
+        project_id = response.data['project_id']
+
+        membership = models.ProjectMember.objects.get(
+            project_id=project_id, member=self.user)
+
+        self.assertEqual(membership.role, 'Manager')
+
     def test_user_is_added_as_project_member(self):
         """
         Test that a user has been added as a project member after creating
