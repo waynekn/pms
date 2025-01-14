@@ -181,7 +181,7 @@ class ProjectCreationSerializer(serializers.ModelSerializer):
                                                     description=description, deadline=deadline)
 
         models.ProjectMember.objects.create(
-            member=request.user, project=project)
+            member=request.user, project=project, role='Manager')
 
         if template:
             template_phases = [models.ProjectPhase(
