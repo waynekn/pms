@@ -21,6 +21,7 @@ import {
 type PhaseDetailResponse = {
   project: ProjectResponse;
   phase: ProjectPhaseResponse;
+  role: "Manager" | "Member";
   on_hold: TaskResponse[];
   in_progress: TaskResponse[];
   completed: TaskResponse[];
@@ -29,6 +30,7 @@ type PhaseDetailResponse = {
 type PhaseDetail = {
   project: Project;
   phase: ProjectPhase;
+  role: "Manager" | "Member";
   onHold: Task[];
   inProgress: Task[];
   completed: Task[];
@@ -46,6 +48,7 @@ const ProjectPhaseDetail = () => {
       organization: "",
     },
     phase: { phaseId: "", phaseName: "" },
+    role: "Member",
     onHold: [],
     inProgress: [],
     completed: [],
@@ -108,13 +111,14 @@ const ProjectPhaseDetail = () => {
         >
           {detail.phase.phaseName}
         </span>
-
-        <button
-          onClick={() => setDisplayTaskCreateForm(true)}
-          className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
-        >
-          Create Task
-        </button>
+        {detail.role === "Manager" && (
+          <button
+            onClick={() => setDisplayTaskCreateForm(true)}
+            className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+          >
+            Create Task
+          </button>
+        )}
       </nav>
 
       {/* TODO: Kanban board */}
