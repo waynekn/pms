@@ -88,7 +88,7 @@ const ProjectPhasePage = () => {
     if (isAxiosError(error)) {
       const statusCode = error.status;
 
-      if (statusCode === 400 || statusCode === 404) {
+      if (statusCode === 400 || statusCode === 403 || statusCode === 404) {
         const axiosError = error as AxiosError<{
           phase_name?: string;
           detail?: string;
