@@ -36,13 +36,13 @@ class ProjectCreationTests(APITransactionTestCase):
 
         ####################################
         # create an organization.
-        organization_name = 'Test org'
-        organization_name_slug = slugify(organization_name)
-        organization_password = 'securepassword123'
-
-        self.organization = Organization.objects.create(
-            organization_name=organization_name, organization_name_slug=organization_name_slug,
-            organization_password=organization_password)
+        organization_url = reverse('create_organization')
+        data = {'organization_name': 'Test org',
+                'organization_password': 'securepassword123',
+                'password2': 'securepassword123'
+                }
+        self.organization = self.client.post(
+            organization_url, data, format='json')
 
         self.url = reverse('create_project')
 
@@ -50,7 +50,7 @@ class ProjectCreationTests(APITransactionTestCase):
         # create test data.
         # this data is valid to create a project without a template.
         self.data = {
-            'organization': f'{self.organization.organization_id}',
+            'organization': f'{self.organization.data['organization_id']}',
             'project_name': 'test project',
             'description': 'project description',
             'deadline': f'{datetime.date.today() + datetime.timedelta(days=1)}'
