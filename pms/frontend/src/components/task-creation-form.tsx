@@ -32,10 +32,17 @@ type TaskCreationPayload = {
 
 type TaskCreateFormParams = {
   projectPhase: string;
+  projectName: string;
+  phaseName: string;
   hideForm: () => void;
 };
 
-const TaskCreateForm = ({ projectPhase, hideForm }: TaskCreateFormParams) => {
+const TaskCreateForm = ({
+  projectPhase,
+  hideForm,
+  projectName,
+  phaseName,
+}: TaskCreateFormParams) => {
   const initialState: TaskCreationPayload = {
     projectPhase,
     taskName: "",
@@ -108,6 +115,39 @@ const TaskCreateForm = ({ projectPhase, hideForm }: TaskCreateFormParams) => {
 
       <form method="post" onSubmit={handleSubmit}>
         <h1 className="text-xl font-bold text-center">Create a task.</h1>
+        {/* Project name */}
+        <div className="mt-4">
+          <label
+            htmlFor="project"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Project
+          </label>
+          <input
+            type="text"
+            id="project"
+            className="cursor-not-allowed opacity-50 mt-1 block w-full px-3 py-2 border border-gray-300 
+            rounded-md shadow-sm focus:outline-none focus:ring-blue-500 text-sm "
+            value={projectName}
+          />
+        </div>
+
+        {/* Phase name */}
+        <div className="mt-4">
+          <label
+            htmlFor="phase"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Project phase
+          </label>
+          <input
+            type="text"
+            id="phase"
+            className="cursor-not-allowed opacity-50 mt-1 block w-full px-3 py-2 border border-gray-300 
+            rounded-md shadow-sm focus:outline-none focus:ring-blue-500 text-sm"
+            value={phaseName}
+          />
+        </div>
 
         {/* Task name field*/}
         <div className="mt-4">

@@ -170,6 +170,8 @@ const ProjectPhaseDetail = () => {
       {displayTaskCreateForm && (
         <TaskCreateForm
           projectPhase={projectPhaseId as string}
+          projectName={detail.project.projectName}
+          phaseName={detail.phase.phaseName}
           hideForm={() => setDisplayTaskCreateForm(false)}
         />
       )}
