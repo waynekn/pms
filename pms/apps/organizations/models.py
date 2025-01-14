@@ -43,11 +43,18 @@ class OrganizationMember(models.Model):
     """
     Users who successfully authenticate themselves via the organization's password are added as its members.
     """
+    ADMIN = "Admin"
+    MEMBER = "Member"
+    ROLES = [
+        (ADMIN, "Admin"),
+        (MEMBER, "Member"),
+    ]
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      related_name='members', verbose_name='Organization')
     user = models.ForeignKey(
         # Ensure a user can only be a member of an organization once
         User, on_delete=models.CASCADE, verbose_name='Member user')
+    role = models.CharField(max_length=50, choices=ROLES, default=MEMBER)
 
     class Meta:
         unique_together = ('organization', 'user')
