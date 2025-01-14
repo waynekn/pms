@@ -2,6 +2,7 @@ import { AxiosError, isAxiosError } from "axios";
 
 export type ErrorMessageConfig = {
   400?: string;
+  403?: string;
   404?: string;
   500?: string;
 };
@@ -20,6 +21,16 @@ const handleGenericApiErrors = (
         axiosError.response?.data.detail ||
         messageConfig?.[400] ||
         "Bad request"
+      );
+    }
+
+    if (statusCode === 403) {
+      const axiosError = error as AxiosError<{ detail: string }>;
+
+      return (
+        axiosError.response?.data.detail ||
+        messageConfig?.[403] ||
+        "You are not authorized to access this resource"
       );
     }
 
