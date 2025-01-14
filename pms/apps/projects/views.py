@@ -347,9 +347,21 @@ class CustomProjectPhaseCreateView(generics.CreateAPIView):
             return Response({'detail': 'Please provide a name for your new project workflow.'},
                             status=status.HTTP_400_BAD_REQUEST)
         try:
-            models.Project.objects.get(pk=project_id)
+            project = models.Project.objects.get(pk=project_id)
         except models.Project.DoesNotExist:
             return Response({'detail': 'Could not get the project.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            membership = models.ProjectMember.objects.get(
+                project=project, member=self.request.user)
+        except models.ProjectMember.DoesNotExist:
+            return Response({'detail': 'You are not authorized to perform this action'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        if membership.role != 'Manager':
+            return Response({'detail': 'You are not authorized to perform this action'},
+                            status=status.HTTP_403_FORBIDDEN)
+
         data = {
             'project': project_id,
             'phase_name': phase_name
