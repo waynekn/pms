@@ -21,29 +21,29 @@ class CustomProjectPhaseCreationTests(APITestCase):
 
         ####################################
         # create an organization.
-        organization_name = 'Test org'
-        organization_name_slug = 'test-org'
-        organization_password = 'securepassword123'
-
-        self.organization = Organization.objects.create(
-            organization_name=organization_name, organization_name_slug=organization_name_slug,
-            organization_password=organization_password)
+        organization_url = reverse('create_organization')
+        data = {'organization_name': 'Test org',
+                'organization_password': 'securepassword123',
+                'password2': 'securepassword123'
+                }
+        self.organization = self.client.post(
+            organization_url, data, format='json')
 
         ##################################
         # create a project.
-        deadline = datetime.date.today() + datetime.timedelta(days=1)
-
-        self.project = models.Project.objects.create(
-            organization=self.organization, project_name="Test project",
-            description='Testing project creation', deadline=deadline)
-
-        models.ProjectMember.objects.create(
-            project=self.project, member=self.user)
+        self.data = {
+            'organization': f'{self.organization.data['organization_id']}',
+            'project_name': 'test project',
+            'description': 'project description',
+            'deadline': f'{datetime.date.today() + datetime.timedelta(days=1)}'
+        }
+        project_url = reverse('create_project')
+        self.project = self.client.post(project_url, self.data, format='json')
 
         #########################
         # url
         self.url = reverse('create_project_phase', kwargs={
-                           'project_id': f'{self.project.pk}'})
+                           'project_id': f'{self.project.data['project_id']}'})
 
     def test_custom_project_phase_can_be_created(self):
         data = {'name': 'custom_phase'}
