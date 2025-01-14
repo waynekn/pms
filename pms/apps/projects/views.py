@@ -1,3 +1,4 @@
+from uuid import UUID
 from django.db import transaction
 from django.db.models import Count, Case, When, IntegerField
 from django.shortcuts import get_object_or_404
@@ -10,6 +11,7 @@ from rest_framework.exceptions import ValidationError
 from . import models
 from . import serializers
 from apps.tasks.models import Task
+from apps.organizations.models import OrganizationMember
 from apps.users.serializers import UserRetrievalSerializer
 from apps.tasks.serializers import TaskRetrievalSerializer
 from apps.users.models import User
@@ -86,6 +88,27 @@ class ProjectCreateView(generics.CreateAPIView):
         serializer = self.get_serializer(
             data=transformed_data, context={'request': request}
         )
+        organization_id: UUID = transformed_data.get('organization')
+
+        if not organization_id:
+            return Response({'organization': ['This field is required']},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            membership = OrganizationMember.objects.get(
+                organization_id=organization_id, user=self.request.user)
+        except OrganizationMember.DoesNotExist:
+            # Dont allow a person who is not a member of the organization to create a project.
+            return Response({
+                'non_field_errors': ['You must be a member of the organization to create a project']},
+                status=status.HTTP_400_BAD_REQUEST)
+
+        if membership.role != 'Admin':
+            return Response({
+                'non_field_errors': ['You dont have the necessary permissions to \
+                 create a project for this organization']},
+                status=status.HTTP_400_BAD_REQUEST)
+
         if (serializer.is_valid()):
             project = serializer.save()
             project_retrieval_serializer = serializers.ProjectRetrievalSerializer(
