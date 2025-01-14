@@ -86,3 +86,13 @@ class TaskDetailTest(APITestCase):
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_non_project_member_cant_view_task_detail(self):
+        user = User.objects.create_user(
+            username='testuser2', email='testmail2@test.com', password='securepassword123'
+        )
+        client = APIClient()
+        client.force_authenticate(user=user)
+        response = client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
