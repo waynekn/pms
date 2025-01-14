@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
 from apps.users.models import User
-from apps.projects.models import ProjectMember
+from apps.projects.models import ProjectMember, ProjectPhase
 from apps.users.serializers import UserRetrievalSerializer
 from pms.utils import camel_case_to_snake_case
 
@@ -23,8 +23,28 @@ class TaskCreateView(generics.CreateAPIView):
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         data = request.data
-
         transformed_data = camel_case_to_snake_case(data)
+
+        project_phase: str = transformed_data.get('project_phase')
+
+        try:
+            project_phase = ProjectPhase.objects.get(pk=project_phase)
+        except ProjectPhase.DoesNotExist:
+            return Response({'project_phase': ['Could not get the phase of the project']},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        project = project_phase.project
+
+        try:
+            membership = ProjectMember.objects.get(
+                project=project, member=self.request.user)
+        except ProjectMember.DoesNotExist:
+            return Response({'non_field_errors': ['You are not authorized to perform this action.']},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        if membership.role != 'Manager':
+            return Response({'non_field_errors': ['You are not authorized to perform this action.']},
+                            status=status.HTTP_403_FORBIDDEN)
 
         serializer = self.get_serializer(data=transformed_data)
 
