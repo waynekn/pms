@@ -69,10 +69,10 @@ const OrganizationComponent = () => {
    */
   const searchOrganizations = debounce(async (organizationName: string) => {
     try {
-      const response = await api.post<
+      const response = await api.get<
         OrganizationQuery,
         AxiosResponse<OrganizationResponse[]>
-      >("organizations/search/", { organization_name_query: organizationName });
+      >(`organizations/search/?name=${organizationName}`);
 
       const organizations = response.data.map((organization) =>
         camelize(organization)
