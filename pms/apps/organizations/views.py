@@ -76,15 +76,9 @@ class OrganizationSearchView(generics.ListAPIView):
             organization_name__icontains=name)
 
 
-class OrganizationDetailView(APIView):
+class OrganizationDetailView(generics.RetrieveAPIView):
     """
     Retrieve detailed information about an organization, including its associated projects.
-
-    This view expects a POST request with the organization's name slug (`organizationNameSlug`) in the request body.
-    It performs the following steps:
-
-    **POST Data**:
-        - `organizationNameSlug`: The slug of the organization.
 
     **Response**:
         - On success: Returns the organization details, including the associated projects, with HTTP status 200.
@@ -94,11 +88,8 @@ class OrganizationDetailView(APIView):
             - 403: If the user is unauthorized to view the organization.
     """
 
-    def post(self, request: Request, *args, **kwargs) -> Response:
-        organization_name_slug = request.data.get('organizationNameSlug')
-
-        if not organization_name_slug:
-            return Response({'detail': 'Incomplete credentials provided.'}, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        organization_name_slug = kwargs.get('organization_name_slug')
 
         try:
             organization = Organization.objects.get(
