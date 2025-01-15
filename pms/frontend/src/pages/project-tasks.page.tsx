@@ -21,6 +21,7 @@ export type TaskResponse = {
   task_name: string;
   start_date: string;
   deadline: string;
+  status: "IN_PROGRESS" | "ON_HOLD" | "DONE";
   description: string;
   project_phase: ProjectPhaseResponse;
 };
