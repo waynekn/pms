@@ -31,13 +31,12 @@ class TemplateSearchTests(APITestCase):
         self.template = models.Template.objects.create(
             industry=industry, template_name="test template")
 
-        self.url = reverse('template_search')
+        self.url = reverse('template_search') + f'?name=t'
 
     def test_users_can_search_for_template(self):
         """
         Test that a user can search for templates.
         """
-        data = {'name': 't'}
-        response = self.client.post(self.url, data, format='json')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.data, list)
