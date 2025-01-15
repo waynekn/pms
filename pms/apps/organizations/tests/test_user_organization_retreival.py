@@ -28,7 +28,7 @@ class TestUserOrganizationsRetrieval(APITestCase):
             'password2': 'securepassword123',
         }
 
-        self.client.post(url, data, format='json')
+        self.organization = self.client.post(url, data, format='json')
 
     def test_retrieval_of_user_organizations_list(self):
         """
@@ -41,3 +41,5 @@ class TestUserOrganizationsRetrieval(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(type(response.data) == ReturnList)
+        self.assertEqual(
+            response.data[0]['organization_id'], self.organization.data['organization_id'])
