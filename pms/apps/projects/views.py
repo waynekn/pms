@@ -389,27 +389,19 @@ class UserProjectsListView(generics.ListAPIView):
         return projects
 
 
-class TemplateSearchView(APIView):
+class TemplateSearchView(generics.ListAPIView):
     """
     Handles searching for a template by name.
-
-    This view accepts a POST request with a JSON payload containing a `name` key.
-    It returns a JSON response with a list of templates that match the provided name,
-    along with their associated industries.
     """
 
-    def post(self, request: Request, *args, **kwargs) -> Response:
-        searchstr = request.data.get('name')
+    serializer_class = serializers.TemplateSearchSerializer
 
-        searchstr = searchstr.strip() if searchstr else None
+    def get_queryset(self):
+        name = self.request.query_params.get('name')
+        name = name.strip() if name else None
 
-        if not searchstr:
-            return Response([], status=status.HTTP_200_OK)
+        if not name:
+            return []
 
-        templates = models.Template.objects.filter(
-            template_name__icontains=searchstr)
-
-        serializer = serializers.TemplateSearchSerializer(
-            templates, many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return models.Template.objects.filter(
+            template_name__icontains=name)
