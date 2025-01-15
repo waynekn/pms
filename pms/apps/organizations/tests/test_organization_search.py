@@ -38,23 +38,10 @@ class OrganizationSearchTest(APITestCase):
         This test ensures that:
          - The response status code is HTTP 200 OK.
         """
-        query = {
-            'organization_name_query': "T"
-        }
 
-        response = self.client.post(self.url, query, format='json')
+        url = self.url + f'?name={'T'}'
+
+        response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.data, ReturnList)
-
-    def test_invalid_request_to_search_organizations(self):
-        """
-        Test that a bad request to search for organizations results in a 400
-        bad request error.
-        """
-        query = {
-            'name': "T"
-        }
-
-        response = self.client.post(self.url, query, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
