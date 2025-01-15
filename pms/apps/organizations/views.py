@@ -13,26 +13,21 @@ from . import serializers
 # Create your views here.
 
 
-class UserOrganizationListView(APIView):
+class UserOrganizationListView(generics.ListAPIView):
     """
     Displays a list of organizations that the currently authenticated user
     is a member of.
     """
-    model = Organization
+    serializer_class = serializers.OrganizationRetrievalSerializer
 
-    def get(self, request: Request) -> Response:
-        # Get all OrganizationMember entries where the user is a member
+    def get_queryset(self):
         user_organizations = OrganizationMember.objects.filter(
             user=self.request.user)
 
         # Get the related Organization objects for those memberships
-        organizations = Organization.objects.filter(
+        return Organization.objects.filter(
             organization_id__in=user_organizations.values('organization_id')
         )
-
-        serializer = serializers.OrganizationRetrievalSerializer(
-            organizations, many=True)
-        return Response(serializer.data)
 
 
 class OrganizationCreateView(generics.CreateAPIView):
