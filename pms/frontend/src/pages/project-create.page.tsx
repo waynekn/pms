@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { isAxiosError } from "axios";
 import { useLocation, useNavigate } from "react-router";
+import ClearIcon from "@mui/icons-material/Clear";
 import ProjectCreateSideBar from "../components/project-create.sidebar";
 
 import api from "../api";
@@ -90,6 +91,17 @@ const ProjectCreationPage = () => {
       "template"
     ) as HTMLInputElement;
     templateInput.value = templateName;
+  };
+
+  const handleTemplateRemoval = () => {
+    setFormValues((formValues) => ({
+      ...formValues,
+      template: "",
+    }));
+    const templateInput = document.getElementById(
+      "template"
+    ) as HTMLInputElement;
+    templateInput.value = "";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -191,20 +203,33 @@ const ProjectCreationPage = () => {
           </div>
 
           {/* Template field */}
-          <div className="flex flex-col">
+          <div className="flex flex-col relative">
             <label
               htmlFor="template"
               className="text-gray-700 font-medium mb-2"
             >
               Template:
             </label>
-            <input
-              type="text"
-              name="template"
-              id="template"
-              className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="This project currently doesn't have a template."
-            />
+
+            <div className="relative">
+              <input
+                type="text"
+                name="template"
+                id="template"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm pr-10" // Added pr-10 for padding to the right
+                placeholder="This project currently doesn't have a template."
+                readOnly
+              />
+              {formValues.template && (
+                <span
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={handleTemplateRemoval}
+                >
+                  <ClearIcon />
+                </span>
+              )}
+            </div>
+
             {formErrors.template && formErrors.template.length > 0 && (
               <ul>
                 {formErrors.template.map((error) => (
