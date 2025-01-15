@@ -10,4 +10,6 @@ urlpatterns = [
          views.NonTaskAssigneesListView.as_view(), name='non_assignees'),
     path('task/<str:task_id>/assign/',
          views.TaskAssignmentView.as_view(), name='assign_task'),
+    path('task/<str:task_id>/status/update/',
+         views.TaskStatusUpdateView.as_view(), name='update_task_status'),
 ]
