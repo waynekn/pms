@@ -8,7 +8,7 @@ urlpatterns = [
          name='create_organization'),
     path('search/', views.OrganizationSearchView.as_view(),
          name='organization_search'),
-    path('detail/',
+    path('<str:organization_name_slug>/detail/',
          views.OrganizationDetailView.as_view(), name='organization_detail'),
     path('auth/',
          views.OrganizationAuthView.as_view(), name='organization_auth'),
