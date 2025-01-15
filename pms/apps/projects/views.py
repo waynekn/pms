@@ -140,7 +140,7 @@ class ProjectStatsView(APIView):
             on_hold=Count(Case(When(status='ON_HOLD', then=1),
                           output_field=IntegerField())),
             completed=Count(
-                Case(When(status='COMPLETED', then=1), output_field=IntegerField())),
+                Case(When(status='DONE', then=1), output_field=IntegerField())),
         )
 
         total_tasks = task_counts['total_tasks']
