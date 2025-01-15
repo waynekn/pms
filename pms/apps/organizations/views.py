@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from rest_framework import status
 from rest_framework import generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
@@ -56,28 +57,23 @@ class OrganizationCreateView(generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class OrganizationSearchView(APIView):
+class OrganizationSearchView(generics.ListAPIView):
     """
     Search for organizations by name.
-
-    This view receives a POST request containing a partial or full organization name.
-    It returns a list of organizations whose name contains the provided search term.
-    If no organizations are found, a message indicating no results is returned.
     """
 
-    def post(self, request: Request, *args, **kwargs) -> Response:
-        organization_name_query = request.data.get(
-            'organization_name_query', '')
+    serializer_class = serializers.OrganizationRetrievalSerializer
 
-        if not organization_name_query:
-            return Response({"detail": "No organization name provided"}, status=400)
+    def get_queryset(self):
+        name = self.request.query_params.get('name')
 
-        organizations = Organization.objects.filter(
-            organization_name__icontains=organization_name_query)
+        name = name.strip() if name else None
 
-        serializer = serializers.OrganizationRetrievalSerializer(
-            organizations, many=True)
-        return Response(serializer.data)
+        if not name:
+            return []
+
+        return Organization.objects.filter(
+            organization_name__icontains=name)
 
 
 class OrganizationDetailView(APIView):
