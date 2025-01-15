@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { debounce } from "lodash";
+import Chip from "@mui/material/Chip";
 import camelize from "../utils/snakecase-to-camelcase";
 import { Industry, IndustryResponse } from "../pages/template-creation.page";
 import api from "../api";
@@ -95,9 +96,10 @@ const ProjectCreateSideBar = ({
               <span className="text-gray-700">
                 {projectTemplate.templateName}
               </span>
-              <span className="bg-green-400 text-white text-xs font-bold px-2 rounded-md">
-                {projectTemplate.industry.industryName}
-              </span>
+              <Chip
+                label={projectTemplate.industry.industryName}
+                color="success"
+              />
             </li>
           ))}
         </ul>
