@@ -28,7 +28,8 @@ class OrganizationSearchTest(APITestCase):
             'password2': 'securepassword123',
         }
 
-        self.client.post(url, data, format='json')
+        org_response = self.client.post(url, data, format='json')
+        self.organization = org_response.data
         self.url = reverse('organization_search')
 
     def test_users_can_search_for_organizations(self):
@@ -45,3 +46,5 @@ class OrganizationSearchTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.data, ReturnList)
+        self.assertEqual(
+            response.data[0]['organization_id'], self.organization['organization_id'])
