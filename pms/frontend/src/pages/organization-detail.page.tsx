@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router";
-import { AxiosError, isAxiosError, AxiosResponse } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import classNames from "classnames";
 import OrgAuthForm from "../components/org-auth-form.component";
@@ -67,12 +67,9 @@ const OrganizationDetail = () => {
   useEffect(() => {
     const getOrganizationDetail = async () => {
       try {
-        const response = await api.post<
-          { organizationNameSlug: string },
-          AxiosResponse<OrganizationResponse>
-        >(`organizations/detail/`, {
-          organizationNameSlug,
-        });
+        const response = await api.get<OrganizationResponse>(
+          `organizations/${organizationNameSlug}/detail/`
+        );
         const organization = camelize(response.data) as Organziation;
         console.log(organization);
 
