@@ -31,11 +31,8 @@ const ProjectCreateSideBar = ({
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
       try {
-        const res = await api.post<TemplateSearchResponse[]>(
-          "template/search/",
-          {
-            name: value,
-          }
+        const res = await api.get<TemplateSearchResponse[]>(
+          `template/search/?name=${value}`
         );
         const projectTemplates = res.data.map((templateSearchResponse) =>
           camelize(templateSearchResponse)
