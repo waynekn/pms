@@ -25,10 +25,11 @@ class TestOrganizationDetailRetreival(APITestCase):
             'password2': 'securepassword123',
         }
 
-        self.client.post(
+        self.organization = self.client.post(
             url, self.organization, format='json')
 
-        self.url = reverse('organization_detail')
+        self.url = reverse('organization_detail', kwargs={
+                           'organization_name_slug': self.organization.data['organization_name_slug']})
 
     def test_member_can_access_organization_detail(self):
         """
@@ -40,14 +41,13 @@ class TestOrganizationDetailRetreival(APITestCase):
         - The response data is a dictionary.
         - The response dictionary contains a 'projects' key.
         """
-        query = {
-            'organizationNameSlug': slugify(self.organization['organization_name'])
-        }
-        response = self.client.post(self.url, query, format='json')
+
+        response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.data, dict)
         self.assertIn('projects', response.data)
+        self.assertIn('role', response.data)
 
     def test_non_members_cant_access_organization_detail(self):
         """
@@ -60,21 +60,5 @@ class TestOrganizationDetailRetreival(APITestCase):
         client = APIClient()
         client.force_authenticate(user=user)
 
-        query = {
-            'organizationNameSlug': slugify(self.organization['organization_name'])
-        }
-        response = client.post(self.url, query, format='json')
+        response = client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_invalid_payload_returns_400(self):
-        """
-        Test that a bad request to get organization detail results in a 400
-        bad request error.
-        """
-
-        query = {
-            'wrong_key': slugify(self.organization['organization_name'])
-        }
-        response = self.client.post(self.url, query, format='json')
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
