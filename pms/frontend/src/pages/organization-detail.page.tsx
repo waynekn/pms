@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { AxiosError, isAxiosError } from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import classNames from "classnames";
 import OrgAuthForm from "../components/org-auth-form.component";
+import OrganizationProjects from "../components/organization-projects.component";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import { ProjectCreationPageState } from "./project-create.page";
@@ -21,7 +22,7 @@ type ProjectResponse = {
 };
 
 // `ProjectResponse` but with camel case keys
-type Project = {
+export type Project = {
   projectId: string;
   projectName: string;
   projectNameSlug: string;
@@ -49,6 +50,8 @@ type Organziation = {
   projects: Project[];
 };
 
+type Tabs = "Projects" | "Administrators" | "Add administrators";
+
 const OrganizationDetail = () => {
   const initialState: Organziation = {
     organizationId: "",
@@ -61,6 +64,7 @@ const OrganizationDetail = () => {
   const [displayOrgAuthForm, setDisplayOrgAuthForm] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIslLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<Tabs>("Projects");
   const { organizationNameSlug } = useParams();
   const navigate = useNavigate();
 
@@ -143,7 +147,7 @@ const OrganizationDetail = () => {
   return (
     <div className=" flex justify-center h-full w-full">
       <main className="w-3/5 ">
-        <header className="border-b-2 pb-3">
+        <header className="pb-3">
           <h1
             className={classNames(
               isLoading
@@ -153,6 +157,16 @@ const OrganizationDetail = () => {
           >
             {organization.organizationName}
           </h1>
+          {organization.role === "Admin" && (
+            <div className="flex justify-end">
+              <button
+                onClick={navigateToProjectCreationPage}
+                className="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+              >
+                Create Project
+              </button>
+            </div>
+          )}
         </header>
         {isLoading ? (
           <div className="w-full h-full mt-10 text-center">
@@ -160,31 +174,57 @@ const OrganizationDetail = () => {
           </div>
         ) : (
           <>
-            {organization.role === "Admin" && (
-              <div className="flex justify-end">
-                <button
-                  onClick={navigateToProjectCreationPage}
-                  className="bg-white border border-gray-300 text-gray-700 px-1 py-2 mt-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                >
-                  Create Project
-                </button>
-              </div>
-            )}
+            <nav className="flex w-full border-b-2 border-blue-500 rounded-t-md">
+              {/* organizations button  */}
+              <button
+                className={classNames(
+                  "flex-1 py-2 text-center hover:bg-blue-200 focus:bg-blue-300 transition-colors border-b-4",
+                  {
+                    "border-blue-500": activeTab === "Projects",
+                    "border-transparent": activeTab !== "Projects",
+                  }
+                )}
+                onClick={() => setActiveTab("Projects")}
+              >
+                Projects
+              </button>
+              {/* projects button  */}
+              <button
+                className={classNames(
+                  "flex-1 py-2 text-center hover:bg-blue-200 focus:bg-blue-300 transition-colors border-b-4",
+                  {
+                    "border-blue-500": activeTab === "Administrators",
+                    "border-transparent": activeTab !== "Administrators",
+                  }
+                )}
+                onClick={() => setActiveTab("Administrators")}
+              >
+                Administrators
+              </button>
+              <button
+                className={classNames(
+                  "flex-1 py-2 text-center hover:bg-blue-200 focus:bg-blue-300 transition-colors border-b-4",
+                  {
+                    "border-blue-500": activeTab === "Add administrators",
+                    "border-transparent": activeTab !== "Add administrators",
+                  }
+                )}
+                onClick={() => setActiveTab("Add administrators")}
+              >
+                Add administrators
+              </button>
+            </nav>
 
-            {organization.projects.length > 0 ? (
-              <ul className="space-y-2">
-                {organization.projects.map((project) => (
-                  <li key={project.projectId}>
-                    <Link
-                      to={`../${project.projectId}/${project.projectNameSlug}/`}
-                    >
-                      {project.projectName}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>{organization.organizationName} does not have any projects</p>
+            {activeTab === "Projects" && (
+              <>
+                {organization.projects.length > 0 ? (
+                  <OrganizationProjects projects={organization.projects} />
+                ) : (
+                  <p>
+                    {organization.organizationName} does not have any projects
+                  </p>
+                )}
+              </>
             )}
           </>
         )}
