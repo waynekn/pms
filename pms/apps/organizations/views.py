@@ -7,6 +7,8 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 from pms.utils import camel_case_to_snake_case
 from apps.projects.serializers import ProjectRetrievalSerializer
+from apps.users.serializers import UserRetrievalSerializer
+from apps.users.models import User
 from .models import Organization, OrganizationMember
 from . import serializers
 
@@ -151,3 +153,23 @@ class OrganizationAuthView(APIView):
             return Response(status=status.HTTP_201_CREATED)
 
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrganizationAdminsListView(generics.ListAPIView):
+    """
+    Returns a list of users who are organization administrators.
+    """
+    serializer_class = UserRetrievalSerializer
+
+    def get_queryset(self):
+        organization_id = self.kwargs.get('organization_id')
+
+        try:
+            organization = Organization.objects.get(pk=organization_id)
+        except Organization.DoesNotExist:
+            raise ValidationError('Could not get the organization.')
+
+        admins = OrganizationMember.objects.filter(
+            organization=organization, role='Admin').values_list('user', flat=True)
+
+        return User.objects.filter(user_id__in=admins)
