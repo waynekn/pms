@@ -6,6 +6,7 @@ import classNames from "classnames";
 import OrgAuthForm from "../components/org-auth-form.component";
 import OrganizationProjects from "../components/organization-projects.component";
 import OrganizationAdminList from "../components/organization-admin-component";
+import AssignOrganizationAdmin from "../components/organization-admin-creation.component";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import { ProjectCreationPageState } from "./project-create.page";
@@ -236,6 +237,12 @@ const OrganizationDetail = () => {
                 organizationId={organization.organizationId}
               />
             )}
+            {organization.role === "Admin" &&
+              activeTab === "Add administrators" && (
+                <AssignOrganizationAdmin
+                  organizationId={organization.organizationId}
+                />
+              )}
           </>
         )}
       </main>
