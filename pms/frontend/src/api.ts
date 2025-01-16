@@ -26,6 +26,16 @@ api.interceptors.response.use(
     const originalRequest = error.config as AxiosRequestConfig;
 
     if (error.response?.status === 401) {
+      /**
+       * The "/dj-rest-auth/user/" endpoint is called during the initial loading
+       * of the app to refresh the `User` state. Do not redirect to the login page
+       * if a 401 error occurs for this specific endpoint, so as not to redirect to
+       * the login page during app initialization.
+       */
+      if (error.response.config.url === "/dj-rest-auth/user/") {
+        return Promise.reject(error);
+      }
+
       if (!madeAttemptToGetAccessToken) {
         madeAttemptToGetAccessToken = true;
 
