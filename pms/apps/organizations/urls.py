@@ -10,6 +10,8 @@ urlpatterns = [
          name='organization_search'),
     path('<str:organization_name_slug>/detail/',
          views.OrganizationDetailView.as_view(), name='organization_detail'),
+    path('<str:organization_id>/admins/',
+         views.OrganizationAdminsListView.as_view(), name='organization_admins'),
     path('auth/',
          views.OrganizationAuthView.as_view(), name='organization_auth'),
 ]
