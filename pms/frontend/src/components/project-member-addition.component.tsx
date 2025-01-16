@@ -25,37 +25,6 @@ const NonProjectMembersList = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
 
-  // const handleErrors = (error: unknown) => {
-  //   if (isAxiosError(error)) {
-  //     const statusCode = error.status;
-
-  //     if (!statusCode) {
-  //       setErrorMessage("An unexpected error occurred");
-  //       return;
-  //     }
-
-  //     if (statusCode === 400) {
-  //       const axiosError = error as AxiosError<{ error: string }>;
-  //       setErrorMessage(
-  //         axiosError.response?.data.error || "An unexpected error occurred"
-  //       );
-  //       return;
-  //     }
-
-  //     if (statusCode === 404) {
-  //       const axiosError = error as AxiosError<{ detail: string }>;
-  //       setErrorMessage(
-  //         axiosError.response?.data.detail || "An unexpected error occurred"
-  //       );
-  //       return;
-  //     }
-
-  //     setErrorMessage("An unexpected error occurred");
-  //   } else {
-  //     setErrorMessage("An unexpected error occurred");
-  //   }
-  // };
-
   useEffect(() => {
     const getNonProjectMembers = async () => {
       if (!projectId) {
