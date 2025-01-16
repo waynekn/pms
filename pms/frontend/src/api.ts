@@ -46,14 +46,10 @@ api.interceptors.response.use(
 
           // Retry the original request with the new token
           return api(originalRequest);
-        } catch (refreshError) {
+        } catch {
           // Redirect the user to the login page if unauthorized error persists.
-          window.location.href = "/login";
-          return Promise.reject(
-            refreshError instanceof Error
-              ? refreshError
-              : new Error(String(refreshError))
-          );
+          const path = window.location.pathname;
+          window.location.href = `/login?next=${path}`;
         }
       } else {
         // Reset flag.
