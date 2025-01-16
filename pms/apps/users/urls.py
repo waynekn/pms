@@ -11,6 +11,5 @@ urlpatterns = [
          GoogleLogin.as_view(), name='google_login'),
     path('dj-rest-auth/token/refresh/',
          TokenRefreshView.as_view(), name="token_refresh"),
-    path('csrftoken/', CSRFtokenView.as_view(), name='get_csrftoken'),
     path('accounts/', include('allauth.urls')),
 ]
