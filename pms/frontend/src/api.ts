@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { getCSRFToken } from "./utils/CSRFtoken";
+import { getCSRFToken } from "./utils/cookies";
 
 type TokenRefreshResponse = {
   access: string;
