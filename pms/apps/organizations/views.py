@@ -173,3 +173,24 @@ class OrganizationAdminsListView(generics.ListAPIView):
             organization=organization, role='Admin').values_list('user', flat=True)
 
         return User.objects.filter(user_id__in=admins)
+
+
+class NonOrganizationAdminsListView(generics.ListAPIView):
+    """
+    Returns a list of users who are members of an organization
+    but are not organization administrators.
+    """
+    serializer_class = UserRetrievalSerializer
+
+    def get_queryset(self):
+        organization_id = self.kwargs.get('organization_id')
+
+        try:
+            organization = Organization.objects.get(pk=organization_id)
+        except Organization.DoesNotExist:
+            raise ValidationError('Could not get the organization.')
+
+        admins = OrganizationMember.objects.filter(
+            organization=organization, role='Member').values_list('user', flat=True)
+
+        return User.objects.filter(user_id__in=admins)
