@@ -16,7 +16,7 @@ function App() {
         return;
       }
       try {
-        await dispatch(fetchCurrentUser());
+        await dispatch(fetchCurrentUser()).unwrap();
       } catch {
         dispatch(clearCurrentUser());
       }
