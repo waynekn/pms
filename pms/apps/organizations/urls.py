@@ -12,6 +12,8 @@ urlpatterns = [
          views.OrganizationDetailView.as_view(), name='organization_detail'),
     path('<str:organization_id>/admins/',
          views.OrganizationAdminsListView.as_view(), name='organization_admins'),
+    path('<str:organization_id>/non-admins/',
+         views.NonOrganizationAdminsListView.as_view(), name='non_org_admins'),
     path('auth/',
          views.OrganizationAuthView.as_view(), name='organization_auth'),
 ]
