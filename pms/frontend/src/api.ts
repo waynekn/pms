@@ -32,7 +32,7 @@ api.interceptors.response.use(
        * if a 401 error occurs for this specific endpoint, so as not to redirect to
        * the login page during app initialization.
        */
-      if (error.response.config.url === "/dj-rest-auth/user/") {
+      if (error.response.config.url === "dj-rest-auth/user/") {
         return Promise.reject(error);
       }
 

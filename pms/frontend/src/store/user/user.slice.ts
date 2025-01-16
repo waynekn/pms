@@ -162,7 +162,7 @@ export const googleAuth = createAsyncThunk<User, string>(
 export const fetchCurrentUser = createAsyncThunk<User>(
   "user/fetchCurrentUser",
   async () => {
-    const response = await api.get<User>("/dj-rest-auth/user/");
+    const response = await api.get<User>("dj-rest-auth/user/");
     return response.data;
   }
 );
