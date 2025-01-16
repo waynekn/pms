@@ -51,6 +51,10 @@ type Organziation = {
   projects: Project[];
 };
 
+export type OrganizationMember = {
+  username: string;
+};
+
 type Tabs = "Projects" | "Administrators" | "Add administrators";
 
 const OrganizationDetail = () => {
