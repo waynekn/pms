@@ -1,24 +1,39 @@
 import { Link, Outlet } from "react-router";
+import { useSelector } from "react-redux";
+
+import { selectCurrentUser } from "../store/user/user.selector";
 
 export type FormType = "login" | "signup";
 
 const HomePage = () => {
+  const currentUser = useSelector(selectCurrentUser);
   return (
     <div className="h-screen overflow-hidden">
       <nav className="flex justify-end my-3">
-        <Link
-          to="login"
-          className="py-3 px-6 mx-1  text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
-        >
-          Login
-        </Link>
+        {currentUser.isLoggedIn ? (
+          <Link
+            to={`user/${currentUser.username}`}
+            className="py-3 px-6 mx-1  text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
+          >
+            Profile
+          </Link>
+        ) : (
+          <>
+            <Link
+              to="login"
+              className="py-3 px-6 mx-1  text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
+            >
+              Login
+            </Link>
 
-        <Link
-          to="signup"
-          className="py-3 px-6 mx-1  text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
-        >
-          Sign up
-        </Link>
+            <Link
+              to="signup"
+              className="py-3 px-6 mx-1  text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
+            >
+              Sign up
+            </Link>
+          </>
+        )}
       </nav>
 
       <img
