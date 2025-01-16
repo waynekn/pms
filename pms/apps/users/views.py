@@ -21,21 +21,6 @@ load_dotenv()
 # Create your views here.
 
 
-class CSRFtokenView(APIView):
-    """
-    Retrieve a CSRF token and return it to the client.
-
-    This view generates a CSRF token and returns it in a JSON response. It is only 
-    used during development when the client's origin is different from the API's origin.
-    This enables the client to make POST without getting the Forbidden (403) response.
-    """
-    permission_classes = []
-
-    def get(self, request: Request) -> Response:
-        csrftoken = get_token(request)
-        return Response({'csrftoken': csrftoken}, status=status.HTTP_200_OK)
-
-
 class GoogleLogin(SocialLoginView):
     """
     Handle Google auth using Authorization Code Grant
