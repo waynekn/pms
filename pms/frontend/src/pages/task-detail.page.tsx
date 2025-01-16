@@ -22,7 +22,7 @@ type TaskDetail = Task & {
   role: "Manager" | "Member";
 };
 
-type SnackBarState = {
+export type SnackBarState = {
   message: string;
   serverity: "success" | "error";
 };
