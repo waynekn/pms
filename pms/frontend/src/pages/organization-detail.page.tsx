@@ -71,7 +71,6 @@ const OrganizationDetail = () => {
           `organizations/${organizationNameSlug}/detail/`
         );
         const organization = camelize(response.data) as Organziation;
-        console.log(organization);
 
         setOrganization((prevState) => {
           return {
