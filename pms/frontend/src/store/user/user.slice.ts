@@ -156,6 +156,17 @@ export const googleAuth = createAsyncThunk<User, string>(
   }
 );
 
+/**
+ * Fetches the user during app initialization.
+ */
+export const fetchCurrentUser = createAsyncThunk<User>(
+  "user/fetchCurrentUser",
+  async () => {
+    const response = await api.get<User>("/dj-rest-auth/user/");
+    return response.data;
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -221,6 +232,22 @@ const userSlice = createSlice({
       })
       .addCase(
         googleAuth.fulfilled,
+        (state: CurrentUser, action: PayloadAction<User>) => {
+          const user: CurrentUser = {
+            ...state,
+            ...action.payload,
+            isLoggedIn: true,
+            isLoading: false,
+            notificationMessage: null,
+          };
+          return user;
+        }
+      )
+      /**
+       * fetchCurrentUser thunk
+       */
+      .addCase(
+        fetchCurrentUser.fulfilled,
         (state: CurrentUser, action: PayloadAction<User>) => {
           const user: CurrentUser = {
             ...state,
