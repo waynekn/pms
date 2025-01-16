@@ -5,6 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import classNames from "classnames";
 import OrgAuthForm from "../components/org-auth-form.component";
 import OrganizationProjects from "../components/organization-projects.component";
+import OrganizationAdminList from "../components/organization-admin-component";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import { ProjectCreationPageState } from "./project-create.page";
@@ -225,6 +226,11 @@ const OrganizationDetail = () => {
                   </p>
                 )}
               </>
+            )}
+            {activeTab === "Administrators" && (
+              <OrganizationAdminList
+                organizationId={organization.organizationId}
+              />
             )}
           </>
         )}
