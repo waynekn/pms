@@ -2,6 +2,7 @@ import { useState } from "react";
 import { isAxiosError } from "axios";
 import { useLocation, useNavigate } from "react-router";
 import ClearIcon from "@mui/icons-material/Clear";
+import Tooltip from "@mui/material/Tooltip";
 import ProjectCreateSideBar from "../components/project-create.sidebar";
 
 import api from "../api";
@@ -225,7 +226,9 @@ const ProjectCreationPage = () => {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
                   onClick={handleTemplateRemoval}
                 >
-                  <ClearIcon />
+                  <Tooltip placement="top" title="Clear template">
+                    <ClearIcon />
+                  </Tooltip>
                 </span>
               )}
             </div>
