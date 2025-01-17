@@ -32,7 +32,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "pk", "email", "username"
+            "pk", "email", "username", "username_slug",
         )
 
 
