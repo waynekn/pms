@@ -30,7 +30,7 @@ const Router = () => {
           element={<GoogleCallback />}
         />
       </Route>
-      <Route path="user/:username/" element={<ProfilePage />} />
+      <Route path="user/:usernameSlug/" element={<ProfilePage />} />
       <Route path="logout/" element={<LogoutPage />} />
       <Route
         path="organization/create/"
