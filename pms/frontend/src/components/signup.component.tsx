@@ -70,7 +70,7 @@ const SignUpForm = () => {
     }
     try {
       const user = await dispatch(registerUser(formValues)).unwrap();
-      await navigate(`../user/${user.username}`);
+      await navigate(`../user/${user.usernameSlug}`);
     } catch (error) {
       const formErrors = error as SignUpFormErrors;
       setFormErrors((prevErrors) => {

@@ -67,7 +67,7 @@ const LogInForm = () => {
       if (next) {
         await navigate(next);
       } else {
-        await navigate(`../user/${user.username}/`);
+        await navigate(`../user/${user.usernameSlug}/`);
       }
     } catch (error) {
       const formErrors = error as LogInFormErrors;
