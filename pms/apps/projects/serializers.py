@@ -112,7 +112,7 @@ class ProjectRetrievalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Project
-        fields = "__all__"
+        exclude = ['template',]
 
 
 class ProjectCreationSerializer(serializers.ModelSerializer):
