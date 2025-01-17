@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import Container from "@mui/material/Container";
-import Stack from "@mui/material/Stack";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
 
-import KanbanTask from "../components/kanban-task.component";
 import TaskCreateForm from "../components/task-creation-form";
 import ProjectPhaseDetailPlaceholder from "../placeholders/project-phase-detail.placeholder";
 
@@ -17,6 +17,9 @@ import {
   ProjectResponse,
   Project,
 } from "../components/user-projects.component";
+
+import KanbanColumn from "../components/kanban-column.copnent";
+import useKanbanColumns from "../hooks/kanban-columns";
 
 type PhaseDetailResponse = {
   project: ProjectResponse;
@@ -35,6 +38,8 @@ type PhaseDetail = {
   inProgress: Task[];
   completed: Task[];
 };
+
+export type ColumnId = "onHold" | "inProgress" | "completed";
 
 const ProjectPhaseDetail = () => {
   const initialState: PhaseDetail = {
@@ -55,10 +60,24 @@ const ProjectPhaseDetail = () => {
   };
   const [detail, setDetail] = useState(initialState);
 
+  const columnTitles: Record<ColumnId, string> = {
+    onHold: "On Hold",
+    inProgress: "In Progress",
+    completed: "Completed",
+  };
+
+  const columnColors: Record<ColumnId, string> = {
+    onHold: "bg-bold-yellow",
+    inProgress: "bg-red-orange",
+    completed: "bg-rich-green",
+  };
+
   const [displayTaskCreateForm, setDisplayTaskCreateForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const { projectPhaseId } = useParams();
+
+  const { columnsId, setColumnsId } = useKanbanColumns();
 
   useEffect(() => {
     const getProjectPhaseDetail = async () => {
@@ -81,6 +100,21 @@ const ProjectPhaseDetail = () => {
     };
     void getProjectPhaseDetail();
   }, [projectPhaseId]);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    // Reorder columnsId array based on drag
+    const oldIndex = columnsId.indexOf(active.id as ColumnId);
+    const newIndex = columnsId.indexOf(over.id as ColumnId);
+
+    const newColumnsOrder = [...columnsId];
+    newColumnsOrder.splice(oldIndex, 1);
+    newColumnsOrder.splice(newIndex, 0, active.id as ColumnId);
+
+    setColumnsId(newColumnsOrder); // Update state
+  };
 
   if (isLoading) {
     return <ProjectPhaseDetailPlaceholder />;
@@ -120,52 +154,23 @@ const ProjectPhaseDetail = () => {
           </button>
         )}
       </nav>
-
-      {/* TODO: Kanban board */}
-      <main className="grid md:grid-cols-3 gap-y-3 gap-2 mt-1">
-        <div>
-          <h3 className="bg-bold-yellow px-2 text-lg font-bold rounded-md">
-            On hold
-          </h3>
-          {detail.onHold.length > 0 ? (
-            <Stack spacing={0.5}>
-              {detail.onHold.map((task) => (
-                <KanbanTask task={task} />
-              ))}
-            </Stack>
-          ) : (
-            <p className="text-gray-500">There are tasks on hold</p>
-          )}
-        </div>
-        <div>
-          <h3 className="bg-red-orange px-2 text-lg font-bold rounded-md">
-            In progress
-          </h3>
-          {detail.inProgress.length > 0 ? (
-            <Stack spacing={0.5}>
-              {detail.inProgress.map((task) => (
-                <KanbanTask key={task.taskId} task={task} />
-              ))}
-            </Stack>
-          ) : (
-            <p className="text-gray-500">There are no tasks in progress</p>
-          )}
-        </div>
-        <div>
-          <h3 className="bg-rich-green px-2 text-lg font-bold rounded-md">
-            Completed
-          </h3>
-          {detail.completed.length > 0 ? (
-            <Stack spacing={0.5}>
-              {detail.completed.map((task) => (
-                <KanbanTask task={task} />
-              ))}
-            </Stack>
-          ) : (
-            <p className="text-gray-500">There are no tasks completed</p>
-          )}
-        </div>
+      {/* Kanban board */}
+      <main className="grid md:grid-cols-3 gap-y-3 gap-2 mt-1 h-full">
+        <DndContext onDragEnd={handleDragEnd}>
+          <SortableContext items={columnsId}>
+            {columnsId.map((columnId) => (
+              <KanbanColumn
+                key={columnId}
+                id={columnId}
+                title={columnTitles[columnId]}
+                tasks={detail[columnId]}
+                color={columnColors[columnId]}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
       </main>
+
       {/* Task creation form */}
       {displayTaskCreateForm && (
         <TaskCreateForm
