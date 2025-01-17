@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.request import Request
+from apps.organizations.serializers import OrganizationRetrievalSerializer
 from .utils import slugify_project_name
 from . import models
 
@@ -107,6 +108,8 @@ class ProjectRetrievalSerializer(serializers.ModelSerializer):
     """
     Serializer for retrieving project data.
     """
+    organization = OrganizationRetrievalSerializer()
+
     class Meta:
         model = models.Project
         fields = "__all__"
