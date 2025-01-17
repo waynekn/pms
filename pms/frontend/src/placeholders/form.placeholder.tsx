@@ -1,32 +1,27 @@
 const FormPlaceHolder = () => {
   return (
-    <div className="border sm:w-64 md:w-72 p-3 animate-pulse">
-      <h1 className="text-xl font-bold text-center h-5 w-full bg-gray-400"></h1>
+    <main className="flex-1 p-4 md:p-8 sm:text-sm md:text-base animate-pulse">
+      <form className="w-full max-w-3xl mx-auto border-2 border-gray-300 rounded-lg bg-white shadow-lg p-8 space-y-6">
+        <div className="flex flex-col">
+          <div className="mb-2 sm:w-full md:w-1/4 h-5 bg-stone-500"></div>
+          <div className="h-7 bg-stone-500" />
+        </div>
 
-      <div className="mt-4">
-        <div className="h-5 w-full bg-gray-400 "></div>
-        <div className="mt-1 w-full px-3 py-2 h-8 w-full bg-gray-400" />
-      </div>
+        <div className="flex flex-col">
+          <div className="mb-2 sm:w-full md:w-1/4 h-5 bg-stone-500"></div>
+          <div className="h-7 bg-stone-500" />
+        </div>
 
-      <div className="mt-4">
-        <div className="h-5 w-full bg-gray-400" />
-        <div className="mt-1 w-full px-3 py-2 h-8 w-full bg-gray-400" />
-      </div>
+        <div className="flex flex-col">
+          <div className="mb-2 sm:w-full md:w-1/4 h-5 bg-stone-500"></div>
+          <div className="h-7 bg-stone-500" />
+        </div>
 
-      <div className="mt-4">
-        <div className="h-5 w-full bg-gray-400" />
-        <div className="mt-1 w-full px-3 py-2 h-8 w-full bg-gray-400" />
-      </div>
-
-      <div className="mt-4">
-        <div className="h-5 w-full bg-gray-400" />
-        <div className="mt-1 w-full px-3 py-2 h-8 w-full bg-gray-400" />
-      </div>
-
-      <div className="mt-4">
-        <div className="h-8 w-full bg-gray-400"></div>
-      </div>
-    </div>
+        <div className="flex justify-end">
+          <div className="bg-stone-500 h-7 w-16"></div>
+        </div>
+      </form>
+    </main>
   );
 };
 
