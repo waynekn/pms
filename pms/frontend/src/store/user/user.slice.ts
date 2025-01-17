@@ -19,7 +19,6 @@ export type User = {
 export type CurrentUser = User & {
   isLoading: boolean;
   isLoggedIn: boolean;
-  notificationMessage: string | null;
 };
 
 type SuccessfulAuth = {
@@ -34,7 +33,6 @@ const initialState: CurrentUser = {
   email: "",
   isLoading: false,
   isLoggedIn: false,
-  notificationMessage: null,
 };
 
 export type UnsuccessfulLogIn = {
@@ -182,7 +180,6 @@ const userSlice = createSlice({
        */
       .addCase(logInUser.pending, (state: CurrentUser) => {
         state.isLoading = true;
-        state.notificationMessage = null;
       })
       .addCase(
         logInUser.fulfilled,
@@ -192,7 +189,6 @@ const userSlice = createSlice({
             ...action.payload,
             isLoggedIn: true,
             isLoading: false,
-            notificationMessage: null,
           };
           return user;
         }
@@ -205,7 +201,6 @@ const userSlice = createSlice({
        */
       .addCase(registerUser.pending, (state: CurrentUser) => {
         state.isLoading = true;
-        state.notificationMessage = null;
       })
       .addCase(
         registerUser.fulfilled,
@@ -215,7 +210,6 @@ const userSlice = createSlice({
             ...action.payload,
             isLoggedIn: true,
             isLoading: false,
-            notificationMessage: null,
           };
           return user;
         }
@@ -228,7 +222,6 @@ const userSlice = createSlice({
        */
       .addCase(googleAuth.pending, (state: CurrentUser) => {
         state.isLoading = true;
-        state.notificationMessage = null;
       })
       .addCase(
         googleAuth.fulfilled,
@@ -238,7 +231,6 @@ const userSlice = createSlice({
             ...action.payload,
             isLoggedIn: true,
             isLoading: false,
-            notificationMessage: null,
           };
           return user;
         }
@@ -254,7 +246,6 @@ const userSlice = createSlice({
             ...action.payload,
             isLoggedIn: true,
             isLoading: false,
-            notificationMessage: null,
           };
           return user;
         }
