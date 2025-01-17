@@ -12,10 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
-import {
-  Organization,
-  OrganizationResponse,
-} from "../components/organization.component";
+import { Organization, OrganizationResponse } from "../types/organization";
 
 // Error response from the API
 type ErrorResponse = {
