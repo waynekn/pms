@@ -14,6 +14,11 @@ export type User = {
   pk: string;
   username: string;
   email: string;
+  usernameSlug: string;
+};
+
+type UserResponse = Omit<User, "usernameSlug"> & {
+  username_slug: string;
 };
 
 export type CurrentUser = User & {
@@ -22,7 +27,7 @@ export type CurrentUser = User & {
 };
 
 type SuccessfulAuth = {
-  user: User;
+  user: UserResponse;
   access: string;
   refresh: string;
 };
@@ -31,6 +36,7 @@ const initialState: CurrentUser = {
   pk: "",
   username: "",
   email: "",
+  usernameSlug: "",
   isLoading: false,
   isLoggedIn: false,
 };
@@ -71,7 +77,12 @@ export const logInUser = createAsyncThunk<
       "dj-rest-auth/login/",
       credentials
     );
-    return response.data.user;
+    const { username_slug, ...userData } = response.data.user;
+    const user: User = {
+      ...userData,
+      usernameSlug: username_slug,
+    };
+    return user;
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulLogIn>;
@@ -102,7 +113,12 @@ export const registerUser = createAsyncThunk<
       "dj-rest-auth/registration/",
       credentials
     );
-    return response.data.user;
+    const { username_slug, ...userData } = response.data.user;
+    const user: User = {
+      ...userData,
+      usernameSlug: username_slug,
+    };
+    return user;
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulRegistration>;
@@ -150,7 +166,12 @@ export const googleAuth = createAsyncThunk<User, string>(
     const response = await api.post<SuccessfulAuth>("dj-rest-auth/google/", {
       code,
     });
-    return response.data.user;
+    const { username_slug, ...userData } = response.data.user;
+    const user: User = {
+      ...userData,
+      usernameSlug: username_slug,
+    };
+    return user;
   }
 );
 
