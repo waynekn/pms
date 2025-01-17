@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Project } from "../pages/organization-detail.page";
+import { Project } from "../types/projects";
 
 type OrganizationProjectsProps = {
   projects: Project[];

@@ -1,5 +1,5 @@
 import Stack from "@mui/material/Stack";
-import { ProjectMember } from "./project-members-list.component";
+import { ProjectMember } from "../types/projects";
 
 type TaskAssignessProps = {
   assignees: ProjectMember[];

@@ -2,23 +2,11 @@ import { useState } from "react";
 import { debounce } from "lodash";
 import Chip from "@mui/material/Chip";
 import camelize from "../utils/snakecase-to-camelcase";
-import { Industry, IndustryResponse } from "../pages/template-creation.page";
+import { ProjectTemplate, TemplateSearchResponse } from "../types/templates";
 import api from "../api";
 
 type ProjectCreateSideBarProps = {
   handleTemplateSelection: (templateId: string, templateName: string) => void;
-};
-
-type TemplateSearchResponse = {
-  template_id: string;
-  template_name: string;
-  industry: IndustryResponse;
-};
-
-type ProjectTemplate = {
-  templateId: string;
-  templateName: string;
-  industry: Industry;
 };
 
 const ProjectCreateSideBar = ({

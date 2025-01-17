@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { ProjectMember } from "./project-members-list.component";
+import { ProjectMember } from "../types/projects";
 import api from "../api";
 import Checkbox from "@mui/material/Checkbox";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";

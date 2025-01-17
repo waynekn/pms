@@ -8,27 +8,7 @@ import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
-export type ProjectResponse = {
-  created_at: string;
-  deadline: string;
-  description: string;
-  project_id: string;
-  project_name: string;
-  project_name_slug: string;
-  template?: string; // the template this project was made from
-  organization: string; // the primary key of the organization
-  // this project belongs to
-};
-
-export type Project = Omit<
-  ProjectResponse,
-  "created_at" | "project_id" | "project_name" | "project_name_slug"
-> & {
-  createdAt: string;
-  projectName: string;
-  projectId: string;
-  projectNameSlug: string;
-};
+import { ProjectResponse, Project } from "../types/projects";
 
 const UserProjectsDisplay = () => {
   const [userProjects, setUserProjects] = useState<Project[]>([]);

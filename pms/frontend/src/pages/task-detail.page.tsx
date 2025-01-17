@@ -6,26 +6,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 
-import { Task, TaskResponse } from "../pages/project-tasks.page";
 import TaskAssigness from "../components/task-assigness.component";
 import TaskAssignmentComponent from "../components/task-assignment.component";
-import { ProjectMember } from "../components/project-members-list.component";
-
+import { TaskDetail, TaskDetailResponse } from "../types/tasks";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
-type TaskDetailResponse = TaskResponse & { assignees: ProjectMember[] };
-
-type TaskDetail = Task & {
-  assignees: ProjectMember[];
-  role: "Manager" | "Member";
-};
-
-export type SnackBarState = {
-  message: string;
-  serverity: "success" | "error";
-};
+import { SnackBarState } from "../types/snackbar";
 
 type Tabs = "description" | "assignees" | "add members";
 

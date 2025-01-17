@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { OrganizationMember } from "../pages/organization-detail.page";
+import { OrganizationMember } from "../types/organization";
 
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 import api from "../api";

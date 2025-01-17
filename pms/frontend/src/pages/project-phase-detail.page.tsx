@@ -11,33 +11,10 @@ import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
-import { TaskResponse, Task } from "./project-tasks.page";
-import { ProjectPhaseResponse, ProjectPhase } from "./project-phases.page";
-import {
-  ProjectResponse,
-  Project,
-} from "../components/user-projects.component";
+import { PhaseDetail, PhaseDetailResponse } from "../types/projects";
 
 import KanbanColumn from "../components/kanban-column.copnent";
 import useKanbanColumns from "../hooks/kanban-columns";
-
-type PhaseDetailResponse = {
-  project: ProjectResponse;
-  phase: ProjectPhaseResponse;
-  role: "Manager" | "Member";
-  on_hold: TaskResponse[];
-  in_progress: TaskResponse[];
-  completed: TaskResponse[];
-};
-
-type PhaseDetail = {
-  project: Project;
-  phase: ProjectPhase;
-  role: "Manager" | "Member";
-  onHold: Task[];
-  inProgress: Task[];
-  completed: Task[];
-};
 
 export type ColumnId = "onHold" | "inProgress" | "completed";
 
@@ -50,7 +27,11 @@ const ProjectPhaseDetail = () => {
       projectNameSlug: "",
       deadline: "",
       description: "",
-      organization: "",
+      organization: {
+        organizationId: "",
+        organizationName: "",
+        organizationNameSlug: "",
+      },
     },
     phase: { phaseId: "", phaseName: "" },
     role: "Member",

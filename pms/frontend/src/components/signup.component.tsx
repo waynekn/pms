@@ -12,19 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
-export type SignUpCredentials = {
-  username: string;
-  email: string;
-  password1: string;
-  password2: string;
-};
-
-export type SignUpFormErrors = {
-  username?: string[];
-  email?: string[];
-  password1?: string[];
-  nonFieldErrors?: string[];
-};
+import { SignUpFormErrors, SignUpCredentials } from "../types/auth";
 
 const SignUpForm = () => {
   const initialFormValues = {

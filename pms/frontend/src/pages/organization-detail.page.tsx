@@ -12,61 +12,23 @@ import camelize from "../utils/snakecase-to-camelcase";
 import { ProjectCreationPageState } from "./project-create.page";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
-// Projects response from API.
-type ProjectResponse = {
-  project_id: string;
-  project_name: string;
-  project_name_slug: string;
-  description: string;
-  created_at: string;
-  deadline: string;
-  status: string;
-};
-
-// `ProjectResponse` but with camel case keys
-export type Project = {
-  projectId: string;
-  projectName: string;
-  projectNameSlug: string;
-  description: string;
-  createdAt: string;
-  deadline: string;
-  status: string;
-};
-
-// Organization response from API.
-type OrganizationResponse = {
-  organization_id: string;
-  organization_name: string;
-  organization_name_slug: string;
-  projects: ProjectResponse[];
-  role: "Member" | "Admin";
-};
-
-// `OrganizationResponse` but with camel case keys
-type Organziation = {
-  organizationId: string;
-  organizationName: string;
-  organizationNameSlug: string;
-  role: "Member" | "Admin";
-  projects: Project[];
-};
-
-export type OrganizationMember = {
-  username: string;
-};
+import {
+  OrganizationDetailResponse,
+  OrganziationDetail,
+} from "../types/organization";
 
 type Tabs = "Projects" | "Administrators" | "Add administrators";
 
 const OrganizationDetail = () => {
-  const initialState: Organziation = {
+  const initialState: OrganziationDetail = {
     organizationId: "",
     organizationName: "",
     organizationNameSlug: "",
     role: "Member",
     projects: [],
   };
-  const [organization, setOrganization] = useState<Organziation>(initialState);
+  const [organization, setOrganization] =
+    useState<OrganziationDetail>(initialState);
   const [displayOrgAuthForm, setDisplayOrgAuthForm] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIslLoading] = useState(true);
@@ -77,10 +39,10 @@ const OrganizationDetail = () => {
   useEffect(() => {
     const getOrganizationDetail = async () => {
       try {
-        const response = await api.get<OrganizationResponse>(
+        const response = await api.get<OrganizationDetailResponse>(
           `organizations/${organizationNameSlug}/detail/`
         );
-        const organization = camelize(response.data) as Organziation;
+        const organization = camelize(response.data) as OrganziationDetail;
 
         setOrganization((prevState) => {
           return {

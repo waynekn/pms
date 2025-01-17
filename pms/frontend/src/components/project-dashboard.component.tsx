@@ -7,28 +7,7 @@ import handleGenericApiErrors from "../utils/errors";
 import camelize from "../utils/snakecase-to-camelcase";
 import api from "../api";
 
-type ProjectStatsResponse = {
-  tasks: number;
-  members: number;
-  description: string;
-  tasks_in_progress: number;
-  tasks_on_hold: number;
-  tasks_completed: number;
-  percentage_completion: number;
-};
-
-type ProjectStats = Omit<
-  ProjectStatsResponse,
-  | "tasks_in_progress"
-  | "tasks_on_hold"
-  | "tasks_completed"
-  | "percentage_completion"
-> & {
-  tasksInProgress: number;
-  tasksOnHold: number;
-  tasksCompleted: number;
-  percentageCompletion: number;
-};
+import { ProjectStats, ProjectStatsResponse } from "../types/projects";
 
 const ProjectDashBoard = () => {
   const initialState: ProjectStats = {

@@ -6,43 +6,11 @@ import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 
-import {
-  ProjectResponse,
-  Project,
-} from "../components/user-projects.component";
-import { ProjectPhaseResponse, ProjectPhase } from "./project-phases.page";
+import { ProjectTasks, ProjectTasksResponse } from "../types/projects";
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
-
-export type TaskResponse = {
-  task_id: string;
-  task_name: string;
-  start_date: string;
-  deadline: string;
-  status: "IN_PROGRESS" | "ON_HOLD" | "DONE";
-  description: string;
-  project_phase: ProjectPhaseResponse;
-};
-
-export type Task = Omit<
-  TaskResponse,
-  "task_id" | "task_name" | "start_date" | "project_phase"
-> & {
-  taskId: string;
-  taskName: string;
-  startDate: string;
-  projectPhase: ProjectPhase;
-};
-
-type ProjectTasksResponse = ProjectResponse & {
-  tasks: TaskResponse[];
-};
-
-type ProjectTasks = Project & {
-  tasks: Task[];
-};
 
 const ProjectTasksPage = () => {
   const initialState: ProjectTasks = {
@@ -52,7 +20,11 @@ const ProjectTasksPage = () => {
     projectNameSlug: "",
     deadline: "",
     description: "",
-    organization: "",
+    organization: {
+      organizationId: "",
+      organizationName: "",
+      organizationNameSlug: "",
+    },
     tasks: [],
   };
   const [projectTasks, setProjectTasks] = useState<ProjectTasks>(initialState);

@@ -12,15 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
-export type LogInCredentials = {
-  username: string;
-  password: string;
-};
-
-export type LogInFormErrors = {
-  password?: string[];
-  nonFieldErrors?: string[];
-};
+import { LogInCredentials, LogInFormErrors } from "../types/auth";
 
 const LogInForm = () => {
   const [formValues, setFormValues] = useState<LogInCredentials>({

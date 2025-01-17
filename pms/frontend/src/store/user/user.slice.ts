@@ -1,36 +1,17 @@
 import { AxiosError, isAxiosError } from "axios";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import api from "../../api";
+
 import {
+  SuccessfulAuth,
+  UnsuccessfulLogIn,
+  UnsuccessfulRegistration,
   LogInCredentials,
   LogInFormErrors,
-} from "../../components/login.component";
-import {
   SignUpCredentials,
   SignUpFormErrors,
-} from "../../components/signup.component";
-
-export type User = {
-  pk: string;
-  username: string;
-  email: string;
-  usernameSlug: string;
-};
-
-type UserResponse = Omit<User, "usernameSlug"> & {
-  username_slug: string;
-};
-
-export type CurrentUser = User & {
-  isLoading: boolean;
-  isLoggedIn: boolean;
-};
-
-type SuccessfulAuth = {
-  user: UserResponse;
-  access: string;
-  refresh: string;
-};
+} from "../../types/auth";
+import { User, CurrentUser } from "../../types/user";
 
 const initialState: CurrentUser = {
   pk: "",
@@ -39,19 +20,6 @@ const initialState: CurrentUser = {
   usernameSlug: "",
   isLoading: false,
   isLoggedIn: false,
-};
-
-export type UnsuccessfulLogIn = {
-  password?: string[];
-  non_field_errors?: string[];
-};
-
-type UnsuccessfulRegistration = {
-  username?: string[];
-  email?: string[];
-  password1?: string[];
-  password2?: string[];
-  non_field_errors?: string[];
 };
 
 /**

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
-import { Task } from "../pages/project-tasks.page";
+import { Task } from "../types/tasks";
 import classNames from "classnames";
 import Tooltip from "@mui/material/Tooltip";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";

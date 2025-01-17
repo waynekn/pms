@@ -6,23 +6,15 @@ import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import {
-  ProjectResponse,
   Project,
-} from "../components/user-projects.component";
+  ProjectResponse,
+  ProjectPhase,
+  ProjectPhaseResponse,
+} from "../types/projects";
 
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
-
-export type ProjectPhaseResponse = {
-  phase_id: string;
-  phase_name: string;
-};
-
-export type ProjectPhase = {
-  phaseId: string;
-  phaseName: string;
-};
 
 type ProjectWorkFlowResponse = ProjectResponse & {
   phases: ProjectPhaseResponse[];
@@ -40,7 +32,11 @@ const ProjectPhasePage = () => {
     projectNameSlug: "",
     deadline: "",
     description: "",
-    organization: "",
+    organization: {
+      organizationId: "",
+      organizationName: "",
+      organizationNameSlug: "",
+    },
     phases: [],
   };
   const [projectWorkflow, setProjectWorkflow] =

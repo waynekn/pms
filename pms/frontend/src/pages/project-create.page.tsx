@@ -8,10 +8,7 @@ import ProjectCreateSideBar from "../components/project-create.sidebar";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 
-import {
-  Project,
-  ProjectResponse,
-} from "../components/user-projects.component";
+import { Project, ProjectResponse } from "../types/projects";
 
 export type ProjectCreationPageState = {
   organizationId: string;

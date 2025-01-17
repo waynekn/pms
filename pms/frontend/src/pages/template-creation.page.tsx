@@ -11,15 +11,7 @@ import TemplateWorkflowList from "../components/template-workflow-list.component
 
 import api from "../api";
 
-export type IndustryResponse = {
-  industry_name: string;
-  industry_id: string;
-};
-
-export type Industry = {
-  industryName: string;
-  industryId: string;
-};
+import { Industry, IndustryResponse } from "../types/industry";
 
 // Error response from the API
 type ErrorResponse = {

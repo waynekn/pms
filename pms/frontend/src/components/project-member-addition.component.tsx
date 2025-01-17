@@ -8,14 +8,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import api from "../api";
 import handleGenericApiErrors from "../utils/errors";
 
-type NonProjectMember = {
-  username: string;
-};
+import { ProjectMember } from "../types/projects";
 
 const NonProjectMembersList = () => {
-  const [nonProjectMembers, setNonProjectMembers] = useState<
-    NonProjectMember[]
-  >([]);
+  const [nonProjectMembers, setNonProjectMembers] = useState<ProjectMember[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [addedMembers, setAddedMembers] = useState<string[]>([]);
@@ -32,7 +30,7 @@ const NonProjectMembersList = () => {
       }
 
       try {
-        const res = await api.get<NonProjectMember[]>(
+        const res = await api.get<ProjectMember[]>(
           `project/${projectId}/non-members/`
         );
         setNonProjectMembers(res.data);

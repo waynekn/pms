@@ -6,9 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import api from "../api";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
-export type ProjectMember = {
-  username: string;
-};
+import { ProjectMember } from "../types/projects";
 
 const ProjectMembersList = () => {
   const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([]);

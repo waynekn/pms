@@ -5,8 +5,8 @@ import classNames from "classnames";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 
-import { OrganizationMember } from "../pages/organization-detail.page";
-import { SnackBarState } from "../pages/task-detail.page";
+import { OrganizationMember } from "../types/organization";
+import { SnackBarState } from "../types/snackbar";
 
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 import api from "../api";

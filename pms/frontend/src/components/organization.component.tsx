@@ -6,17 +6,7 @@ import { debounce } from "lodash";
 import camelize from "../utils/snakecase-to-camelcase";
 import api from "../api";
 
-export type OrganizationResponse = {
-  organization_id: string;
-  organization_name: string;
-  organization_name_slug: string;
-};
-
-export type Organization = {
-  organizationId: string;
-  organizationName: string;
-  organizationNameSlug: string;
-};
+import { Organization, OrganizationResponse } from "../types/organization";
 
 type OrganizationQuery = {
   organization_name_query: string;

@@ -3,7 +3,7 @@ import KanbanTask from "./kanban-task.component";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { Task } from "../pages/project-tasks.page";
+import { Task } from "../types/tasks";
 
 type KanbanColumnProps = {
   id: string;
