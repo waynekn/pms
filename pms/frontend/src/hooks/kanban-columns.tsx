@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 
-import { ColumnId } from "../pages/project-phase-detail.page";
+import { ColumnId } from "../types/kanban/columns";
 
 const useKanbanColumns = () => {
   const { projectPhaseId } = useParams();
