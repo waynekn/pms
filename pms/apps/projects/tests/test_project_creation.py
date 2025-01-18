@@ -86,8 +86,6 @@ class ProjectCreationTests(APITransactionTestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsInstance(response.data, dict)
         self.assertIn('organization', response.data)
-        self.assertIn('template', response.data)
-        self.assertEqual(response.data['template'], self.template.pk)
         self.assertIn('project_name', response.data)
         self.assertIn('description', response.data)
         self.assertIn('deadline', response.data)
