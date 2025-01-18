@@ -11,12 +11,11 @@ import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
+import { ColumnId } from "../types/kanban/columns";
 import { PhaseDetail, PhaseDetailResponse } from "../types/projects";
 
 import KanbanColumn from "../components/kanban-column.copnent";
 import useKanbanColumns from "../hooks/kanban-columns";
-
-export type ColumnId = "onHold" | "inProgress" | "completed";
 
 const ProjectPhaseDetail = () => {
   const initialState: PhaseDetail = {
