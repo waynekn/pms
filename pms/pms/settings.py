@@ -124,7 +124,7 @@ db_config = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': db_config['db_name'],
         'USER': db_config['db_user'],
         'PASSWORD': db_config['db_password'],
