@@ -8,6 +8,13 @@ export default defineConfig({
   css: {
     postcss: "./postcss.config.js",
   },
+  server: {
+    strictPort: true,
+    host: true,
+    watch: {
+      usePolling: true,
+    },
+  },
   build: {
     emptyOutDir: true,
     chunkSizeWarningLimit: 1000,
@@ -16,7 +23,6 @@ export default defineConfig({
         main: resolve("./src/main.tsx"),
       },
       output: {
-        dir: "../static/react/",
         entryFileNames: "[name].js",
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith(".css")) {
