@@ -51,19 +51,20 @@ const ProfilePage = () => {
               className="absolute right-0 mt-2 bg-white border rounded-lg shadow-md w-max z-50"
               ref={dropdownRef}
             >
-              <ul className="space-y-2 py-2 px-4">
+              <ul className="space-y-2 py-2 px-4 text-left">
                 <li>
                   <Link
                     to="../templates/create/"
-                    className="text-gray-700 hover:text-blue-500"
+                    className="block text-gray-700 hover:text-blue-500"
                   >
                     Create a template
                   </Link>
                 </li>
+
                 <li>
                   <Link
                     to="../logout"
-                    className="text-gray-700 hover:text-blue-500"
+                    className="block text-gray-700 hover:text-blue-500"
                   >
                     Logout
                   </Link>
