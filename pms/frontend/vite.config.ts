@@ -11,9 +11,6 @@ export default defineConfig({
   server: {
     strictPort: true,
     host: true,
-    watch: {
-      usePolling: true,
-    },
   },
   build: {
     emptyOutDir: true,
