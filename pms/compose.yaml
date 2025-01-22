@@ -9,6 +9,8 @@ services:
         - action: sync
           path: ./frontend
           target: /code/frontend
+          ignore:
+            - node_modules/
     ports:
       - "5173:5173"
 
