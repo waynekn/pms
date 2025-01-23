@@ -4,11 +4,13 @@ import { useParams, useNavigate } from "react-router";
 import Checkbox from "@mui/material/Checkbox";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "@mui/material/CircularProgress";
+import Avatar from "@mui/material/Avatar";
 
 import api from "../api";
 import handleGenericApiErrors from "../utils/errors";
 
-import { ProjectMember } from "../types/projects";
+import { ProjectMember, ProjectMemberResponse } from "../types/projects";
+import camelize from "../utils/snakecase-to-camelcase";
 
 const NonProjectMembersList = () => {
   const [nonProjectMembers, setNonProjectMembers] = useState<ProjectMember[]>(
@@ -30,10 +32,13 @@ const NonProjectMembersList = () => {
       }
 
       try {
-        const res = await api.get<ProjectMember[]>(
+        const res = await api.get<ProjectMemberResponse[]>(
           `project/${projectId}/non-members/`
         );
-        setNonProjectMembers(res.data);
+        const nonMembers = res.data.map((nonMember) =>
+          camelize(nonMember)
+        ) as ProjectMember[];
+        setNonProjectMembers(nonMembers);
         setIsLoading(false);
       } catch (error) {
         setErrorMessage(handleGenericApiErrors(error));
@@ -126,7 +131,14 @@ const NonProjectMembersList = () => {
                   onChange={handleChange}
                 />
               </span>
-              <span className="text-gray-800">{nonProjectMember.username}</span>
+              <p className="text-gray-800 flex">
+                <Avatar
+                  src={nonProjectMember.profilePicture}
+                  alt="profile-picture"
+                  sx={{ width: 24, height: 24, marginRight: 1 }}
+                />
+                {nonProjectMember.username}
+              </p>
             </li>
           ))}
         </ul>
