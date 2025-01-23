@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Container } from "@mui/material";
+import { Avatar, Container } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import api from "../api";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
-import { ProjectMember } from "../types/projects";
+import { ProjectMember, ProjectMemberResponse } from "../types/projects";
+import camelize from "../utils/snakecase-to-camelcase";
 
 const ProjectMembersList = () => {
   const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([]);
@@ -22,10 +23,14 @@ const ProjectMembersList = () => {
       }
 
       try {
-        const res = await api.get<ProjectMember[]>(
+        const res = await api.get<ProjectMemberResponse[]>(
           `project/${projectId}/members/`
         );
-        setProjectMembers(res.data);
+        const members = res.data.map((member) =>
+          camelize(member)
+        ) as ProjectMember[];
+        setProjectMembers(members);
+        console.log(res.data);
         setIsLoading(false);
       } catch (error) {
         const errorMessageConfig: ErrorMessageConfig = {
@@ -58,8 +63,13 @@ const ProjectMembersList = () => {
           {projectMembers.map((member, index) => (
             <li
               key={index}
-              className="font-sans font-semibold md:text-lg h-9 border-b"
+              className="font-sans font-semibold md:text-lg h-9 border-b flex items-center"
             >
+              <Avatar
+                src={member.profilePicture}
+                alt="profile-picture"
+                sx={{ width: 24, height: 24, marginRight: 1 }}
+              />
               {member.username}
             </li>
           ))}
