@@ -3,6 +3,11 @@ import { Task, TaskResponse } from "./tasks";
 
 export type ProjectMember = {
   username: string;
+  profilePicture: string;
+};
+
+export type ProjectMemberResponse = Omit<ProjectMember, "profilePicture"> & {
+  profile_picture: string;
 };
 
 export type ProjectResponse = {
