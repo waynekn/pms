@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
+import Avatar from "@mui/material/Avatar";
 
-import { OrganizationMember } from "../types/organization";
+import {
+  OrganizationMember,
+  OrganizationMemberResponse,
+} from "../types/organization";
 
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
+import camelize from "../utils/snakecase-to-camelcase";
 import api from "../api";
 
 type OrganizationAdminListProps = {
@@ -21,10 +26,14 @@ const OrganizationAdminList = ({
   useEffect(() => {
     const getOrganizationAdmins = async () => {
       try {
-        const res = await api.get<OrganizationMember[]>(
+        const res = await api.get<OrganizationMemberResponse[]>(
           `organizations/${organizationId}/admins/`
         );
-        setAdmins(res.data);
+        const admins = res.data.map((admin) =>
+          camelize(admin)
+        ) as OrganizationMember[];
+
+        setAdmins(admins);
         setIsLoading(false);
       } catch (error) {
         const messageConfig: ErrorMessageConfig = {
@@ -52,13 +61,20 @@ const OrganizationAdminList = ({
           <CircularProgress sx={{ color: "gray" }} />
         </div>
       ) : (
-        <ol className="space-y-2 w-full list-decimal">
+        <ol className="space-y-2 w-full list-decimal mt-1">
           {admins.map((admin, index) => (
             <li
               key={index}
               className="font-sans w-full font-semibold md:text-lg border-b"
             >
-              {admin.username}
+              <div className="flex content-center">
+                <Avatar
+                  src={admin.profilePicture}
+                  alt="profile-picture"
+                  sx={{ width: 24, height: 24, marginRight: 1 }}
+                />
+                <span>{admin.username}</span>
+              </div>
             </li>
           ))}
         </ol>
