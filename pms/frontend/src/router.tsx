@@ -5,6 +5,7 @@ import LogInForm from "./components/login.component";
 import LogoutPage from "./pages/logout.page";
 import SignUpForm from "./components/signup.component";
 import ProfilePage from "./pages/profle.page";
+import SettingsPage from "./pages/settings.page";
 import ProjectDetailPage from "./pages/project-detail.page";
 import ProjectPhasePage from "./pages/project-phases.page";
 import ProjectPhaseDetail from "./pages/project-phase-detail.page";
@@ -31,6 +32,7 @@ const Router = () => {
         />
       </Route>
       <Route path="user/:usernameSlug/" element={<ProfilePage />} />
+      <Route path=":usernameSlug/settings/" element={<SettingsPage />} />
       <Route path="logout/" element={<LogoutPage />} />
       <Route
         path="organization/create/"
