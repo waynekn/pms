@@ -28,6 +28,8 @@ class User(AbstractUser):
         max_length=254, unique=True, verbose_name='email address', blank=False)
     # make field nullable to avoid migration errors
     username_slug = models.SlugField(max_length=200, unique=True, null=True)
+    profile_picture = models.CharField(
+        max_length=255, help_text='Name of the profile picture in S3 bucket', default='DEFAULTPROFILEPICTURE')
 
     def __str__(self) -> str:
         return self.username
