@@ -2,6 +2,14 @@ import { Project, ProjectResponse } from "./projects";
 
 export type OrganizationMember = {
   username: string;
+  profilePicture: string;
+};
+
+export type OrganizationMemberResponse = Omit<
+  OrganizationMember,
+  "profilePicture"
+> & {
+  profile_picture: string;
 };
 
 export type OrganizationResponse = {
