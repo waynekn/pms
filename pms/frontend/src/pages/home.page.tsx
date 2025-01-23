@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router";
 import { useSelector } from "react-redux";
+import Avatar from "@mui/material/Avatar";
 
 import { selectCurrentUser } from "../store/user/user.selector";
 
@@ -11,11 +12,8 @@ const HomePage = () => {
     <div className="h-screen overflow-hidden">
       <nav className="flex justify-end my-3">
         {currentUser.isLoggedIn ? (
-          <Link
-            to={`user/${currentUser.usernameSlug}`}
-            className="py-3 px-6 mx-1  text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
-          >
-            Profile
+          <Link to={`user/${currentUser.usernameSlug}`} className="mx-1">
+            <Avatar src={currentUser.profilePicture} alt="profile-picture" />
           </Link>
         ) : (
           <>
