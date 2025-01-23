@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
 import classNames from "classnames";
+import { useSelector } from "react-redux";
 
 import OrganizationComponent from "../components/organization.component";
 import UserProjectsDisplay from "../components/user-projects.component";
+import { selectCurrentUser } from "../store/user/user.selector";
 
 type Tabs = "organizations" | "projects";
 
@@ -13,6 +15,8 @@ const ProfilePage = () => {
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const dropdownToggleRef = useRef<HTMLButtonElement | null>(null);
+
+  const currentUser = useSelector(selectCurrentUser);
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -58,6 +62,15 @@ const ProfilePage = () => {
                     className="block text-gray-700 hover:text-blue-500"
                   >
                     Create a template
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to={`../${currentUser.usernameSlug}/settings/`}
+                    className="block text-gray-700 hover:text-blue-500"
+                  >
+                    Settings
                   </Link>
                 </li>
 
