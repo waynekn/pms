@@ -11,15 +11,26 @@ import {
   SignUpCredentials,
   SignUpFormErrors,
 } from "../../types/auth";
-import { User, CurrentUser } from "../../types/user";
+import { User, CurrentUser, UserResponse } from "../../types/user";
 
 const initialState: CurrentUser = {
   pk: "",
   username: "",
   email: "",
   usernameSlug: "",
+  profilePicture: "",
   isLoading: false,
   isLoggedIn: false,
+};
+
+const processUserData = (userResponse: UserResponse): User => {
+  const { username_slug, profile_picture, ...userData } = userResponse;
+  const user: User = {
+    ...userData,
+    usernameSlug: username_slug,
+    profilePicture: profile_picture,
+  };
+  return user;
 };
 
 /**
@@ -45,12 +56,7 @@ export const logInUser = createAsyncThunk<
       "dj-rest-auth/login/",
       credentials
     );
-    const { username_slug, ...userData } = response.data.user;
-    const user: User = {
-      ...userData,
-      usernameSlug: username_slug,
-    };
-    return user;
+    return processUserData(response.data.user);
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulLogIn>;
@@ -81,12 +87,8 @@ export const registerUser = createAsyncThunk<
       "dj-rest-auth/registration/",
       credentials
     );
-    const { username_slug, ...userData } = response.data.user;
-    const user: User = {
-      ...userData,
-      usernameSlug: username_slug,
-    };
-    return user;
+
+    return processUserData(response.data.user);
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulRegistration>;
@@ -134,12 +136,7 @@ export const googleAuth = createAsyncThunk<User, string>(
     const response = await api.post<SuccessfulAuth>("dj-rest-auth/google/", {
       code,
     });
-    const { username_slug, ...userData } = response.data.user;
-    const user: User = {
-      ...userData,
-      usernameSlug: username_slug,
-    };
-    return user;
+    return processUserData(response.data.user);
   }
 );
 
