@@ -5,11 +5,16 @@ import classNames from "classnames";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 
-import { OrganizationMember } from "../types/organization";
+import {
+  OrganizationMember,
+  OrganizationMemberResponse,
+} from "../types/organization";
 import { SnackBarState } from "../types/snackbar";
 
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
+import camelize from "../utils/snakecase-to-camelcase";
 import api from "../api";
+import Avatar from "@mui/material/Avatar";
 
 type AssignOrganizationAdminProps = {
   organizationId: string;
@@ -36,10 +41,13 @@ const AssignOrganizationAdmin = ({
   useEffect(() => {
     const getNonOrganizationAdmins = async () => {
       try {
-        const res = await api.get<OrganizationMember[]>(
+        const res = await api.get<OrganizationMemberResponse[]>(
           `organizations/${organizationId}/non-admins/`
         );
-        setNonAdmins(res.data);
+        const nonAdmins = res.data.map((admin) =>
+          camelize(admin)
+        ) as OrganizationMember[];
+        setNonAdmins(nonAdmins);
         setIsLoading(false);
       } catch (error) {
         const messageConfig: ErrorMessageConfig = {
@@ -132,19 +140,26 @@ const AssignOrganizationAdmin = ({
         </div>
       ) : (
         <ul className="space-y-2">
-          {nonAdmins.map((nonProjectMember, index) => (
+          {nonAdmins.map((nonAdmin, index) => (
             <li
               key={index}
               className="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg hover:bg-gray-200 transition duration-200"
             >
               <span className="mr-2">
                 <Checkbox
-                  name={nonProjectMember.username}
-                  checked={addedAdmins.includes(nonProjectMember.username)} // Controlled Checkbox
+                  name={nonAdmin.username}
+                  checked={addedAdmins.includes(nonAdmin.username)} // Controlled Checkbox
                   onChange={handleChange}
                 />
               </span>
-              <span className="text-gray-800">{nonProjectMember.username}</span>
+              <p className="text-gray-800 flex">
+                <Avatar
+                  src={nonAdmin.profilePicture}
+                  alt="profile-picture"
+                  sx={{ width: 24, height: 24, marginRight: 1 }}
+                />
+                {nonAdmin.username}
+              </p>
             </li>
           ))}
         </ul>
