@@ -11,15 +11,23 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from .models import User
 from .utils import slugify_username
 
+from services.s3.profile_pics import get_profile_pic_url
+
 
 class UserRetrievalSerializer(serializers.ModelSerializer):
     """
-    Serializer for retrieving a user's username.
+    Serializer for retrieving users.
     """
+
+    profile_picture = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['username']
+        fields = ['username', 'profile_picture',]
+
+    def get_profile_picture(self, user) -> str:
+        presigned_url = get_profile_pic_url(user.profile_picture)
+        return presigned_url
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
@@ -29,11 +37,19 @@ class UserDetailsSerializer(serializers.ModelSerializer):
     The fields defined here are what will be returned when
     `dj-rest-auth` retreives a `User` from the database.
     """
+
+    profile_picture = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
             "pk", "email", "username", "username_slug",
+            "profile_picture",
         )
+
+    def get_profile_picture(self, user) -> str:
+        presigned_url = get_profile_pic_url(user.profile_picture)
+        return presigned_url
 
 
 try:
