@@ -7,6 +7,10 @@ export type ErrorMessageConfig = {
   500?: string;
 };
 
+type GenericApiError = {
+  detail: string;
+};
+
 const handleGenericApiErrors = (
   error: unknown,
   messageConfig?: ErrorMessageConfig
@@ -15,7 +19,7 @@ const handleGenericApiErrors = (
     const statusCode = error.status;
 
     if (statusCode === 400) {
-      const axiosError = error as AxiosError<{ detail: string }>;
+      const axiosError = error as AxiosError<GenericApiError>;
 
       return (
         axiosError.response?.data.detail ||
@@ -25,7 +29,7 @@ const handleGenericApiErrors = (
     }
 
     if (statusCode === 403) {
-      const axiosError = error as AxiosError<{ detail: string }>;
+      const axiosError = error as AxiosError<GenericApiError>;
 
       return (
         axiosError.response?.data.detail ||
@@ -35,7 +39,7 @@ const handleGenericApiErrors = (
     }
 
     if (statusCode === 404) {
-      const axiosError = error as AxiosError<{ detail: string }>;
+      const axiosError = error as AxiosError<GenericApiError>;
 
       console.log(axiosError.response?.data.detail);
       return (
