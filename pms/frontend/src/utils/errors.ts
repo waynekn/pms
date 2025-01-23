@@ -44,7 +44,11 @@ const handleGenericApiErrors = (
     }
 
     if (!statusCode || statusCode >= 500) {
-      return messageConfig?.[500] || "An unexpected error occurred";
+      return (
+        axiosError.response?.data.detail ||
+        messageConfig?.[500] ||
+        "An unexpected error occurred"
+      );
     }
 
     return "An unexpected error occurred";
