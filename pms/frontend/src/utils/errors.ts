@@ -17,10 +17,9 @@ const handleGenericApiErrors = (
 ): string => {
   if (isAxiosError(error)) {
     const statusCode = error.status;
+    const axiosError = error as AxiosError<GenericApiError>;
 
     if (statusCode === 400) {
-      const axiosError = error as AxiosError<GenericApiError>;
-
       return (
         axiosError.response?.data.detail ||
         messageConfig?.[400] ||
@@ -29,8 +28,6 @@ const handleGenericApiErrors = (
     }
 
     if (statusCode === 403) {
-      const axiosError = error as AxiosError<GenericApiError>;
-
       return (
         axiosError.response?.data.detail ||
         messageConfig?.[403] ||
@@ -39,9 +36,6 @@ const handleGenericApiErrors = (
     }
 
     if (statusCode === 404) {
-      const axiosError = error as AxiosError<GenericApiError>;
-
-      console.log(axiosError.response?.data.detail);
       return (
         axiosError.response?.data.detail ||
         messageConfig?.[404] ||
