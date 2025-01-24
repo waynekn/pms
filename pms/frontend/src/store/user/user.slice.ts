@@ -24,16 +24,6 @@ const initialState: CurrentUser = {
   isLoggedIn: false,
 };
 
-const processUserData = (userResponse: UserResponse): User => {
-  const { username_slug, profile_picture, ...userData } = userResponse;
-  const user: User = {
-    ...userData,
-    usernameSlug: username_slug,
-    profilePicture: profile_picture,
-  };
-  return user;
-};
-
 /**
  * Sends login credentials (email/username and password) to the API to enable a user to log in.
  *
@@ -57,7 +47,7 @@ export const logInUser = createAsyncThunk<
       "dj-rest-auth/login/",
       credentials
     );
-    return processUserData(response.data.user);
+    return camelize(response.data.user) as User;
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulLogIn>;
@@ -89,7 +79,7 @@ export const registerUser = createAsyncThunk<
       credentials
     );
 
-    return processUserData(response.data.user);
+    return camelize(response.data.user) as User;
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulRegistration>;
@@ -137,7 +127,7 @@ export const googleAuth = createAsyncThunk<User, string>(
     const response = await api.post<SuccessfulAuth>("dj-rest-auth/google/", {
       code,
     });
-    return processUserData(response.data.user);
+    return camelize(response.data.user) as User;
   }
 );
 
