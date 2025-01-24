@@ -1,10 +1,12 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
-    GoogleLogin,)
+    GoogleLogin, UserProfilePictureUpdateView)
 
 
 urlpatterns = [
+    path('avatar/update/',
+         UserProfilePictureUpdateView.as_view(), name="update_avatar"),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('dj-rest-auth/google/',
