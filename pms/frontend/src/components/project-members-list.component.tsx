@@ -30,7 +30,6 @@ const ProjectMembersList = () => {
           camelize(member)
         ) as ProjectMember[];
         setProjectMembers(members);
-        console.log(res.data);
         setIsLoading(false);
       } catch (error) {
         const errorMessageConfig: ErrorMessageConfig = {
