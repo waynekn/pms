@@ -12,6 +12,7 @@ import {
   SignUpFormErrors,
 } from "../../types/auth";
 import { User, CurrentUser, UserResponse } from "../../types/user";
+import camelize from "../../utils/snakecase-to-camelcase";
 
 const initialState: CurrentUser = {
   pk: "",
@@ -158,6 +159,15 @@ const userSlice = createSlice({
     clearCurrentUser() {
       return initialState;
     },
+    setCurrentUser(_, action: PayloadAction<UserResponse>): CurrentUser {
+      const updatedUser = camelize(action.payload) as User;
+      const user: CurrentUser = {
+        ...updatedUser,
+        isLoading: false,
+        isLoggedIn: true,
+      };
+      return user;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -239,6 +249,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearCurrentUser } = userSlice.actions;
+export const { clearCurrentUser, setCurrentUser } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;
