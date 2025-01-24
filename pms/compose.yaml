@@ -21,6 +21,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      cache:
+        condition: service_healthy
     volumes:
       - .:/code
 
@@ -38,5 +40,19 @@ services:
       timeout: 5s
       retries: 5
 
+  cache:
+    image: redis:7-alpine
+    container_name: redis
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: ["redis-server"]
+    restart: always
+
 volumes:
   db_data:
+  redis_data:
