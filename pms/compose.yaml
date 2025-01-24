@@ -2,6 +2,7 @@ name: pms
 
 services:
   frontend:
+    container_name: frontend
     build:
       context: ./frontend
     develop:
@@ -15,6 +16,7 @@ services:
       - "5173:5173"
 
   backend:
+    container_name: backend
     build: .
     ports:
       - "8000:8000"
@@ -28,6 +30,7 @@ services:
 
   db:
     image: postgres:17-alpine
+    container_name: database
     environment:
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_USER=${DATABASE_USER}
