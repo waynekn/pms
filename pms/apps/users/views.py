@@ -1,7 +1,7 @@
 import os
 import re
 from dotenv import load_dotenv
-from django.conf import settings
+from django.core.exceptions import ValidationError
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from .serializers import SocialLoginSerializer, UserDetailsSerializer
 from .models import User
+from .validators import username_validator
+from .utils import slugify_username
 from services.s3.profile_pics import upload_profile_pic
 
 load_dotenv()
@@ -67,3 +69,40 @@ class UserProfilePictureUpdateView(generics.UpdateAPIView):
         updated_user = UserDetailsSerializer(user)
 
         return Response(updated_user.data, status=status.HTTP_200_OK)
+
+
+class UsernameUpdateView(generics.UpdateAPIView):
+    """
+    View to updata a users username.
+
+    This view also converts the username to a slug and saves it to the user's profile.
+    """
+
+    def put(self, request: Request, *args, **kwargs) -> Response:
+        username = request.data.get('username')
+
+        if not username:
+            return Response({'detail': 'No username was provided'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        username = username.strip()
+
+        try:
+            username_validator(username)
+        except ValidationError as e:
+            return Response({'detail': e.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            User.objects.get(username=username)
+            return Response({'detail': 'Username is already taken'}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            pass
+
+        slug = slugify_username(username)
+
+        user: User = request.user
+        user.username = username
+        user.username_slug = slug
+        user.save()
+
+        return Response(UserDetailsSerializer(user).data, status=status.HTTP_200_OK)
