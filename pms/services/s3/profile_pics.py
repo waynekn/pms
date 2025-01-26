@@ -64,3 +64,22 @@ def get_profile_pic_url(picture_name) -> str:
         return ""
 
     return url
+
+
+def delete_profile_pic(picture_name: str) -> bool:
+    """
+    Delete a profile picture
+
+    params:
+        - picture_name: Name of the picture to delete (relative key without prefix).
+        - return: True if deleted successfully, False otherwise.
+    """
+    BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
+    picture_name = "profile-pics/" + picture_name
+
+    try:
+        s3_client.delete_object(Bucket=BUCKET_NAME, Key=picture_name)
+        return True
+    except ClientError as e:
+        logging.error(e)
+        return False
