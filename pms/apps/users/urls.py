@@ -8,6 +8,8 @@ urlpatterns = [
          views.UserProfilePictureUpdateView.as_view(), name="update_avatar"),
     path('username/update/',
          views.UsernameUpdateView.as_view(), name="username_update"),
+    path('accounts/delete/',
+         views.UserAccountDeleteView.as_view(), name="account_delete"),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('dj-rest-auth/google/',
