@@ -53,10 +53,17 @@ class TaskCreationSerializser(serializers.ModelSerializer):
     def validate(self, attrs):
         project_phase: ProjectPhase = attrs.get('project_phase')
         task_name: str = attrs.get('task_name')
+        deadline: datetime.date = attrs.get('deadline')
 
         if task_name and project_phase.phase_tasks.filter(task_name__iexact=task_name).exists():
             raise serializers.ValidationError({
                 'task_name': 'A task with this name already exists in this phase.'
+            })
+
+        # enusre the deadline of a task is not later than the deadline of the project.
+        if deadline > project_phase.project.deadline:
+            raise serializers.ValidationError({
+                'deadline': "The deadline of a task cannot be later than the project's deadline date."
             })
 
         return attrs
