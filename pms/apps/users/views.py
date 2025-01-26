@@ -1,5 +1,6 @@
 import os
 import re
+
 from dotenv import load_dotenv
 from django.core.exceptions import ValidationError
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
@@ -12,7 +13,7 @@ from .serializers import SocialLoginSerializer, UserDetailsSerializer
 from .models import User
 from .validators import username_validator
 from .utils import slugify_username
-from services.s3.profile_pics import upload_profile_pic
+from services.s3.profile_pics import upload_profile_pic, delete_profile_pic
 
 load_dotenv()
 
@@ -106,3 +107,30 @@ class UsernameUpdateView(generics.UpdateAPIView):
         user.save()
 
         return Response(UserDetailsSerializer(user).data, status=status.HTTP_200_OK)
+
+
+class UserAccountDeleteView(generics.DestroyAPIView):
+    """
+    Handles requests to delete a user's account, including optional
+    cleanup of their profile picture if it is custom.
+    """
+
+    def delete(self, request: Request, *args, **kwargs) -> Response:
+        user: User = request.user
+
+        # if the profile picture is the stringified user_id, then that means
+        # they had a custom profile picture
+        if user.profile_picture == str(user.pk):
+            deleted = delete_profile_pic(user.profile_picture)
+
+            if not deleted:
+                return Response({'detail': 'An error occurred while deleting your account. Please try again later'},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        user.delete()
+
+        response = Response(status=status.HTTP_200_OK)
+        response.delete_cookie('sessionid')
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
