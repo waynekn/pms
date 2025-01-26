@@ -99,7 +99,7 @@ class TaskCreationTests(APITestCase):
         # long name
         data = {
             **self.data,
-            'task_name': 'a' * 31
+            'task_name': 'a' * 101
         }
         response = self.client.post(self.url, data, format='json')
 
