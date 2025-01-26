@@ -134,3 +134,12 @@ class TaskCreationTests(APITestCase):
         response = client.post(self.url, self.data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_task_deadline_cannot_be_after_project_deadline_date(self):
+        data = {
+            **self.data,
+            'deadline': f'{datetime.date.today() + datetime.timedelta(days=2)}'
+        }
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
