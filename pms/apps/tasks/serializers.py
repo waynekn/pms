@@ -16,7 +16,7 @@ class TaskCreationSerializser(serializers.ModelSerializer):
         if not task_name:
             raise serializers.ValidationError('This field is required.')
 
-        if len(task_name) < 5 or len(task_name) > 30:
+        if len(task_name) < 5 or len(task_name) > 100:
             raise serializers.ValidationError(
                 'The length of is out of bounds. It must be between 5 and 30 characters long.')
 
