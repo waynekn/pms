@@ -13,6 +13,7 @@ import {
 } from "../../types/auth";
 import { User, CurrentUser, UserResponse } from "../../types/user";
 import camelize from "../../utils/snakecase-to-camelcase";
+import handleGenericApiErrors from "../../utils/errors";
 
 const initialState: CurrentUser = {
   pk: "",
@@ -142,6 +143,18 @@ export const fetchCurrentUser = createAsyncThunk<User>(
   }
 );
 
+export const deleteCurrentUser = createAsyncThunk(
+  "user/deleteCurrentUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      await api.delete("accounts/delete/");
+    } catch (error) {
+      const errMsg = handleGenericApiErrors(error);
+      return rejectWithValue(errMsg);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -235,7 +248,19 @@ const userSlice = createSlice({
           };
           return user;
         }
-      );
+      )
+      /**
+       * deleteCurrentUser thunk
+       */
+      .addCase(deleteCurrentUser.pending, (state: CurrentUser) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteCurrentUser.fulfilled, () => {
+        return initialState;
+      })
+      .addCase(deleteCurrentUser.rejected, (state: CurrentUser) => {
+        state.isLoading = false;
+      });
   },
 });
 
