@@ -1,4 +1,9 @@
-import { ProjectMember, ProjectPhase, ProjectPhaseResponse } from "./projects";
+import {
+  ProjectMember,
+  ProjectMemberResponse,
+  ProjectPhase,
+  ProjectPhaseResponse,
+} from "./projects";
 
 export type TaskResponse = {
   task_id: string;
@@ -20,7 +25,9 @@ export type Task = Omit<
   projectPhase: ProjectPhase;
 };
 
-export type TaskDetailResponse = TaskResponse & { assignees: ProjectMember[] };
+export type TaskDetailResponse = TaskResponse & {
+  assignees: ProjectMemberResponse[];
+};
 
 export type TaskDetail = Task & {
   assignees: ProjectMember[];
