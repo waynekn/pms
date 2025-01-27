@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames";
 
+import Avatar from "@mui/material/Avatar";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { ProjectMember } from "../types/projects";
+import { ProjectMember, ProjectMemberResponse } from "../types/projects";
 import api from "../api";
 import Checkbox from "@mui/material/Checkbox";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
+import camelize from "../utils/snakecase-to-camelcase";
 
 type TaskAssignmentComponentProps = {
   taskId: string;
@@ -27,10 +29,13 @@ const TaskAssignmentComponent = ({
   useEffect(() => {
     const getNonAssignees = async () => {
       try {
-        const res = await api.get<ProjectMember[]>(
+        const res = await api.get<ProjectMemberResponse[]>(
           `task/${taskId}/non-assignees/`
         );
-        setNonAssignees(res.data);
+        const members = res.data.map((member) =>
+          camelize(member)
+        ) as ProjectMember[];
+        setNonAssignees(members);
         setIsLoading(false);
       } catch (error) {
         const messageConfig: ErrorMessageConfig = {
@@ -122,7 +127,14 @@ const TaskAssignmentComponent = ({
             <span className="mr-2">
               <Checkbox name={nonAssignee.username} onChange={handleChange} />
             </span>
-            <span className="text-gray-800">{nonAssignee.username}</span>
+            <p className="text-gray-800 flex">
+              <Avatar
+                src={nonAssignee.profilePicture}
+                alt="profile-picture"
+                sx={{ width: 24, height: 24, marginRight: 1 }}
+              />
+              {nonAssignee.username}
+            </p>
           </li>
         ))}
       </ul>
