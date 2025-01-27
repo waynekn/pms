@@ -1,4 +1,5 @@
 import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
 import { ProjectMember } from "../types/projects";
 
 type TaskAssignessProps = {
@@ -11,12 +12,17 @@ const TaskAssigness = ({ assignees }: TaskAssignessProps) => {
       {assignees.length > 0 ? (
         <Stack>
           {assignees.map((user, index) => (
-            <p
+            <li
               key={index}
-              className="font-sans font-semibold md:text-lg h-9 border-b"
+              className="font-sans font-semibold md:text-lg h-9 border-b flex items-center"
             >
+              <Avatar
+                src={user.profilePicture}
+                alt="profile-picture"
+                sx={{ width: 24, height: 24, marginRight: 1 }}
+              />
               {user.username}
-            </p>
+            </li>
           ))}
         </Stack>
       ) : (
