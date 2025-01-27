@@ -243,6 +243,14 @@ class SocialLoginSerializer(serializers.Serializer):
 
 
 class CustomRegisterSerializer(RegisterSerializer):
+    email = serializers.EmailField(required=True)
+
+    def validate_email(self, email):
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError(
+                "A user with this email already exists.")
+        return email
+
     def save(self, request):
         user = super().save(request)
 
