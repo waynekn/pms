@@ -75,12 +75,11 @@ export const registerUser = createAsyncThunk<
   }
 >("user/registerUser", async (credentials, { rejectWithValue }) => {
   try {
-    const response = await api.post<SuccessfulAuth>(
-      "dj-rest-auth/registration/",
+    const response = await api.post<UserResponse>(
+      "accounts/register/",
       credentials
     );
-
-    return camelize(response.data.user) as User;
+    return camelize(response.data) as User;
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulRegistration>;
