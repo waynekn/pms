@@ -96,182 +96,186 @@ const OrganizationCreationForm = () => {
   };
 
   return (
-    <section className="absolute h-auto w-80 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 bg-white rounded shadow-lg">
-      {/* 'X' symbol */}
-      <Link
-        to={`/user/${currentUser?.username}/`}
-        className="flex justify-end font-bold"
-      >
-        &#x2715;
-      </Link>
-
-      <form method="post" onSubmit={handleSubmit}>
-        <h1 className="text-xl font-bold text-center">
-          Create an Organization
-        </h1>
-
-        {/* Organization name field*/}
-        <div className="mt-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
+    <section className="h-screen w-screen flex flex-col md:flex-row bg-gray-100">
+      <main className="flex-1 p-4 md:p-8">
+        <form
+          method="post"
+          className="w-full max-w-3xl mx-auto border-2 border-gray-300 rounded-lg bg-white shadow-lg p-8 space-y-6"
+          onSubmit={handleSubmit}
+        >
+          {/* 'X' symbol */}
+          <Link
+            to={`/user/${currentUser?.username}/`}
+            className="flex justify-end font-bold"
           >
-            Organization name.
-          </label>
-          <input
-            type="text"
-            name="organizationName"
-            id="organizationName"
-            placeholder="Enter name of your organization"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            value={formValues.organizationName}
-            onChange={handleChange}
-            required
-          />
-          {formErrors.organizationName &&
-            formErrors.organizationName.length > 0 && (
+            &#x2715;
+          </Link>
+
+          <h1 className="text-xl font-bold text-center">
+            Create an Organization
+          </h1>
+
+          {/* Organization name field*/}
+          <div className="flex flex-col">
+            <label htmlFor="name" className="text-gray-700 font-medium mb-2">
+              Organization name:
+            </label>
+            <input
+              type="text"
+              name="organizationName"
+              id="organizationName"
+              placeholder="Enter name of your organization"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              value={formValues.organizationName}
+              onChange={handleChange}
+              required
+            />
+            {formErrors.organizationName &&
+              formErrors.organizationName.length > 0 && (
+                <ul>
+                  {formErrors.organizationName.map((error) => (
+                    <li key={error} className="text-red-600 text-sm">
+                      {error}
+                    </li>
+                  ))}
+                </ul>
+              )}
+          </div>
+
+          {/* Organization description field*/}
+          <div className="flex flex-col">
+            <label
+              htmlFor="description"
+              className="text-gray-700 font-medium mb-2"
+            >
+              Description:
+            </label>
+            <textarea
+              name="description"
+              id="description"
+              placeholder="Enter a description of your organization (optional)"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              value={formValues.description}
+              onChange={handleChange}
+            ></textarea>
+          </div>
+
+          {/* Password field*/}
+          <div className="flex flex-col">
+            <label
+              htmlFor="password1"
+              className="text-gray-700 font-medium mb-2"
+            >
+              Password:
+            </label>
+            <div className="relative mt-1">
+              <input
+                id="password1"
+                type={showPassword ? "text" : "password"}
+                name="organizationPassword"
+                className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
+                            focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                value={formValues.organizationPassword}
+                placeholder="Password"
+                onChange={handleChange}
+                required
+              />
+              {showPassword ? (
+                <VisibilityOffOutlinedIcon
+                  onClick={togglePasswordVisibility}
+                  fontSize="small"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                />
+              ) : (
+                <VisibilityOutlinedIcon
+                  onClick={togglePasswordVisibility}
+                  fontSize="small"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                />
+              )}
+            </div>
+
+            {formErrors.organizationPassword &&
+              formErrors.organizationPassword.length > 0 && (
+                <ul>
+                  {formErrors.organizationPassword.map((error) => (
+                    <li key={error} className="text-red-600 text-sm">
+                      {error}
+                    </li>
+                  ))}
+                </ul>
+              )}
+          </div>
+
+          {/* Password confirmation field*/}
+          <div className="flex flex-col">
+            <label
+              htmlFor="password2"
+              className="text-gray-700 font-medium mb-2"
+            >
+              Confirm password:
+            </label>
+            <div className="relative mt-1">
+              <input
+                id="password2"
+                type={showPassword ? "text" : "password"}
+                name="password2"
+                className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
+                            focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                value={formValues.password2}
+                placeholder="Confirm password"
+                onChange={handleChange}
+                required
+              />
+              {showPassword ? (
+                <VisibilityOffOutlinedIcon
+                  onClick={togglePasswordVisibility}
+                  fontSize="small"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                />
+              ) : (
+                <VisibilityOutlinedIcon
+                  onClick={togglePasswordVisibility}
+                  fontSize="small"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                />
+              )}
+            </div>
+          </div>
+
+          {formErrors.nonFieldErrors &&
+            formErrors.nonFieldErrors.length > 0 && (
               <ul>
-                {formErrors.organizationName.map((error) => (
+                {formErrors.nonFieldErrors.map((error) => (
                   <li key={error} className="text-red-600 text-sm">
                     {error}
                   </li>
                 ))}
               </ul>
             )}
-        </div>
 
-        {/* Organization description field*/}
-        <div className="mt-4">
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Description
-          </label>
-          <textarea
-            name="description"
-            id="description"
-            placeholder="Enter a description of your organization (optional)"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            value={formValues.description}
-            onChange={handleChange}
-          ></textarea>
-        </div>
-
-        {/* Password field*/}
-        <div className="mt-4">
-          <label
-            htmlFor="password1"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <div className="relative mt-1">
-            <input
-              id="password1"
-              type={showPassword ? "text" : "password"}
-              name="organizationPassword"
-              className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
-                            focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              value={formValues.organizationPassword}
-              placeholder="Password"
-              onChange={handleChange}
-              required
-            />
-            {showPassword ? (
-              <VisibilityOffOutlinedIcon
-                onClick={togglePasswordVisibility}
-                fontSize="small"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
-              />
-            ) : (
-              <VisibilityOutlinedIcon
-                onClick={togglePasswordVisibility}
-                fontSize="small"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
-              />
-            )}
+          {/* Submit button */}
+          <div className="mt-4">
+            <button
+              type="submit"
+              className={classNames(
+                "w-full bg-blue-600 text-white p-2 rounded-md",
+                isLoading
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer hover:bg-blue-700"
+              )}
+              disabled={isLoading}
+            >
+              Create
+              {isLoading && (
+                <span className="ml-2">
+                  <CircularProgress size={13} sx={{ color: "white" }} />
+                </span>
+              )}
+            </button>
           </div>
-
-          {formErrors.organizationPassword &&
-            formErrors.organizationPassword.length > 0 && (
-              <ul>
-                {formErrors.organizationPassword.map((error) => (
-                  <li key={error} className="text-red-600 text-sm">
-                    {error}
-                  </li>
-                ))}
-              </ul>
-            )}
-        </div>
-
-        {/* Password confirmation field*/}
-        <div className="mt-4">
-          <label
-            htmlFor="password2"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Confirm password
-          </label>
-          <div className="relative mt-1">
-            <input
-              id="password2"
-              type={showPassword ? "text" : "password"}
-              name="password2"
-              className="block w-full px-3 py-2 pr-10 border rounded-md shadow-sm sm:text-sm 
-                            focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              value={formValues.password2}
-              placeholder="Confirm password"
-              onChange={handleChange}
-              required
-            />
-            {showPassword ? (
-              <VisibilityOffOutlinedIcon
-                onClick={togglePasswordVisibility}
-                fontSize="small"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
-              />
-            ) : (
-              <VisibilityOutlinedIcon
-                onClick={togglePasswordVisibility}
-                fontSize="small"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
-              />
-            )}
-          </div>
-        </div>
-
-        {formErrors.nonFieldErrors && formErrors.nonFieldErrors.length > 0 && (
-          <ul>
-            {formErrors.nonFieldErrors.map((error) => (
-              <li key={error} className="text-red-600 text-sm">
-                {error}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Submit button */}
-        <div className="mt-4">
-          <button
-            type="submit"
-            className={classNames(
-              "w-full bg-blue-600 text-white p-2 rounded-md",
-              isLoading
-                ? "cursor-not-allowed"
-                : "cursor-pointer hover:bg-blue-700"
-            )}
-            disabled={isLoading}
-          >
-            Create
-            {isLoading && (
-              <span className="ml-2">
-                <CircularProgress size={13} sx={{ color: "white" }} />
-              </span>
-            )}
-          </button>
-        </div>
-      </form>
+        </form>
+      </main>
     </section>
   );
 };
