@@ -20,14 +20,16 @@ const HomePage = () => {
           <>
             <Link
               to="login"
-              className="py-3 px-6 mx-1  text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
+              className="py-3 px-6 mx-1 text-lg text-white font-semibold leading-6 bg-blue-500 rounded-md
+               transition-all transform duration-300 ease-in-out hover:bg-blue-600 hover:scale-105 hover:shadow-lg"
             >
               Login
             </Link>
 
             <Link
               to="signup"
-              className="py-3 px-6 mx-1  text-lg text-white font-semibold leading-6 bg-blue-500 transition ease-in-out delay-150 hover:bg-blue-600"
+              className="py-3 px-6 mx-1 text-lg text-white font-semibold leading-6 bg-blue-500 rounded-md
+               transition-all transform duration-300 ease-in-out hover:bg-blue-600 hover:scale-105 hover:shadow-lg"
             >
               Sign up
             </Link>
@@ -42,9 +44,13 @@ const HomePage = () => {
       />
       <Outlet />
 
-      <article className="mx-2 text-4xl font-bold">
-        <p>All in one project management software</p>
-        <p>Customizable, easy to use project management system.</p>
+      <article className="mx-2 text-center">
+        <p className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500 animate-fadeIn mb-4">
+          All-in-one Project Management Software
+        </p>
+        <p className="text-xl text-gray-700 animate-slideIn">
+          Customizable, easy-to-use project management system.
+        </p>
       </article>
     </div>
   );
