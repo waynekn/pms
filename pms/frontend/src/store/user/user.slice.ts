@@ -52,13 +52,34 @@ export const logInUser = createAsyncThunk<
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError<UnsuccessfulLogIn>;
-      const rejectValue = {
-        password: axiosError.response?.data.password,
-        nonFieldErrors: axiosError.response?.data.non_field_errors || [
-          "An unexpected error occurred",
-        ],
-      };
-      return rejectWithValue(rejectValue);
+      const statusCode = axiosError.status;
+
+      // If there is no status code the server is not available.
+      if (!statusCode) {
+        return rejectWithValue({
+          nonFieldErrors: [
+            "Service is temprarily unavailable. Please try again later.",
+          ],
+        });
+      }
+
+      if (statusCode >= 500) {
+        return rejectWithValue({
+          nonFieldErrors: [
+            "An unexpected server error occurred. Please try again later.",
+          ],
+        });
+      }
+
+      const errorData = axiosError.response?.data;
+      if (errorData) {
+        const rejectValue = camelize(errorData) as LogInFormErrors;
+        return rejectWithValue(rejectValue);
+      }
+
+      return rejectWithValue({
+        nonFieldErrors: ["An unknown error occurred. Please try again later."],
+      });
     }
 
     return rejectWithValue({
@@ -104,13 +125,11 @@ export const registerUser = createAsyncThunk<
         });
       }
 
-      const rejectValue: SignUpFormErrors = {
-        username: axiosError.response?.data.username || [],
-        email: axiosError.response?.data.email || [],
-        password1: axiosError.response?.data.password1 || [],
-        nonFieldErrors: axiosError.response?.data.non_field_errors || [],
-      };
-      return rejectWithValue(rejectValue);
+      const errorData = axiosError.response?.data;
+      if (errorData) {
+        const rejectValue = camelize(errorData) as SignUpFormErrors;
+        return rejectWithValue(rejectValue);
+      }
     }
     return rejectWithValue({
       nonFieldErrors: ["An unexpected error occurred."],
