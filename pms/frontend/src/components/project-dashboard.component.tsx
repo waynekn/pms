@@ -125,7 +125,7 @@ const ProjectDashBoard = () => {
 
               <div className="relative">
                 <p className="text-4xl font-extrabold text-yellow-400 ml-2 text-shadow-md">
-                  {projectStats.percentageCompletion} %
+                  {Math.round(projectStats.percentageCompletion)} %
                 </p>
 
                 {/* Progress Bar */}
