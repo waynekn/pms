@@ -5,6 +5,7 @@ import classNames from "classnames";
 import Tooltip from "@mui/material/Tooltip";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import TaskTimeRemaining from "./task-time-remaining.component";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 type KanbanTaskProps = {
   task: Task;
@@ -19,7 +20,7 @@ const KanbanTask = ({ task }: KanbanTaskProps) => {
   }, [task.deadline, task.startDate]);
 
   return (
-    <div className="sm:max-h-24 px-1 md:max-h-48 overflow-y-hidden !mt-1 !mb-5">
+    <div className="sm:max-h-24 px-1 md:max-h-48 overflow-y-hidden !mt-1 !mb-5 border-b ">
       <header className="font-bold cursor-move bg-gray-200 rounded-t-md px-1">
         {task.taskName}
       </header>
@@ -31,20 +32,27 @@ const KanbanTask = ({ task }: KanbanTaskProps) => {
       </Link>
       <div>
         <span>
-          <Tooltip
-            placement="top"
-            title={
-              <TaskTimeRemaining deadline={task.deadline} overdue={isOverDue} />
-            }
-          >
-            <AccessTimeOutlinedIcon
-              fontSize="small"
-              className={classNames(
-                " cursor-pointer",
-                isOverDue ? "text-red-500" : "text-green-500"
-              )}
-            />
-          </Tooltip>
+          {task.status === "DONE" ? (
+            <DoneAllIcon sx={{ color: "green" }} fontSize="small" />
+          ) : (
+            <Tooltip
+              placement="top"
+              title={
+                <TaskTimeRemaining
+                  deadline={task.deadline}
+                  overdue={isOverDue}
+                />
+              }
+            >
+              <AccessTimeOutlinedIcon
+                fontSize="small"
+                className={classNames(
+                  " cursor-pointer",
+                  isOverDue ? "text-red-500" : "text-green-500"
+                )}
+              />
+            </Tooltip>
+          )}
         </span>
       </div>
     </div>

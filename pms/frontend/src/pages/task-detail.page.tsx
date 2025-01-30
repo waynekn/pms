@@ -5,6 +5,7 @@ import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 import TaskAssigness from "../components/task-assigness.component";
 import TaskAssignmentComponent from "../components/task-assignment.component";
@@ -124,54 +125,46 @@ const TaskDetailPage = () => {
             </h3>
             {/* Section to change task status */}
 
-            <div className="flex justify-center mt-1">
-              <div className="flex justify-evenly w-full md:w-3/4 ">
-                <button
-                  disabled={
-                    taskDetail.status === "ON_HOLD" ||
-                    taskDetail.status === "DONE"
-                  }
-                  className={classNames(
-                    "bg-bold-yellow px-2 font-bold rounded-md",
-                    taskDetail.status === "ON_HOLD" ||
-                      taskDetail.status === "DONE"
-                      ? "cursor-not-allowed"
-                      : "cursor-pointer"
-                  )}
-                  onClick={() => changeTaskStatus("ON_HOLD")}
-                >
-                  Pause task
-                </button>
-                <button
-                  disabled={
-                    taskDetail.status === "IN_PROGRESS" ||
-                    taskDetail.status === "DONE"
-                  }
-                  className={classNames(
-                    "bg-red-orange px-2 font-bold rounded-md",
-                    taskDetail.status === "IN_PROGRESS" ||
-                      taskDetail.status === "DONE"
-                      ? "cursor-not-allowed"
-                      : "cursor-pointer"
-                  )}
-                  onClick={() => changeTaskStatus("IN_PROGRESS")}
-                >
-                  Resume
-                </button>
-                <button
-                  disabled={taskDetail.status === "DONE"}
-                  className={classNames(
-                    "bg-rich-green px-2 font-bold rounded-md",
-                    taskDetail.status === "DONE"
-                      ? "cursor-not-allowed"
-                      : "cursor-pointer"
-                  )}
-                  onClick={() => changeTaskStatus("DONE")}
-                >
-                  Complete
-                </button>
+            {taskDetail.status === "DONE" ? (
+              <DoneAllIcon sx={{ color: "green" }} />
+            ) : (
+              <div className="flex justify-center mt-1">
+                <div className="flex justify-evenly w-full md:w-3/4 ">
+                  <button
+                    disabled={taskDetail.status === "ON_HOLD"}
+                    className={classNames(
+                      "bg-bold-yellow px-2 font-bold rounded-md",
+                      taskDetail.status === "ON_HOLD"
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    )}
+                    onClick={() => changeTaskStatus("ON_HOLD")}
+                  >
+                    Pause task
+                  </button>
+                  <button
+                    disabled={taskDetail.status === "IN_PROGRESS"}
+                    className={classNames(
+                      "bg-red-orange px-2 font-bold rounded-md",
+                      taskDetail.status === "IN_PROGRESS"
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    )}
+                    onClick={() => changeTaskStatus("IN_PROGRESS")}
+                  >
+                    Resume
+                  </button>
+                  <button
+                    className={classNames(
+                      "bg-rich-green px-2 font-bold rounded-md"
+                    )}
+                    onClick={() => changeTaskStatus("DONE")}
+                  >
+                    Complete
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </header>
           <div className="flex flex-col w-3/4 mx-auto bg-white shadow-lg rounded-lg p-6 relative top-10">
             <nav className="flex w-full border-b-2 border-blue-500 rounded-t-md">
