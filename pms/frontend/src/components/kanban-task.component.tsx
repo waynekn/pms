@@ -20,12 +20,12 @@ const KanbanTask = ({ task }: KanbanTaskProps) => {
   }, [task.deadline, task.startDate]);
 
   return (
-    <div className="sm:max-h-24 px-1 md:max-h-48 overflow-y-hidden !mt-1 !mb-5 border-b ">
+    <div className="sm:max-h-24 px-1 md:max-h-48 overflow-y-hidden !mt-1 !mb-5 border-b">
       <header className="font-bold cursor-move bg-gray-200 rounded-t-md px-1">
         {task.taskName}
       </header>
       <Link
-        className=" block text-gray-600 hover:bg-stone-100 transition-colors duration-300 ease-in-out"
+        className="block text-gray-600 hover:bg-stone-100 transition-colors duration-300 ease-in-out max-h-32 overflow-hidden text-ellipsis whitespace-nowrap"
         to={`../task/${task.taskId}/detail/`}
       >
         {task.description}
