@@ -1,0 +1,40 @@
+name: pms CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./pms
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup env
+        run: echo "${{secrets.ENV_FILE}}" > .env
+
+      - name: Build Container
+        run: docker-compose -f compose.yaml up -d --build
+
+      - name: Wait for services
+        run: |
+          until docker ps --filter "name=backend" --format '{{.Names}}' | grep -q "backend"; do
+            echo "Waiting for backend container to be up..."
+            sleep 5
+          done
+          echo "Backend container is up!"
+
+      - name: Run Tests
+        run: docker exec backend python manage.py test apps/
+
+      - name: Cleanup
+        if: always()
+        run: docker-compose down
