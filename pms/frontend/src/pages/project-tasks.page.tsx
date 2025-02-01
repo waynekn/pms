@@ -68,6 +68,7 @@ const ProjectTasksPage = () => {
           `project/${projectId}/tasks/`
         );
         const projectTasks = camelize(res.data) as ProjectTasks;
+        document.title = `${projectTasks.projectName} | tasks`;
         setProjectTasks(projectTasks);
         setIsLoading(false);
       } catch (error) {

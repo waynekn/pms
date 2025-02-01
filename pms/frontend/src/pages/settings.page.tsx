@@ -29,6 +29,8 @@ const SettingsPage = () => {
   const dispatch = useDispatch<StoreDispatch>();
   const navigate = useNavigate();
 
+  document.title = currentUser.username;
+
   const displaySuccessMessage = (message: string) => {
     setSnackBarState({
       message,

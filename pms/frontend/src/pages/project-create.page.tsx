@@ -61,6 +61,8 @@ const ProjectCreationPage = () => {
 
   const navigate = useNavigate();
 
+  document.title = "Create a project";
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {

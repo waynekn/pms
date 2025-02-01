@@ -66,6 +66,7 @@ const ProjectPhaseDetail = () => {
           `project/phase/${projectPhaseId}/detail/`
         );
         const detail: PhaseDetail = camelize(res.data) as PhaseDetail;
+        document.title = `${detail.phase.phaseName} | detail`;
         setDetail(detail);
         setIsLoading(false);
       } catch (error) {

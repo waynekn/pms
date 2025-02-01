@@ -61,6 +61,7 @@ const ProjectPhasePage = () => {
           `project/${projectId}/workflow/`
         );
         const workflow = camelize(res.data) as ProjectWorkFlow;
+        document.title = `${workflow.projectName} | workflow`;
         setProjectWorkflow(workflow);
         setIsLoading(false);
       } catch (error) {

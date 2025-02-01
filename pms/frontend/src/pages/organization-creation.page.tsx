@@ -50,6 +50,8 @@ const OrganizationCreationForm = () => {
 
   const navigate = useNavigate();
 
+  document.title = "Create an organization";
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

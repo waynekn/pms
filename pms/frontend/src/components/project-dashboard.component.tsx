@@ -35,6 +35,7 @@ const ProjectDashBoard = () => {
           `project/stats/?pk=${projectId}`
         );
         const stats = camelize(res.data) as ProjectStats;
+        document.title = "Project detail";
         setProjectStats(stats);
         setIslLoading(false);
       } catch (error) {

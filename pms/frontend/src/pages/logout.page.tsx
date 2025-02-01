@@ -12,6 +12,8 @@ const LogoutPage = () => {
   const dispatch = useDispatch<StoreDispatch>();
   const navigate = useNavigate();
 
+  document.title = "Logout";
+
   const logOutUser = async () => {
     try {
       setLogoutError(null);

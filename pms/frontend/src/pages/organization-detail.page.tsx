@@ -50,6 +50,7 @@ const OrganizationDetail = () => {
             ...organization,
           };
         });
+        document.title = organization.organizationName;
         setIslLoading(false);
       } catch (error) {
         if (isAxiosError(error)) {

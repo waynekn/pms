@@ -18,6 +18,8 @@ const ProfilePage = () => {
 
   const currentUser = useSelector(selectCurrentUser);
 
+  document.title = currentUser.username;
+
   // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

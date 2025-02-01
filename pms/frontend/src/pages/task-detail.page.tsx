@@ -49,6 +49,7 @@ const TaskDetailPage = () => {
       try {
         const res = await api.get<TaskDetailResponse>(`task/detail/${taskId}/`);
         const data = camelize(res.data) as TaskDetail;
+        document.title = data.taskName;
         setTaskDetail(data);
         setIsLoading(false);
       } catch (error) {
