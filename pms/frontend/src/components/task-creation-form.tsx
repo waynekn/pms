@@ -104,7 +104,7 @@ const TaskCreateForm = ({
   return (
     <section
       className="absolute h-auto w-80 top-1/2 left-1/2 transform bg-gray-50
-     -translate-x-1/2 -translate-y-1/2 p-4 border rounded shadow-lg"
+     -translate-x-1/2 -translate-y-1/2 p-4 border rounded shadow-lg z-50"
     >
       <button onClick={() => hideForm()} className="flex justify-end font-bold">
         &#x2715;
