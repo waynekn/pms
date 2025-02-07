@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router";
 
 import HomePage from "./pages/home.page";
+import InvalidUrlPage from "./pages/invalid-url.page";
 import LogInForm from "./components/login.component";
 import LogoutPage from "./pages/logout.page";
 import SignUpForm from "./components/signup.component";
@@ -63,6 +64,7 @@ const Router = () => {
         <Route path="members/" element={<ProjectMembersList />} />
         <Route path="members/add/" element={<NonProjectMembersList />} />
       </Route>
+      <Route path="/*" element={<InvalidUrlPage />} />
     </Routes>
   );
 };
