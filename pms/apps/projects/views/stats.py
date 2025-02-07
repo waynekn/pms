@@ -37,6 +37,7 @@ class ProjectStatsView(APIView):
         completed_tasks = task_counts['completed']
 
         stats = {
+            'project_name': project.project_name,
             'tasks': total_tasks,
             'members': project.members.count(),
             'description': project.description,
