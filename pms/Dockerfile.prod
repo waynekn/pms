@@ -1,0 +1,38 @@
+FROM python:3.13-alpine as python-stage
+
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /code/
+
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+# build the frontend
+FROM node:22.13-alpine as node-stage
+
+WORKDIR /frontend
+
+COPY frontend/ . 
+
+RUN npm install
+RUN npm run build-tailwind
+RUN npm run build
+
+# copy the built frontend from node-stage to python-stage
+FROM python-stage
+
+RUN mkdir /code/static/dist
+
+COPY --from=node-stage /frontend/dist/ /code/static/dist/
+
+# delete the frontend code as it has been built and copied.
+RUN rm -rf frontend/
+
+RUN python manage.py collectstatic --noinput 
+
+EXPOSE 8000
+
+CMD ["gunicorn", "pms.wsgi:application", "--bind", "0.0.0.0:8000"]
