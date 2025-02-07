@@ -1,6 +1,10 @@
 .env
+.env.prod
 __pycache__/
 venv/
 
 # Vite build.
-pms/static/react/
+pms/static/dist/
+
+# production static files
+staticfiles/
