@@ -7,7 +7,11 @@ type TokenRefreshResponse = {
 
 // Create an Axios instance with pre-configured settings
 const api = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL:
+    import.meta.env.MODE === "production"
+      ? // TODO: Replace with actual production URL upon deployment
+        "http://localhost/"
+      : "http://localhost:8000/",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
