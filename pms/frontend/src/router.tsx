@@ -55,7 +55,7 @@ const Router = () => {
       />
       <Route path="task/:taskId/detail/" element={<TaskDetailPage />} />
       <Route
-        path=":projectId/:projectNameSlug/"
+        path="p/:projectId/:projectNameSlug/"
         element={<ProjectDetailPage />}
       >
         <Route index element={<ProjectDashBoard />} />

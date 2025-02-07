@@ -11,7 +11,7 @@ const OrganizationProjects = ({ projects }: OrganizationProjectsProps) => {
       {projects.map((project) => (
         <li key={project.projectId} className="border-b mt-1 block">
           <Link
-            to={`../${project.projectId}/${project.projectNameSlug}/`}
+            to={`../p/${project.projectId}/${project.projectNameSlug}/`}
             className="block"
           >
             {project.projectName}

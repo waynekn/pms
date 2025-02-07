@@ -61,7 +61,7 @@ const UserProjectsDisplay = () => {
               {userProjects.map((project) => (
                 <Link
                   key={project.projectId}
-                  to={`../${project.projectId}/${project.projectNameSlug}`}
+                  to={`../p/${project.projectId}/${project.projectNameSlug}/`}
                   className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
                          md:max-h-48 overflow-y-hidden"
                 >
