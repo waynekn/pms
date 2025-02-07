@@ -9,10 +9,6 @@ export default defineConfig(({ command }) => {
     css: {
       postcss: "./postcss.config.js",
     },
-    server: {
-      strictPort: true,
-      host: true,
-    },
     base: command === "build" ? "/static/dist/" : "/",
     build: {
       chunkSizeWarningLimit: 1000,
