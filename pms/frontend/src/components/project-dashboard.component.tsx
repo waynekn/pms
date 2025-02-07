@@ -11,6 +11,7 @@ import { ProjectStats, ProjectStatsResponse } from "../types/projects";
 
 const ProjectDashBoard = () => {
   const initialState: ProjectStats = {
+    projectName: "",
     tasks: 0,
     members: 0,
     description: "",
@@ -35,7 +36,7 @@ const ProjectDashBoard = () => {
           `project/stats/?pk=${projectId}`
         );
         const stats = camelize(res.data) as ProjectStats;
-        document.title = "Project detail";
+        document.title = `${stats.projectName} | Dashboard`;
         setProjectStats(stats);
         setIslLoading(false);
       } catch (error) {

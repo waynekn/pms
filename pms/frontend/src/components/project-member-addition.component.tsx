@@ -25,6 +25,8 @@ const NonProjectMembersList = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
 
+  document.title = "Members Addition";
+
   useEffect(() => {
     const getNonProjectMembers = async () => {
       if (!projectId) {

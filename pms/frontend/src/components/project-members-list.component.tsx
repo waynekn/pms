@@ -22,6 +22,8 @@ const ProjectMembersList = () => {
         return;
       }
 
+      document.title = "Project members";
+
       try {
         const res = await api.get<ProjectMemberResponse[]>(
           `project/${projectId}/members/`
