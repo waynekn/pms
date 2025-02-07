@@ -36,6 +36,7 @@ export type Project = Omit<
 };
 
 export type ProjectStatsResponse = {
+  project_name: string;
   tasks: number;
   members: number;
   description: string;
@@ -51,7 +52,9 @@ export type ProjectStats = Omit<
   | "tasks_on_hold"
   | "tasks_completed"
   | "percentage_completion"
+  | "project_name"
 > & {
+  projectName: string;
   tasksInProgress: number;
   tasksOnHold: number;
   tasksCompleted: number;
