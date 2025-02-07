@@ -1,0 +1,25 @@
+name: pms
+
+services:
+  frontend: !reset []
+
+  backend:
+    build:
+      dockerfile: Dockerfile.prod
+    image: backend:latest
+    env_file:
+      - .env
+      - .env.prod
+    volumes: !reset []
+
+  nginx:
+    container_name: pms_nginx
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
