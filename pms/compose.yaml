@@ -1,20 +1,6 @@
 name: pms
 
 services:
-  frontend:
-    container_name: frontend
-    build:
-      context: ./frontend
-    develop:
-      watch:
-        - action: sync
-          path: ./frontend
-          target: /code/frontend
-          ignore:
-            - node_modules/
-    ports:
-      - "5173:5173"
-
   backend:
     container_name: backend
     build: .

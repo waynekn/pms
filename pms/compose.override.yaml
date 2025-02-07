@@ -1,8 +1,6 @@
 name: pms
 
 services:
-  frontend: !reset []
-
   backend:
     build:
       dockerfile: Dockerfile.prod
