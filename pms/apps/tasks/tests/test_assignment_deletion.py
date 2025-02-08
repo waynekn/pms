@@ -5,6 +5,7 @@ from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 
 from apps.projects.models import ProjectPhase
+from apps.tasks.models import TaskAssignment
 from apps.users.models import User
 
 
@@ -98,6 +99,12 @@ class TaskAssignMentDeletionTests(APITestCase):
         """
         response = self.manager_client.delete(self.url, self.test_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(username=self.project_member.username)
+        self.assertRaises(
+            TaskAssignment.DoesNotExist,
+            lambda: TaskAssignment.objects.get(
+                task=self.task['task_id'], user=user)
+        )
 
     def test_deletion_requires_project_manager_role(self):
         """
