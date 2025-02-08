@@ -9,6 +9,7 @@ from .org_admin import (
     OrganizationAdminCreateView,
     NonOrganizationAdminsListView,
     OrganizationAdminsListView,
+    OrganizationAdminRoleRevokeView
 )
 
 
@@ -21,4 +22,5 @@ __all__ = [
     'OrganizationAuthView',
     'UserOrganizationListView',
     'OrganizationSearchView',
+    'OrganizationAdminRoleRevokeView',
 ]
