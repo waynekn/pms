@@ -5,11 +5,13 @@ from .task_creation import TaskCreateView
 from .task_assignment import (
     TaskAssignmentView,
     NonTaskAssigneesListView,
+    TaskAssignmentDeleteView,
 )
 
 __all__ = [
     'TaskAssignmentView',
     'NonTaskAssigneesListView',
+    'TaskAssignmentDeleteView',
     'TaskCreateView',
     'TaskStatusUpdateView',
     'TaskDetailView',
