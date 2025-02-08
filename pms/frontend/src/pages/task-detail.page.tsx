@@ -214,7 +214,11 @@ const TaskDetailPage = () => {
             <section className="w-full rounded-b-md p-4">
               {activeTab === "description" && <p>{taskDetail.description}</p>}
               {activeTab === "assignees" && (
-                <TaskAssigness assignees={taskDetail.assignees} />
+                <TaskAssigness
+                  assignees={taskDetail.assignees}
+                  role={taskDetail.role}
+                  taskId={taskDetail.taskId}
+                />
               )}
               {activeTab === "add members" && (
                 <TaskAssignmentComponent
