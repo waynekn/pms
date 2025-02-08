@@ -12,4 +12,6 @@ urlpatterns = [
          views.TaskAssignmentView.as_view(), name='assign_task'),
     path('task/<str:task_id>/status/update/',
          views.TaskStatusUpdateView.as_view(), name='update_task_status'),
+    path('assignment/<str:task_id>/delete/',
+         views.TaskAssignmentDeleteView.as_view(), name='delete_task_assignment'),
 ]
