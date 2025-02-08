@@ -16,6 +16,8 @@ urlpatterns = [
          views.NonOrganizationAdminsListView.as_view(), name='non_org_admins'),
     path('<str:organization_id>/admins/create/',
          views.OrganizationAdminCreateView.as_view(), name='create_admins'),
+    path('<str:organization_id>/admin/revoke/',
+         views.OrganizationAdminRoleRevokeView.as_view(), name='remove_admin'),
     path('auth/',
          views.OrganizationAuthView.as_view(), name='organization_auth'),
 ]
