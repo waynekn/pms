@@ -198,6 +198,7 @@ const OrganizationDetail = () => {
             {activeTab === "Administrators" && (
               <OrganizationAdminList
                 organizationId={organization.organizationId}
+                role={organization.role}
               />
             )}
             {organization.role === "Admin" &&
