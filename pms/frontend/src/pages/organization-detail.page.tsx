@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
 import { AxiosError, isAxiosError } from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
+import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 import classNames from "classnames";
 import OrgAuthForm from "../components/org-auth-form.component";
 import OrganizationProjects from "../components/organization-projects.component";
@@ -9,6 +13,7 @@ import OrganizationAdminList from "../components/organization-admin-component";
 import AssignOrganizationAdmin from "../components/organization-admin-creation.component";
 import api from "../api";
 import camelize from "../utils/snakecase-to-camelcase";
+import { selectCurrentUser } from "../store/user/user.selector";
 import { ProjectCreationPageState } from "./project-create.page";
 import handleGenericApiErrors, { ErrorMessageConfig } from "../utils/errors";
 
@@ -16,6 +21,7 @@ import {
   OrganizationDetailResponse,
   OrganziationDetail,
 } from "../types/organization";
+import { SnackBarState } from "../types/snackbar";
 
 type Tabs = "Projects" | "Administrators" | "Add administrators";
 
@@ -33,8 +39,19 @@ const OrganizationDetail = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIslLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tabs>("Projects");
+  // track whether a request has been sent to exit an organization
+  const [exitingOrg, setExitingOrg] = useState(false);
   const { organizationNameSlug } = useParams();
   const navigate = useNavigate();
+  const currentUser = useSelector(selectCurrentUser);
+
+  const initialSnackBarState: SnackBarState = {
+    message: "",
+    serverity: "success",
+  };
+  const [displaySnackBar, setDisplaySnackBar] = useState(false);
+  const [snackBarState, setSnackBarState] =
+    useState<SnackBarState>(initialSnackBarState);
 
   useEffect(() => {
     const getOrganizationDetail = async () => {
@@ -101,6 +118,25 @@ const OrganizationDetail = () => {
     });
   };
 
+  const exitOrg = async () => {
+    try {
+      if (exitingOrg) return;
+      setExitingOrg(true);
+      setDisplaySnackBar(false);
+      await api.delete(`organizations/${organization.organizationId}/exit/`);
+      setExitingOrg(false);
+      await navigate(`../user/${currentUser.usernameSlug}`);
+    } catch (error) {
+      const errMsg = handleGenericApiErrors(error);
+      setSnackBarState({
+        message: errMsg,
+        serverity: "error",
+      });
+      setDisplaySnackBar(true);
+      setExitingOrg(false);
+    }
+  };
+
   if (displayOrgAuthForm) {
     return <OrgAuthForm organizationName={organization.organizationName} />;
   }
@@ -126,6 +162,26 @@ const OrganizationDetail = () => {
           >
             {organization.organizationName}
           </h1>
+          <p className="my-1">
+            Membership Role:
+            <span className="font-bold">{organization.role}</span>
+          </p>
+          <button
+            className="flex items-center bg-red-600 text-white hover:bg-red-700 focus:outline-none
+             focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 py-2 px-4 rounded-lg text-sm
+              font-semibold transition duration-300 ease-in-out"
+            onClick={exitOrg}
+          >
+            <span className="mr-2">
+              <span className="mr-2">
+                <ExitToAppOutlinedIcon />
+              </span>
+              Exit organization
+            </span>
+            {exitingOrg && (
+              <CircularProgress size={13} sx={{ color: "white" }} />
+            )}
+          </button>
           {organization.role === "Admin" && (
             <div className="flex justify-end">
               <button
@@ -210,6 +266,20 @@ const OrganizationDetail = () => {
           </>
         )}
       </main>
+      <Snackbar
+        open={displaySnackBar}
+        autoHideDuration={6000}
+        onClose={() => setDisplaySnackBar(false)}
+      >
+        <Alert
+          onClose={() => setDisplaySnackBar(false)}
+          severity={snackBarState.serverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackBarState.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
