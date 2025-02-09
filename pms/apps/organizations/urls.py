@@ -18,6 +18,8 @@ urlpatterns = [
          views.OrganizationAdminCreateView.as_view(), name='create_admins'),
     path('<str:organization_id>/admin/revoke/',
          views.OrganizationAdminRoleRevokeView.as_view(), name='remove_admin'),
+    path('<str:organization_id>/exit/',
+         views.OrgnizationMemberDeleteView.as_view(), name='exit_org'),
     path('auth/',
          views.OrganizationAuthView.as_view(), name='organization_auth'),
 ]
