@@ -10,7 +10,7 @@ from .members import (
 from .phase import (
     ProjectPhaseDetailView,
     ProjectPhaseRetrieveView,
-    CustomProjectPhaseCreateView
+    ProjectPhaseCreateView
 )
 from .stats import ProjectStatsView
 
@@ -25,7 +25,7 @@ __all__ = [
     'ProjectMemberAdditionView',
     'ProjectPhaseDetailView',
     'ProjectPhaseRetrieveView',
-    'CustomProjectPhaseCreateView',
+    'ProjectPhaseCreateView',
     'ProjectTasksView',
     'ProjectStatsView'
 ]
