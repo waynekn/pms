@@ -74,7 +74,7 @@ class ProjectPhaseDetailView(generics.RetrieveAPIView):
         return Response(detail, status=status.HTTP_200_OK)
 
 
-class CustomProjectPhaseCreateView(generics.CreateAPIView):
+class ProjectPhaseCreateView(generics.CreateAPIView):
     """
     Handle requests to create a custom project phase.
 
@@ -82,7 +82,7 @@ class CustomProjectPhaseCreateView(generics.CreateAPIView):
     name of the new project phase
     """
 
-    serializer_class = serializers.CustomPhaseCreateSerializer
+    serializer_class = serializers.ProjectPhaseCreateSerializer
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         project_id = kwargs.get('project_id')
@@ -115,7 +115,7 @@ class CustomProjectPhaseCreateView(generics.CreateAPIView):
 
         if serializer.is_valid():
             phase = serializer.save()
-            phase = serializers.CustomPhaseRetrievalSerializer(phase).data
+            phase = serializers.ProjectPhaseSerializer(phase).data
 
             return Response(phase, status=status.HTTP_201_CREATED)
 
