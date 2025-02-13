@@ -7,7 +7,7 @@ from rest_framework import status
 from apps.tasks import models
 from apps.organizations.models import Organization
 from apps.projects.models import (
-    Project, ProjectPhase, CustomPhase, ProjectMember)
+    Project, ProjectPhase, ProjectMember)
 from apps.users.models import User
 
 
@@ -46,15 +46,11 @@ class TaskAssignMentTest(APITestCase):
         # add both users as project members.
         ProjectMember.objects.create(project=self.project, member=self.user)
         ProjectMember.objects.create(project=self.project, member=self.user2)
-        ################################
-        # create a custom project phase phase.
-        self.custom_phase = CustomPhase.objects.create(
-            project=self.project, phase_name='test phase')
 
         #################################
         # create a project phase.
         self.project_phase = ProjectPhase.objects.create(
-            project=self.project, custom_phase=self.custom_phase)
+            project=self.project, phase_name='test phase')
 
         ############################
         # create task

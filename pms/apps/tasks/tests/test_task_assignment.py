@@ -6,7 +6,7 @@ from rest_framework import status
 
 from apps.tasks import models
 from apps.organizations.models import Organization
-from apps.projects.models import (Project, ProjectPhase, CustomPhase)
+from apps.projects.models import (ProjectPhase)
 from apps.users.models import User
 
 
@@ -42,20 +42,11 @@ class TaskAssignMentTest(APITestCase):
         self.project = self.client.post(
             project_url, project_data, format='json')
 
-        ################################
-        # create a custom phase.
-        phase_url = reverse('create_project_phase', kwargs={
-            'project_id': f'{self.project.data['project_id']}'})
-
-        phase_data = {'name': 'custom_phase'}
-        self.custom_phase = self.client.post(
-            phase_url, phase_data, format='json')
-
         ###################################
         # create a project phase
         self.project_phase = ProjectPhase.objects.create(
             project_id=self.project.data['project_id'],
-            custom_phase_id=self.custom_phase.data['phase_id']
+            phase_name='custom_phase'
         )
 
         ############################
