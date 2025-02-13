@@ -80,7 +80,7 @@ class ProjectCreationSerializer(serializers.ModelSerializer):
 
         if template:
             template_phases = [models.ProjectPhase(
-                project=project, template_phase=phase) for phase in template.phases.all()]
+                project=project, phase_name=phase.phase_name) for phase in template.phases.all()]
             models.ProjectPhase.objects.bulk_create(template_phases)
 
         return project
