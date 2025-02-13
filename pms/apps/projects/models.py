@@ -188,12 +188,8 @@ class ProjectPhase(models.Model):
         primary_key=True, max_length=11, default=base_62_pk, editable=False, verbose_name="Phase id")
     project = models.ForeignKey(Project, on_delete=models.CASCADE,
                                 related_name="phases", help_text="Project which this phase belongs to", verbose_name="Project")
-    # The `on_delete=models.RESTRICT` ensures that a template phase cannot be deleted if it is being used in a project.
-    template_phase = models.ForeignKey(
-        TemplatePhase, on_delete=models.RESTRICT, null=True, help_text="Project phase inheritied from a template", verbose_name="Template phase")
-    custom_phase = models.ForeignKey(CustomPhase, on_delete=models.CASCADE, null=True,
-                                     help_text="Custom phase specific to this project", verbose_name='Custom phase')
+    phase_name = models.CharField(
+        max_length=200, default="", verbose_name='Phase name')
 
     def __str__(self) -> str:
-        return f'{self.project.project_name}| {self.template_phase.phase_name if
-                                               self.template_phase else self.custom_phase.phase_name}'
+        return f'{self.project.project_name}| {self.phase_name}'
