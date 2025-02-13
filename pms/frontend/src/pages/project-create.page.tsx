@@ -112,7 +112,7 @@ const ProjectCreationPage = () => {
         formValues
       );
       const project = camelize(response.data) as Project;
-      await navigate(`../${project.projectId}/${project.projectNameSlug}/`);
+      await navigate(`../p/${project.projectId}/${project.projectNameSlug}/`);
     } catch (error) {
       if (isAxiosError(error)) {
         const errorResponse = error.response?.data as ErrorResponse;
