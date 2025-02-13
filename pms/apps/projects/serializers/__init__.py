@@ -10,8 +10,7 @@ from .template import (
 )
 from .project_phase import (
     ProjectPhaseSerializer,
-    CustomPhaseCreateSerializer,
-    CustomPhaseRetrievalSerializer,
+    ProjectPhaseCreateSerializer,
 )
 
 
@@ -23,6 +22,5 @@ __all__ = [
     'ProjectRetrievalSerializer',
     'ProjectCreationSerializer',
     'ProjectPhaseSerializer',
-    'CustomPhaseCreateSerializer',
-    'CustomPhaseRetrievalSerializer',
+    'ProjectPhaseCreateSerializer',
 ]
