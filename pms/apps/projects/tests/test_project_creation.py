@@ -34,6 +34,11 @@ class ProjectCreationTests(APITransactionTestCase):
         self.template = models.Template.objects.create(
             industry=industry, template_name="test template")
 
+        #######################################
+        # create template phase
+        models.TemplatePhase.objects.create(
+            template=self.template, phase_name='testing')
+
         ####################################
         # create an organization.
         organization_url = reverse('create_organization')
@@ -83,12 +88,18 @@ class ProjectCreationTests(APITransactionTestCase):
 
         response = self.client.post(self.url, data, format='json')
 
+        project_id = response.data['project_id']
+
+        is_template_phase_inherited = models.ProjectPhase.objects.filter(
+            project_id=project_id, phase_name='testing').exists()
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsInstance(response.data, dict)
         self.assertIn('organization', response.data)
         self.assertIn('project_name', response.data)
         self.assertIn('description', response.data)
         self.assertIn('deadline', response.data)
+        self.assertTrue(is_template_phase_inherited)
 
     def test_project_creator_is_added_as_manager(self):
         response = self.client.post(self.url, self.data, format='json')
