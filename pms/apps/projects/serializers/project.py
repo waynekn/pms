@@ -3,7 +3,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.request import Request
 from apps.organizations.serializers import OrganizationRetrievalSerializer
-from apps.projects.utils import slugify_project_name
+from apps.projects.utils.slugs import slugify_project_name
 from apps.projects import models
 
 
