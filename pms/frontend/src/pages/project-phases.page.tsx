@@ -4,6 +4,10 @@ import { AxiosError, isAxiosError } from "axios";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
+import Tooltip from "@mui/material/Tooltip";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+
+import PhaseDeletionConfirmationModal from "../modals/project-phase-deletion";
 
 import {
   Project,
@@ -45,6 +49,11 @@ const ProjectPhasePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isaddingProjectWorkflow, setIsAddingProjectWorkflow] = useState(false);
   const [phaseInput, setPhaseInput] = useState("");
+  const [deletePhase, setDeletePhase] = useState<ProjectPhase>({
+    phaseId: "",
+    phaseName: "",
+  });
+  const [askforConfirmation, setAskForConfirmation] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [
@@ -106,6 +115,14 @@ const ProjectPhasePage = () => {
     } else {
       setProjectPhaseAdditionErrorMessage("An unexpected error occurred.");
     }
+  };
+
+  const hideModal = () => {
+    setDeletePhase({
+      phaseId: "",
+      phaseName: "",
+    });
+    setAskForConfirmation(false);
   };
 
   const createProjectPhase = async () => {
@@ -175,17 +192,32 @@ const ProjectPhasePage = () => {
                   {projectPhaseAdditionErrorMessage}
                 </p>
               </div>
-
-              {projectWorkflow.phases.map((workflow) => (
-                <Link
-                  key={workflow.phaseId}
-                  to={`../phase/${workflow.phaseId}/detail/`}
-                  className="block hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
+              <ol>
+                {projectWorkflow.phases.map((workflow) => (
+                  <li
+                    key={workflow.phaseId}
+                    className="flex hover:bg-stone-100 rounded-md p-2 transition-colors duration-300 ease-in-out sm:max-h-24
                              md:max-h-48 overflow-y-hidden"
-                >
-                  <p>{workflow.phaseName}</p>
-                </Link>
-              ))}
+                  >
+                    <Link
+                      to={`../phase/${workflow.phaseId}/detail/`}
+                      className="grow "
+                    >
+                      {workflow.phaseName}
+                    </Link>
+                    <Tooltip title="Delete" placement="top">
+                      <button
+                        onClick={() => {
+                          setDeletePhase(workflow);
+                          setAskForConfirmation(true);
+                        }}
+                      >
+                        <DeleteOutlineOutlinedIcon />
+                      </button>
+                    </Tooltip>
+                  </li>
+                ))}
+              </ol>
             </Stack>
           ) : (
             <>
@@ -198,6 +230,12 @@ const ProjectPhasePage = () => {
             </>
           )}
         </>
+      )}
+      {askforConfirmation && (
+        <PhaseDeletionConfirmationModal
+          hideModal={hideModal}
+          projectPhase={deletePhase}
+        />
       )}
     </Container>
   );

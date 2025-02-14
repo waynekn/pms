@@ -6,6 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from apps.tasks.models import Task
+from apps.projects.utils.memberships import get_project_membership
 from apps.tasks.serializers import TaskRetrievalSerializer
 from apps.projects import models, serializers
 
@@ -120,3 +121,28 @@ class ProjectPhaseCreateView(generics.CreateAPIView):
             return Response(phase, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectPhaseDeleteView(generics.DestroyAPIView):
+    """
+    Handle DELETE requests to remove a project phase.
+    """
+
+    def delete(self, request: Request, *args, **kwargs) -> Response:
+        phase_id = kwargs.get('phase_id')
+
+        try:
+            phase = models.ProjectPhase.objects.get(pk=phase_id)
+        except models.ProjectPhase.DoesNotExist:
+            return Response({'detail': 'Could not find the project phase'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        membership = get_project_membership(phase.project, request.user)
+
+        if not membership or membership.role != models.ProjectMember.MANAGER:
+            return Response({'detail': 'You are not authorized to perform this action'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        phase.delete()
+
+        return Response({'detail': 'Phase succesfully deleted'}, status=status.HTTP_200_OK)
