@@ -2,7 +2,7 @@ name: pms
 
 services:
   backend:
-    container_name: backend
+    container_name: pms_backend
     build: .
     ports:
       - "8000:8000"
@@ -16,7 +16,7 @@ services:
 
   db:
     image: postgres:17-alpine
-    container_name: database
+    container_name: pms_db
     environment:
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_USER=${DATABASE_USER}
@@ -33,7 +33,7 @@ services:
 
   cache:
     image: redis:7-alpine
-    container_name: redis
+    container_name: pms_redis
     volumes:
       - redis_data:/data
     healthcheck:
