@@ -26,14 +26,14 @@ jobs:
 
       - name: Wait for services
         run: |
-          until docker ps --filter "name=backend" --format '{{.Names}}' | grep -q "backend"; do
+          until docker ps --filter "name=pms_backend" --format '{{.Names}}' | grep -q "backend"; do
             echo "Waiting for backend container to be up..."
             sleep 5
           done
           echo "Backend container is up!"
 
       - name: Run Tests
-        run: docker exec backend python manage.py test apps/
+        run: docker exec pms_backend python manage.py test apps/
 
       - name: Cleanup
         if: always()
