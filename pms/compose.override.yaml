@@ -10,6 +10,9 @@ services:
       - .env.prod
     volumes: !reset []
 
+  db:
+    restart: always
+
   nginx:
     container_name: pms_nginx
     build:
