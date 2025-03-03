@@ -9,7 +9,7 @@ from pms.utils import base_62_pk
 
 class Task(models.Model):
     """
-    Represents a task within a task collection.
+    Represents a task within a `ProjectPhase`.
     """
 
     IN_PROGRESS = "IN_PROGRESS"
@@ -28,7 +28,7 @@ class Task(models.Model):
     task_id = models.CharField(
         verbose_name="Task ID", primary_key=True, max_length=11, unique=True, editable=False, default=base_62_pk)
     task_name = models.CharField(verbose_name='Task name',
-                                 db_comment='Task name unique within a task collection', max_length=100)
+                                 db_comment='Task name unique within a phase of a project', max_length=100)
     start_date = models.DateField(verbose_name='Start date', auto_now_add=True)
     deadline = models.DateField(verbose_name='Deadline data')
     description = models.TextField(
