@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
@@ -146,3 +148,48 @@ class ProjectPhaseDeleteView(generics.DestroyAPIView):
         phase.delete()
 
         return Response({'detail': 'Phase succesfully deleted'}, status=status.HTTP_200_OK)
+
+
+class ProjectPhaseRenameView(generics.UpdateAPIView):
+    """
+    Handle PUT requests to rename a project phase.
+    """
+
+    def put(self, request: Request, *args, **kwargs) -> Response:
+        phase_id: str = kwargs.get('phase_id')
+        new_name: str = request.data.get('name')
+        new_name = new_name.strip() if new_name else None
+        # Alphanumeric characters, underscores, apostrophes, @, hyphens, and spaces,
+        # and does not end with a space
+        pattern = r'^(?!.*\s$)[\w\'@\- ]+$'
+
+        if not new_name:
+            return Response({'detail': 'A new name for the project phase to rename must be provided'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if not re.match(pattern, new_name):
+            return Response({"detail": "The new name can only contain letters, numbers, underscores, "
+                             "apostrophes, @, hyphens, and spaces, and cannot end with a space"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            project_phase = models.ProjectPhase.objects.get(pk=phase_id)
+        except models.ProjectPhase.DoesNotExist:
+            return Response({'detail': 'Could not find the project phase'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        membership = get_project_membership(
+            project_phase.project, request.user)
+
+        if not membership or membership.role != models.ProjectMember.MANAGER:
+            return Response({'detail': 'You are not authorized to perform this action'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        if models.ProjectPhase.objects.filter(project=project_phase.project, phase_name__iexact=new_name).exists():
+            return Response({'detail': 'A project phase with that name already exists within the project'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        project_phase.phase_name = new_name
+        project_phase.save()
+
+        return Response({'detail': 'Project phase name successfully updated'}, status=status.HTTP_200_OK)

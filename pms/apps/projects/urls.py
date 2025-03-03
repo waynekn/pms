@@ -29,4 +29,6 @@ urlpatterns = [
          views.ProjectPhaseDetailView.as_view(), name='project_phase_detail'),
     path('project/phase/<str:phase_id>/delete/',
          views.ProjectPhaseDeleteView.as_view(), name='delete_project_phase'),
+    path('project/phase/<str:phase_id>/rename/',
+         views.ProjectPhaseRenameView.as_view(), name='rename_project_phase'),
 ]

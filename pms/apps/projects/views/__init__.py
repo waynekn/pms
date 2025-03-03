@@ -12,6 +12,7 @@ from .phase import (
     ProjectPhaseRetrieveView,
     ProjectPhaseCreateView,
     ProjectPhaseDeleteView,
+    ProjectPhaseRenameView,
 )
 from .stats import ProjectStatsView
 
@@ -30,4 +31,5 @@ __all__ = [
     'ProjectTasksView',
     'ProjectStatsView',
     'ProjectPhaseDeleteView',
+    'ProjectPhaseRenameView',
 ]

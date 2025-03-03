@@ -6,8 +6,10 @@ import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 import PhaseDeletionConfirmationModal from "../modals/project-phase-deletion";
+import PhaseRenameModal from "../modals/project-phase-rename";
 
 import {
   Project,
@@ -54,6 +56,11 @@ const ProjectPhasePage = () => {
     phaseName: "",
   });
   const [askforConfirmation, setAskForConfirmation] = useState(false);
+  const [showPhaseRenameModal, setShowPhaseRenameModal] = useState(false);
+  const [phaseToRename, setPhaseToRename] = useState<ProjectPhase>({
+    phaseId: "",
+    phaseName: "",
+  });
 
   const [errorMessage, setErrorMessage] = useState("");
   const [
@@ -205,16 +212,28 @@ const ProjectPhasePage = () => {
                     >
                       {workflow.phaseName}
                     </Link>
-                    <Tooltip title="Delete" placement="top">
-                      <button
-                        onClick={() => {
-                          setDeletePhase(workflow);
-                          setAskForConfirmation(true);
-                        }}
-                      >
-                        <DeleteOutlineOutlinedIcon />
-                      </button>
-                    </Tooltip>
+                    <div className="flex gap-4">
+                      <Tooltip title="Rename" placement="top">
+                        <button
+                          onClick={() => {
+                            setPhaseToRename(workflow);
+                            setShowPhaseRenameModal(true);
+                          }}
+                        >
+                          <EditOutlinedIcon />
+                        </button>
+                      </Tooltip>
+                      <Tooltip title="Delete" placement="top">
+                        <button
+                          onClick={() => {
+                            setDeletePhase(workflow);
+                            setAskForConfirmation(true);
+                          }}
+                        >
+                          <DeleteOutlineOutlinedIcon />
+                        </button>
+                      </Tooltip>
+                    </div>
                   </li>
                 ))}
               </ol>
@@ -235,6 +254,12 @@ const ProjectPhasePage = () => {
         <PhaseDeletionConfirmationModal
           hideModal={hideModal}
           projectPhase={deletePhase}
+        />
+      )}
+      {showPhaseRenameModal && (
+        <PhaseRenameModal
+          hideModal={() => setShowPhaseRenameModal(false)}
+          projectPhase={phaseToRename}
         />
       )}
     </Container>
