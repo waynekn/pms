@@ -42,7 +42,6 @@ services:
       timeout: 3s
       retries: 5
     command: ["redis-server"]
-    restart: always
 
 volumes:
   db_data:
