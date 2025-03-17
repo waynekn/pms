@@ -315,7 +315,7 @@ const ProjectCreationPage = () => {
               type="submit"
               className="px-6 py-3 bg-blue-500 text-white font-medium rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              Submit
+              Create
             </button>
           </div>
         </form>
